@@ -20,17 +20,33 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Authentication**: (Specify if using NextAuth, Clerk, etc.)
+- **Database**: (MongoDB)
+- **Deployment**: (Vercel)
+- **Version**: (3.0.0)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## New Commit Format
+type (scope/halaman "optional") : Description
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+option For (type)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- feat: untuk menambahkan fitur baru
+- fix: untuk memperbaiki bug
+- docs: untuk memperbarui dokumentasi
+- style: untuk memperbaiki format atau gaya code
+- refactor: untuk merubah penulisan atau memperbaiki
+- test: untuk menambahkan atau memperbaiki test
+- chore: mengatur task atau perubahan konfigurasi
+
+**Example :** feat (navbar): add dropdown menu
+
+---
