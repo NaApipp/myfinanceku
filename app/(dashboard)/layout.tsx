@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Import Componets Sidebar
-import Sidebar from "../Components/Sidebar";
+import Sidebar from "../components/Sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();

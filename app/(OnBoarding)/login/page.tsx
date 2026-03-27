@@ -1,6 +1,6 @@
 // Import Components
-import LoginForm from "./Components/LoginForm"
-import SplashScreen from "../../Components/SplashScreen"
+import LoginForm from "./components/LoginForm"
+import Sidebar from "@/app/components/Sidebar"
 
 export default function LoginPage() {
   return (
