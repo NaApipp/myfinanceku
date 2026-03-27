@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-// import Sidebar from "./components/sidebar";
+
+// Import Componets Sidebar
+import Sidebar from "../Components/Sidebar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -18,12 +20,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   if (!isAuthenticated) {
-    return null; // Or a loading spinner
+    return null; // loading spinner
   }
 
   return (
     <div className="flex h-screen bg-gray-50/50 dark:bg-gray-950">
-      {/* <Sidebar /> */}
+      <Sidebar />
       <main className="flex-1 ml-64 overflow-y-auto">{children}</main>
     </div>
   );
