@@ -23,10 +23,10 @@ function formatDateWIB(date: Date) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { last_name, first_name, email, password, username, no_hp, level } =
+    const { last_name, first_name, full_name, email, password, username, no_hp, level } =
       await req.json();
 
-    // Validasi input sederhana
+    // Validation input simple
     if (
       !last_name ||
       !first_name ||
@@ -42,11 +42,11 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    // NAMA DB DAN COLLECTION
+    // DB and Colecction Name
     const db = client.db(process.env.MONGODB_DATABASE);
     const usersCollection = db.collection("users");
 
-    // Cek apakah email sudah terdaftar
+    //  Vakidation check on db email and username
     const existingUser = await usersCollection.findOne({ email, username });
     if (existingUser) {
       return NextResponse.json(
@@ -58,13 +58,14 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Format Akun Di Buat
+    // Time Format create Account
     const formattedDate = formatDateWIB(new Date());
 
-    // Simpan user baru
+    // Saving New User
     const result = await usersCollection.insertOne({
       first_name,
       last_name,
+      full_name: `${first_name} ${last_name}`,
       email,
       password: hashedPassword,
       username,
