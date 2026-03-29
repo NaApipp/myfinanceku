@@ -4,22 +4,22 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const { username, password } = await req.json();
 
     // Validasi input sederhana
-    if (!email || !password) {
+    if (!username || !password) {
       return NextResponse.json(
-        { message: "Email dan password harus diisi" },
+        { message: " dan password harus diisi" },
         { status: 400 },
       );
     }
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
-    const usersCollection = db.collection("users");
+    const usersCollection = db.collection("users"); 
 
     // Cari user berdasarkan email
-    const user = await usersCollection.findOne({ email });
+    const user = await usersCollection.findOne({ username });
     if (!user) {
       return NextResponse.json(
         { message: "User tidak ditemukan" },
@@ -33,7 +33,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Password salah" }, { status: 401 });
     }
 
-    // Login berhasil (Anda bisa menambahkan JWT atau data session di sini jika diperlukan)
     return NextResponse.json(
       {
         message: "Login berhasil",
