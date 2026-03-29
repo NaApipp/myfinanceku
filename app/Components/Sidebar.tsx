@@ -1,7 +1,27 @@
-import { Wallet, ClockFading, ChartPie, Target, Settings, House } from "lucide-react";
+"use client";
+
+import {
+  Wallet,
+  ClockFading,
+  ChartPie,
+  Target,
+  Settings,
+  House,
+} from "lucide-react";
 import Link from "next/link";
 
+import { useRouter } from "next/navigation";
+
 export default function Sidebar() {
+  const router = useRouter();
+
+  //   Handle Logout
+  const handleLogout = (e: React.FormEvent) => {
+    e.preventDefault();
+    sessionStorage.removeItem("user");
+    router.push("/login");
+  };
+
   return (
     <div className="flex h-screen w-64 flex-col justify-between border-e bg-white dark:border-gray-800 dark:bg-gray-900">
       <div className="px-4 py-6">
@@ -80,7 +100,7 @@ export default function Sidebar() {
       </div>
 
       <div className="sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2 dark:border-gray-800 dark:bg-gray-900">
-        <form action="#">
+        <form onSubmit={handleLogout}>
           <button
             type="submit"
             className="group relative flex w-full gap-2 justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
