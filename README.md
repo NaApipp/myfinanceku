@@ -35,6 +35,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 ---
 
 ## New Commit Format
+
 type (scope/halaman "optional") : Description
 
 option For (type)
@@ -50,3 +51,46 @@ option For (type)
 **Example :** feat (navbar): add dropdown menu
 
 ---
+
+## API Documentation
+
+Internal API documentation available for data interaction:
+
+### Auth
+
+| Method | Endpoint             | Description                       |
+| :----- | :------------------- | :-------------------------------- |
+| `POST` | `/api/auth/login`    | Create a new login data entry.    |
+| `POST` | `/api/auth/register` | Create a new register data entry. |
+
+### Change Password
+
+| Method | Endpoint               | Description                              |
+| :----- | :--------------------- | :--------------------------------------- |
+| `POST` | `/api/change-password` | Create a new change password data entry. |
+
+### Change Data User
+
+| Method | Endpoint                | Description             |
+| :----- | :---------------------- | :---------------------- |
+| `POST` | `/api/change-data-user` | Update data user entry. |
+
+### Transaksi
+
+| Method    | Endpoint             | Description                        |
+| :-------- | :------------------- | :--------------------------------- |
+| `POST`    | `/api/transaksi`     | Create a new transaksi data entry. |
+| `GET`     | `/api/transaksi`     | Get all transaksi data entry.      |
+| `GET`     | `/api/transaksi/:id` | Get transaksi data entry by id.    |
+| ` DELETE` | `/api/transaksi/:id` | Get transaksi data entry by id.    |
+| ` PUT`    | `/api/transaksi/:id` | Get transaksi data entry by id.    |
+
+### Account & Card
+
+| Method    | Endpoint                | Description                        |
+| :-------- | :---------------------- | :--------------------------------- |
+| `POST`    | `/api/account-card`     | Create a new transaksi data entry. |
+| `GET`     | `/api/account-card`     | Get all transaksi data entry.      |
+| `GET`     | `/api/account-card/:id` | Get transaksi data entry by id.    |
+| ` DELETE` | `/api/account-card/:id` | Get transaksi data entry by id.    |
+| ` PUT`    | `/api/account-card/:id` | Get transaksi data entry by id.    |
