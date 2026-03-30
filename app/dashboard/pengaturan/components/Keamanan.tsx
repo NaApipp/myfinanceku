@@ -19,7 +19,10 @@ export default function Keamanan() {
             </p>
           </div>
         </div>
-        <Link href="#" className="cursor-pointer">
+        <Link
+          href="/dashboard/pengaturan/ubah-password"
+          className="cursor-pointer"
+        >
           <ChevronRight className="text-black" width={24} height={24} />
         </Link>
       </div>
