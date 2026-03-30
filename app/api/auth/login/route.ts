@@ -37,11 +37,11 @@ export async function POST(req: NextRequest) {
       {
         message: "Login berhasil",
         user: {
-          id: user._id,
-          name: user.name,
           email: user.email,
           username: user.username,
           no_hp: user.no_hp,
+          level: user.level,
+          full_name: user.full_name,
         },
       },
       { status: 200 },
