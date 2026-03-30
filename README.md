@@ -67,13 +67,13 @@ Internal API documentation available for data interaction:
 
 | Method | Endpoint               | Description                              |
 | :----- | :--------------------- | :--------------------------------------- |
-| `POST` | `/api/change-password` | Create a new change password data entry. |
+| `POST` | `/api/settings/change-password` | Create a new change password data entry. |
 
 ### Change Data User
 
 | Method | Endpoint                | Description             |
 | :----- | :---------------------- | :---------------------- |
-| `POST` | `/api/change-data-user` | Update data user entry. |
+| `POST` | `/api/settings/change-data-user` | Update data user entry. |
 
 ### Transaksi
 
