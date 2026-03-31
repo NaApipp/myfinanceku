@@ -1,33 +1,78 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { jwtVerify } from "jose"
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value
   const { pathname } = request.nextUrl
 
-  // halaman yang tidak perlu login
+  // Halaman yang tidak perlu login
   const publicRoutes = ["/login", "/register", "/"]
-
   const isPublicRoute = publicRoutes.includes(pathname)
 
-  // jika belum login dan akses halaman private
-  if (!token && !isPublicRoute) {
+  // 1. Jika TIDAK ada token
+  if (!token) {
+    if (isPublicRoute) {
+      return NextResponse.next()
+    }
+    
+    // Proteksi API routes
+    if (pathname.startsWith("/api/")) {
+      // Kecuali API auth (untuk login itu sendiri)
+      if (!pathname.startsWith("/api/auth/")) {
+        return NextResponse.json(
+          { message: "Unauthorized: Silakan login" },
+          { status: 401 }
+        )
+      }
+      return NextResponse.next()
+    }
+    
+    // Proteksi halaman dashboard/private lainnya
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
-  // jika sudah login tapi buka halaman login
-  if (token && pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
-  }
+  // 2. Jika ADA token, verifikasi validitasnya
+  try {
+    const secret = new TextEncoder().encode(
+      process.env.JWT_SECRET || "default_secret"
+    )
+    await jwtVerify(token, secret)
 
-  return NextResponse.next()
+    // Jika token valid dan mencoba akses halaman login/register, lempar ke dashboard
+    if (pathname === "/login" || pathname === "/register") {
+      return NextResponse.redirect(new URL("/dashboard", request.url))
+    }
+
+    return NextResponse.next()
+  } catch (error) {
+    console.error("JWT Verification failed:", error)
+    
+    // Token tidak valid atau expired
+    if (isPublicRoute) {
+      return NextResponse.next()
+    }
+
+    // Jika di API, return 401
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json(
+        { message: "Token tidak valid, silakan login ulang" },
+        { status: 401 }
+      )
+    }
+
+    // Jika di halaman biasa, hapus cookie dan redirect ke login
+    const response = NextResponse.redirect(new URL("/login", request.url))
+    response.cookies.delete("token")
+    return response
+  }
 }
 
 export const config = {
   matcher: [
     /*
       Middleware akan jalan di semua route
-      kecuali static files
+      kecuali static files, image optimization, dan favicon
     */
     "/((?!_next/static|_next/image|favicon.ico).*)",
   ],

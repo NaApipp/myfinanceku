@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import bcrypt from "bcryptjs";
+import { SignJWT } from "jose";
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,7 +34,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Password salah" }, { status: 401 });
     }
 
-    return NextResponse.json(
+    // Generate JWT
+    const secret = new TextEncoder().encode(
+      process.env.JWT_SECRET || "default_secret",
+    );
+    const token = await new SignJWT({
+      userId: user._id.toString(),
+      username: user.username,
+      email: user.email,
+      level: user.level,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("24h") // Token berlaku 24 jam
+      .sign(secret);
+
+    const response = NextResponse.json(
       {
         message: "Login berhasil",
         user: {
@@ -46,6 +62,17 @@ export async function POST(req: NextRequest) {
       },
       { status: 200 },
     );
+
+    // Set cookie
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24, // 24 jam dalam detik
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
