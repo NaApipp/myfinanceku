@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
     const { payload } = await jwtVerify(token, secret);
-    const idUser = payload.idUser as string;
+    const userId = payload.userId as string;
 
     const body = await req.json();
     const {
@@ -37,12 +37,12 @@ export async function POST(req: NextRequest) {
     // Menentukan koleksi "transaksi" yang akan digunakan untuk operasi data
     const transaksiCollection = db.collection("transaksi");
     // Generate ID based on current document count for THIS user
-    const count = await transaksiCollection.countDocuments({ idUser });
-    const idTransaksi = `TRX-${idUser.slice(-4)}-${String(count + 1).padStart(6, "0")}`;
+    const count = await transaksiCollection.countDocuments({ userId });
+    const idTransaksi = `TRX-${userId.slice(-4)}-${String(count + 1).padStart(6, "0")}`;
     
     // Insert data transaksi
     const transaksi = await transaksiCollection.insertOne({
-        idUser,
+        userId,
         idTransaksi,
         type_transaksi,
         nominal_transaksi,
@@ -86,7 +86,7 @@ export async function GET(req:NextRequest) {
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
-        const idUser = payload.idUser as string;
+        const userId = payload.userId as string;
 
         // Mengambil instance client MongoDB
         const client = await clientPromise;
@@ -94,7 +94,7 @@ export async function GET(req:NextRequest) {
         const db = client.db(process.env.MONGODB_DATABASE);
         // Mengakses koleksi "transaksi"
         const transaksiCollection = db.collection("transaksi");
-        const transaksi = await transaksiCollection.find({ idUser }).toArray();
+        const transaksi = await transaksiCollection.find({ userId }).toArray();
         return NextResponse.json(
             {
                 success: true,
