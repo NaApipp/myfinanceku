@@ -1,0 +1,113 @@
+import { NextRequest, NextResponse } from "next/server";
+import clientPromise from "@/app/lib/mongodb";
+import { jwtVerify } from "jose";
+
+export async function POST(req: NextRequest) {
+  try {
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
+    const { payload } = await jwtVerify(token, secret);
+    const idUser = payload.idUser as string;
+
+    const body = await req.json();
+    const {
+      type_transaksi,
+      nominal_transaksi,
+      tanggal_transaksi,
+      kategori,
+      sumberdana,
+      description,
+    } = body;
+
+    if (!type_transaksi || !nominal_transaksi || !tanggal_transaksi || !kategori || !sumberdana || !description) {
+        return NextResponse.json(
+            { message: "Semua field wajib diisi" },
+            { status: 400 },
+        );
+    }
+
+    // Mengambil instance client dari shared koneksi MongoDB (reusable connection)
+    const client = await clientPromise;
+    // Menghubungkan ke database sesuai konfigurasi di environment variable (.env)
+    const db = client.db(process.env.MONGODB_DATABASE);
+    // Menentukan koleksi "transaksi" yang akan digunakan untuk operasi data
+    const transaksiCollection = db.collection("transaksi");
+    // Generate ID based on current document count for THIS user
+    const count = await transaksiCollection.countDocuments({ idUser });
+    const idTransaksi = `TRX-${idUser.slice(-4)}-${String(count + 1).padStart(6, "0")}`;
+    
+    // Insert data transaksi
+    const transaksi = await transaksiCollection.insertOne({
+        idUser,
+        idTransaksi,
+        type_transaksi,
+        nominal_transaksi,
+        tanggal_transaksi,
+        kategori,
+        sumberdana,
+        description,
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Transaksi berhasil ditambahkan",
+        data: {
+          idTransaksi,
+          type_transaksi,
+          nominal_transaksi,
+          tanggal_transaksi,
+          kategori,
+          sumberdana,
+          description,
+        },
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error("Error processing transaksi:", error);
+    return NextResponse.json(
+      { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET(req:NextRequest) {
+    try {
+        const token = req.cookies.get("token")?.value;
+        if (!token) {
+          return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
+        const { payload } = await jwtVerify(token, secret);
+        const idUser = payload.idUser as string;
+
+        // Mengambil instance client MongoDB
+        const client = await clientPromise;
+        // Menghubungkan ke database
+        const db = client.db(process.env.MONGODB_DATABASE);
+        // Mengakses koleksi "transaksi"
+        const transaksiCollection = db.collection("transaksi");
+        const transaksi = await transaksiCollection.find({ idUser }).toArray();
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Data Transaksi berhasil diambil",
+                data: transaksi,
+            },
+            { status: 200 },
+        );
+    } catch (error) {
+        console.error("Error processing transaksi:", error);
+        return NextResponse.json(
+            { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
+            { status: 500 },
+        );
+    }
+}
