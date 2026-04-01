@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     // Validasi input sederhana
     if (!username || !password) {
       return NextResponse.json(
-        { message: " dan password harus diisi" },
+        { message: "Username dan password harus diisi" },
         { status: 400 },
       );
     }
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       process.env.JWT_SECRET || "default_secret",
     );
     const token = await new SignJWT({
-      userId: user._id.toString(),
+      userId: user.userId, // Menggunakan userId (e.g., "000001")
       username: user.username,
       email: user.email,
       level: user.level,
@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
           no_hp: user.no_hp,
           level: user.level,
           full_name: user.full_name,
+          token: token,
         },
       },
       { status: 200 },
