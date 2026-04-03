@@ -1,13 +1,118 @@
 import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface AccountData {
+  idAccount: string;
+  nama_asset: string;
+}
 
 export default function TambahTransaksi() {
+  const [data, setData] = useState<AccountData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [formData, setFormData] = useState({
+    type_transaksi: "",
+    nominal_transaksi: "",
+    tanggal_transaksi: "",
+    kategori: "",
+    sumberdana: "",
+    description: "",
+  });
+  // Setup Open Modal
   const [isOpen, setIsOpen] = useState(false);
+
+  // Fetching API
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      try {
+        const response = await fetch("/api/account-card");
+        const result = await response.json();
+        if (result.success) {
+          setData(result.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-48 bg-gray-100 animate-pulse rounded-[32px] border border-gray-200"
+          />
+        ))}
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage({ type: "", text: "" });
+
+    try {
+      const response = await fetch("/api/transaksi", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      setIsOpen(false);
+      window.location.reload();
+
+      if (data.success) {
+        setMessage({
+          type: "success",
+          text: data.message || "Transaksi berhasil disimpan!",
+        });
+        setFormData({
+          type_transaksi: "",
+          nominal_transaksi: "",
+          tanggal_transaksi: "",
+          kategori: "",
+          sumberdana: "",
+          description: "",
+        });
+      } else {
+        setMessage({
+          type: "error",
+          text: data.message || "Gagal menyimpan asset.",
+        });
+      }
+    } catch (error: any) {
+      setMessage({
+        type: "error",
+        text: error.message || "Terjadi kesalahan koneksi.",
+      });
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="group relative flex mb-2 w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black text-white cursor-pointer hover:bg-black/70 hover:text-white transition-all"
+        className="group relative flex mb-2 w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black text-white cursor-pointer hover:bg-black/70 hover:text-white transition-all "
       >
         <Plus width={18} height={18} />
         <span className="text-sm font-bold"> Tambah Transaksi </span>
@@ -18,21 +123,166 @@ export default function TambahTransaksi() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
 
           {/* Modal Content */}
-          <div className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl animate-in fade-in zoom-in duration-300">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <h2 className="text-xl font-bold text-black">Tambah Transaksi</h2>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <X className="w-6 h-6 text-gray-400" />
               </button>
+            </div>
+            {/* Modal Content */}
+            <div className="p-3 space-y-4">
+              {/* Form */}
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {/* Input Nama Transaksi */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="type_transaksi"
+                    className="text-sm font-semibold text-gray-700 uppercase"
+                  >
+                    Pilih Tipe Transaksi
+                  </label>
+
+                  <select
+                    id="type_transaksi"
+                    name="type_transaksi"
+                    value={formData.type_transaksi}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                  >
+                    <option value="">Pilih Tipe Transaksi</option>
+                    <option value="pemasukan">Pemasukan</option>
+                    <option value="pengeluaran">Pengeluaran</option>
+                  </select>
+                </div>
+                {/* Input Jumlah Transaksi */}
+                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex flex-col gap-4 w-full">
+                  <div className="flex flex-col gap-3">
+                    <label
+                      htmlFor="saldo_awal"
+                      className="text-sm font-semibold text-gray-700 uppercase"
+                    >
+                      Nominal Transaksi (rp)
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-black font-bold text-[24px]">Rp</h1>
+                      <input
+                        type="number"
+                        name="nominal_transaksi"
+                        id="nominal_transaksi"
+                        className="w-full bg-transparent placeholder:text-gray-400 text-black px-1 py-2 text-2xl font-bold focus:outline-none"
+                        placeholder="0"
+                        value={formData.nominal_transaksi}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  {/* Input Tanggal Transaksi */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="tanggal_transaksi"
+                      className="text-sm font-semibold text-gray-700 uppercase"
+                    >
+                      Tanggal Transaksi
+                    </label>
+                    <input
+                      name="tanggal_transaksi"
+                      id="tanggal_transaksi"
+                      value={formData.tanggal_transaksi}
+                      onChange={handleChange}
+                      type="date"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  {/* Input Nama Transaksi */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="kategori"
+                      className="text-sm font-semibold text-gray-700 uppercase"
+                    >
+                      Kategori
+                    </label>
+
+                    <select
+                      id="kategori"
+                      name="kategori"
+                      value={formData.kategori}
+                      onChange={handleChange}
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                    >
+                      <option value="">Pilih Tipe Transaksi</option>
+                      <option value="makanan">Makanan</option>
+                      <option value="transportasi">Transportasi</option>
+                      <option value="pembayaran">Pembayaran</option>
+                      <option value="pendapatan">Pendapatan</option>
+                      <option value="transfer">Transfer</option>
+                      <option value="lainnya">Lainnya</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Input Sumber Dana */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Sumber Dana
+                  </label>
+                  <select
+                  name="sumberdana"
+                  id="sumberdana"
+                    value={formData.sumberdana}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                  >
+                    <option value="">Pilih Sumber Dana</option>
+                    {data.map((item) => (
+                      <option
+                        key={item.idAccount}
+                        value={item.nama_asset}
+                        className="uppercase"
+                      >
+                        {item.nama_asset}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Input Keterangan Transaksi */}
+                <div className="space-y-2">
+                  <label htmlFor="description" className="text-sm font-medium text-gray-700">
+                    Deskripsi Transaksi
+                  </label>
+                  <textarea
+                    name="description"
+                    id="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-15 text-black placeholder:text-gray-400"
+                    placeholder="Masukkan Deskripsi Transaksi"
+                  />
+                </div>
+                {/* Tombol Simpan */}
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="w-full bg-black hover:bg-black/90 text-white font-bold py-2 px-4 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
+                    Simpan Transaksi
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
