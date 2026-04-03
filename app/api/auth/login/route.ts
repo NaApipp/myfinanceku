@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       process.env.JWT_SECRET || "default_secret",
     );
     const token = await new SignJWT({
-      userId: user.userId, // Menggunakan userId (e.g., "000001")
+      userId: user.idUser || user._id.toString(), // Menggunakan idUser dari DB atau _id sebagai fallback
       username: user.username,
       email: user.email,
       level: user.level,

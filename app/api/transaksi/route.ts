@@ -11,7 +11,11 @@ export async function POST(req: NextRequest) {
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
     const { payload } = await jwtVerify(token, secret);
-    const userId = payload.userId as string;
+    const userId = payload.userId ? String(payload.userId) : null;
+
+    if (!userId) {
+      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+    }
 
     const body = await req.json();
     const {

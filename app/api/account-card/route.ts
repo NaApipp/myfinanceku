@@ -11,16 +11,21 @@ export async function POST(req: NextRequest) {
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
     const { payload } = await jwtVerify(token, secret);
-    const userId = payload.userId as string;
+    const userId = payload.userId ? String(payload.userId) : null;
+
+    if (!userId) {
+      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+    }
 
     const body = await req.json();
     const {
       type_asset,
       nama_asset,
       saldo_awal,
+      nama_akun,
     } = body;
 
-    if (!type_asset || !nama_asset || !saldo_awal) {
+    if (!type_asset || !nama_asset || !saldo_awal || !nama_akun) {
         return NextResponse.json(
             { message: "Semua field wajib diisi" },
             { status: 400 },
@@ -44,6 +49,7 @@ export async function POST(req: NextRequest) {
         type_asset,
         nama_asset,
         saldo_awal,
+        nama_akun,
     });
 
     return NextResponse.json(
@@ -55,6 +61,7 @@ export async function POST(req: NextRequest) {
           type_asset,
           nama_asset,
           saldo_awal,
+          nama_akun,
         },
       },
       { status: 201 },
