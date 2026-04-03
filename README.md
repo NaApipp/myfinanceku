@@ -22,6 +22,22 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ---
 
+## User Testing
+**USER 1**
+
+- `Username: user_testing`
+- `Password: Testing1#`
+
+
+**USER 2**
+
+- `Username: testing_user`
+- `Password: Testing1#`
+
+
+
+---
+
 ## Tech Stack
 
 - **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
