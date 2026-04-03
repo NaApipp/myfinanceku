@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 
 import { usePathname } from "next/navigation";
 
+import TambahTransaksi from "./TambahTransaksi";
+
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -116,13 +118,7 @@ export default function Sidebar() {
 
       <div className="sticky inset-x-0 bottom-0 border-t bg-white p-2 border-gray-200">
         {/* Button add new  Transaksi */}
-        <Link
-          href="/dashboard/transaksi"
-          className="group relative flex mb-2 w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black text-white cursor-pointer hover:bg-black/70 hover:text-white transition-all"
-        >
-          <Plus width={18} height={18}/>
-          <span className="text-sm font-bold"> Tambah Transaksi </span>
-        </Link>
+        <TambahTransaksi />
         {/* Handle Logout */}
         <form onSubmit={handleLogout}>
           <button
