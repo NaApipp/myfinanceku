@@ -112,7 +112,7 @@ export default function TambahTransaksi() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="group relative flex mb-2 w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black text-white cursor-pointer hover:bg-black/70 hover:text-white transition-all "
+        className="group relative flex mb-2 w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black dark:bg-white text-white dark:text-black cursor-pointer hover:bg-black/70 dark:hover:bg-white/70 hover:text-white dark:hover:text-black transition-all "
       >
         <Plus width={18} height={18} />
         <span className="text-sm font-bold"> Tambah Transaksi </span>

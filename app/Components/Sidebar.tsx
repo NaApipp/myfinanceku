@@ -33,26 +33,25 @@ export default function Sidebar() {
   const getPathActive = (href: string) => {
     const isActive = pathname === href;
     return `flex items-center gap-2 rounded-lg px-4 py-2 transition-all  ${
-      isActive 
-        ? "text-black bg-transparent font-bold"  
-        : "text-gray-500 hover:bg-black hover:text-white font-bold"
+      isActive
+        ? "text-black dark:text-white bg-transparent font-bold"
+        : "text-gray-500 dark:text-gray-400 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black font-bold"
     }`;
-   };
+  };
 
   return (
-    <div className="flex h-screen w-64 flex-col justify-between border-e bg-[#FAFAFA] border-gray-200">
+    <div className="flex h-screen w-64 flex-col justify-between border-e bg-[#FAFAFA] dark:bg-neutral-950 border-gray-200 dark:border-white/5 transition-colors duration-300">
       <div className="px-4 py-6">
         <span className="flex items-center gap-1 ml-4 text-lg text-gray-700 dark:text-gray-200">
           <Wallet className="text-lime-500" />
-          <span className="font-semibold text-black">MyFinanceKu</span>
+          <span className="font-semibold text-black dark:text-white">
+            MyFinanceKu
+          </span>
         </span>
 
         <ul className="mt-6 space-y-1">
           <li>
-            <Link
-              href="/dashboard"
-              className={getPathActive("/dashboard")}
-            >
+            <Link href="/dashboard" className={getPathActive("/dashboard")}>
               <House />
 
               <span className="text-sm font-medium"> General </span>
@@ -116,14 +115,14 @@ export default function Sidebar() {
         </ul>
       </div>
 
-      <div className="sticky inset-x-0 bottom-0 border-t bg-white p-2 border-gray-200">
+      <div className="sticky inset-x-0 bottom-0 border-t bg-white dark:bg-neutral-950 p-2 border-gray-200 dark:border-white/5 transition-colors duration-300">
         {/* Button add new  Transaksi */}
         <TambahTransaksi />
         {/* Handle Logout */}
         <form onSubmit={handleLogout}>
           <button
             type="submit"
-            className="group relative flex w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black text-white cursor-pointer hover:bg-black/70 hover:text-white transition-all"
+            className="group relative flex w-full h-10 items-center gap-2 justify-center rounded-lg px-2 py-1.5 text-sm bg-black dark:bg-white text-white dark:text-black cursor-pointer hover:bg-black/70 dark:hover:bg-white/70 hover:text-white dark:hover:text-black transition-all"
           >
             <SquareArrowRightExit width={16} height={16} />
 
