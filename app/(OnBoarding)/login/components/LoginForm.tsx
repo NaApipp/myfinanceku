@@ -119,7 +119,7 @@ export default function LoginForm() {
             </label>
             <Link
               className="text-xs font-medium text-blue-600 hover:text-blue-500 hidden"
-              href="#"
+              href="/lupa-password"
             >
               Lupa password?
             </Link>
