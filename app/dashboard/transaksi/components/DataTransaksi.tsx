@@ -19,19 +19,23 @@ export default function DataTransaksi() {
 
   // handleDelete
   const handleDelete = async (idTransaksi: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) return;
+
     try {
       const response = await fetch(`/api/transaksi/${idTransaksi}`, {
         method: "DELETE",
       });
       const data = await response.json();
-      window.location.reload();
+      
       if (data.success) {
-        alert(data.message);
+        alert(data.message || "Berhasil dihapus");
+        window.location.reload();
       } else {
-        alert(data.message);
+        alert(data.message || "Gagal menghapus transaksi.");
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
+      alert("Terjadi kesalahan koneksi saat menghapus transaksi.");
     }
   };
 
@@ -79,6 +83,7 @@ export default function DataTransaksi() {
             <th>Tanggal Transaksi</th>
             <th>Deskripsi</th>
             <th>Kategori</th>
+            <th>Sumberdana</th>
             <th>Nominal</th>
             <th>Aksi</th>
           </tr>
@@ -93,6 +98,7 @@ export default function DataTransaksi() {
               >
                 {item.type_transaksi}
               </td>
+              <td>{item.sumberdana}</td>
               <td>{item.nominal_transaksi}</td>
               <td>
                 <button onClick={() => handleDelete(item.idTransaksi)}>

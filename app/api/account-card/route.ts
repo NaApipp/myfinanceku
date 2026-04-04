@@ -44,12 +44,12 @@ export async function POST(req: NextRequest) {
     
     // Insert data transaksi
     const transaksi = await transaksiCollection.insertOne({
-        userId,
-        idAccount,
-        type_asset,
-        nama_asset,
-        saldo_awal,
-        nama_akun,
+        userId: String(userId),
+        idAccount: String(idAccount),
+        type_asset: String(type_asset),
+        nama_asset: String(nama_asset),
+        saldo_awal: Number(saldo_awal),
+        nama_akun: String(nama_akun),
     });
 
     return NextResponse.json(

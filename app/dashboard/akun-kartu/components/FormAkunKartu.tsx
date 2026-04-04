@@ -6,7 +6,7 @@ export default function FormAkunKartu() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     type_asset: "",
-    saldo_awal: "",
+    saldo_awal: 0,
     nama_asset: "",
     nama_akun: "",
   });
@@ -36,7 +36,7 @@ export default function FormAkunKartu() {
         setMessage({ type: "success", text: data.message || "Asset berhasil disimpan!" });
         setFormData({
           type_asset: "",
-          saldo_awal: "",
+          saldo_awal: 0,
           nama_asset: "",
           nama_akun: "",
         });

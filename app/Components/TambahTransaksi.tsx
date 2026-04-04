@@ -18,7 +18,7 @@ export default function TambahTransaksi() {
     sumberdana: "",
     description: "",
   });
-  // Setup Open Modal
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   // Fetching API
@@ -56,6 +56,7 @@ export default function TambahTransaksi() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/transaksi", {
@@ -67,8 +68,6 @@ export default function TambahTransaksi() {
       });
 
       const data = await response.json();
-      setIsOpen(false);
-      window.location.reload();
 
       if (data.success) {
         setMessage({
@@ -83,10 +82,16 @@ export default function TambahTransaksi() {
           sumberdana: "",
           description: "",
         });
+        // Close modal after a short delay to show success message
+        setTimeout(() => {
+          setIsOpen(false);
+          setMessage({ type: "", text: "" });
+          window.location.reload();
+        }, 1500);
       } else {
         setMessage({
           type: "error",
-          text: data.message || "Gagal menyimpan asset.",
+          text: data.message || "Gagal menyimpan transaksi.",
         });
       }
     } catch (error: any) {
@@ -94,6 +99,8 @@ export default function TambahTransaksi() {
         type: "error",
         text: error.message || "Terjadi kesalahan koneksi.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -141,6 +148,19 @@ export default function TambahTransaksi() {
             </div>
             {/* Modal Content */}
             <div className="p-3 space-y-4">
+              {/* Message Alert */}
+              {message.text && (
+                <div
+                  className={`p-4 rounded-2xl text-sm font-medium ${
+                    message.type === "success"
+                      ? "bg-green-50 text-green-700 border border-green-100"
+                      : "bg-red-50 text-red-700 border border-red-100"
+                  }`}
+                >
+                  {message.text}
+                </div>
+              )}
+
               {/* Form */}
               <form className="space-y-4" onSubmit={handleSubmit}>
                 {/* Input Nama Transaksi */}
@@ -158,6 +178,7 @@ export default function TambahTransaksi() {
                     value={formData.type_transaksi}
                     onChange={handleChange}
                     className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                    required
                   >
                     <option value="">Pilih Tipe Transaksi</option>
                     <option value="pemasukan">Pemasukan</option>
@@ -168,7 +189,7 @@ export default function TambahTransaksi() {
                 <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex flex-col gap-4 w-full">
                   <div className="flex flex-col gap-3">
                     <label
-                      htmlFor="saldo_awal"
+                      htmlFor="nominal_transaksi"
                       className="text-sm font-semibold text-gray-700 uppercase"
                     >
                       Nominal Transaksi (rp)
@@ -183,6 +204,7 @@ export default function TambahTransaksi() {
                         placeholder="0"
                         value={formData.nominal_transaksi}
                         onChange={handleChange}
+                        required
                       />
                     </div>
                   </div>
@@ -190,7 +212,7 @@ export default function TambahTransaksi() {
 
                 <div className="flex gap-2">
                   {/* Input Tanggal Transaksi */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex-1">
                     <label
                       htmlFor="tanggal_transaksi"
                       className="text-sm font-semibold text-gray-700 uppercase"
@@ -204,11 +226,12 @@ export default function TambahTransaksi() {
                       onChange={handleChange}
                       type="date"
                       className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler placeholder:text-gray-400"
+                      required
                     />
                   </div>
 
-                  {/* Input Nama Transaksi */}
-                  <div className="space-y-2">
+                  {/* Input Kategori */}
+                  <div className="space-y-2 flex-1">
                     <label
                       htmlFor="kategori"
                       className="text-sm font-semibold text-gray-700 uppercase"
@@ -222,8 +245,9 @@ export default function TambahTransaksi() {
                       value={formData.kategori}
                       onChange={handleChange}
                       className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                      required
                     >
-                      <option value="">Pilih Tipe Transaksi</option>
+                      <option value="">Pilih Kategori</option>
                       <option value="makanan">Makanan</option>
                       <option value="transportasi">Transportasi</option>
                       <option value="pembayaran">Pembayaran</option>
@@ -240,17 +264,18 @@ export default function TambahTransaksi() {
                     Sumber Dana
                   </label>
                   <select
-                  name="sumberdana"
-                  id="sumberdana"
+                    name="sumberdana"
+                    id="sumberdana"
                     value={formData.sumberdana}
                     onChange={handleChange}
                     className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                    required
                   >
                     <option value="">Pilih Sumber Dana</option>
                     {data.map((item) => (
                       <option
                         key={item.idAccount}
-                        value={item.nama_asset}
+                        value={item.idAccount}
                         className="uppercase"
                       >
                         {item.nama_asset}
@@ -277,9 +302,12 @@ export default function TambahTransaksi() {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="w-full bg-black hover:bg-black/90 text-white font-bold py-2 px-4 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className={`w-full bg-black hover:bg-black/90 text-white font-bold py-2 px-4 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 ${
+                      isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
                   >
-                    Simpan Transaksi
+                    {isSubmitting ? "Menyimpan..." : "Simpan Transaksi"}
                   </button>
                 </div>
               </form>
