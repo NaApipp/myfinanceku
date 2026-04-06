@@ -1,5 +1,6 @@
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface AccountData {
   idAccount: string;
@@ -21,9 +22,11 @@ export default function TambahTransaksi() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Fetching API
   useEffect(() => {
+    setMounted(true);
     const fetchAccounts = async () => {
       try {
         const response = await fetch("/api/account-card");
@@ -139,9 +142,9 @@ export default function TambahTransaksi() {
       </button>
 
       {/* Modal Tambah Transaksi */}
-      {isOpen && (
+      {mounted && isOpen && createPortal(
         <>
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="fixed inset-0 z-1000 flex items-center justify-center p-4 sm:p-6">
             {/* Backdrop */}
             <div
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -331,7 +334,7 @@ export default function TambahTransaksi() {
 
           {/* Custom Confirmation Modal */}
           {isConfirming && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-1100 flex items-center justify-center p-4">
               <div
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 onClick={() => setIsConfirming(false)}
@@ -365,7 +368,8 @@ export default function TambahTransaksi() {
               </div>
             </div>
           )}
-        </>
+        </>,
+        document.body
       )}
     </>
   );

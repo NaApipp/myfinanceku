@@ -80,7 +80,7 @@ export default function FormAkunKartu() {
 
       {/* Modal Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -144,7 +144,7 @@ export default function FormAkunKartu() {
                         onChange={handleChange}
                       />
                     </div>
-                    <div className="h-[2px] bg-black/100 w-full" />
+                    <div className="h-[2px] bg-black w-full" />
                     <p className="text-xs text-gray-500">
                       Masukkan nominal saldo saat ini sesuai catatan terakhir.
                     </p>
@@ -218,9 +218,9 @@ export default function FormAkunKartu() {
                     }`}
                   >
                     {message.type === "error" ? (
-                      <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                      <AlertCircle className="w-5 h-5 shrink-0" />
                     ) : (
-                      <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 shrink-0" />
                     )}
                     {message.text}
                   </div>
