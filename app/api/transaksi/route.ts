@@ -82,6 +82,25 @@ import { createTransaction } from "@/app/lib/transactionService";
 //   }
 // }
 
+function formatDateWIB(date: Date) {
+  const fmt = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Jakarta",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  const parts = fmt.formatToParts(date);
+  const map: Record<string, string> = {};
+  for (const p of parts) map[p.type] = p.value;
+
+  return `${map.day}/${map.month}/${map.year} ${map.hour}:${map.minute}:${map.second}`;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const client = await clientPromise;
@@ -101,9 +120,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
     }
 
-    // Generate ID based on current document count for THIS user
-    const count = await transaksiCollection.countDocuments({ userId });
-    const idTransaksi = `TRX-${userId.slice(-4)}-${String(count + 1).padStart(6, "0")}`;
+    // Generate unique ID using random string to avoid collisions if transactions are deleted
+    const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const idTransaksi = `TRX-${userId.slice(-4)}-${uniqueId}`;
     const body = await req.json();
     const {
       type_transaksi,
@@ -154,7 +173,9 @@ export async function GET(req:NextRequest) {
         const token = req.cookies.get("token")?.value;
         if (!token) {
           return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
+        } 
+
+        
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
@@ -167,6 +188,8 @@ export async function GET(req:NextRequest) {
         // Mengakses koleksi "transaksi"
         const transaksiCollection = db.collection("transaksi");
         const transaksi = await transaksiCollection.find({ userId }).toArray();
+
+        // const data = await transaksiCollection.find({}).sort({ createdAt: -1 }).toArray();
         return NextResponse.json(
             {
                 success: true,

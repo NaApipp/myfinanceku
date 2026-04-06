@@ -1,5 +1,24 @@
 import clientPromise from "@/app/lib/mongodb";
-import { ObjectId } from "mongodb";
+
+
+function formatDateWIB(date: Date) {
+  const fmt = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Jakarta",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+
+  const parts = fmt.formatToParts(date);
+  const map: Record<string, string> = {};
+  for (const p of parts) map[p.type] = p.value;
+
+  return `${map.day}/${map.month}/${map.year} ${map.hour}:${map.minute}:${map.second}`;
+}
 
 export async function createTransaction({
   userId,
@@ -61,13 +80,14 @@ export async function createTransaction({
         {
           userId,
           idAccount: idAccount, // Simpan reference string ID
+          nama_asset: `${account.nama_asset} - ${account.nama_akun}`, // Store name permanently
           idTransaksi,
           type_transaksi,
           nominal_transaksi,
           tanggal_transaksi,
           kategori,
           description,
-          createdAt: new Date(),
+          createdAt: formatDateWIB(new Date()),
         },
         { session }
       );

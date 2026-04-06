@@ -38,9 +38,9 @@ export async function POST(req: NextRequest) {
     const db = client.db(process.env.MONGODB_DATABASE);
     // Menentukan koleksi "transaksi" yang akan digunakan untuk operasi data
     const transaksiCollection = db.collection("account-card");
-    // Generate ID based on current document count for THIS user
-    const count = await transaksiCollection.countDocuments({ userId });
-    const idAccount = `ACC_CARD-${userId.slice(-4)}-${String(count + 1).padStart(6, "0")}`;
+    // Generate unique ID using random string to avoid collisions if accounts are deleted
+    const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const idAccount = `ACC_CARD-${userId.slice(-4)}-${uniqueId}`;
     
     // Insert data transaksi
     const transaksi = await transaksiCollection.insertOne({

@@ -13,7 +13,7 @@ export default function TambahTransaksi() {
   const [formData, setFormData] = useState({
     type_transaksi: "",
     nominal_transaksi: "",
-    tanggal_transaksi: "",
+    tanggal_transaksi: new Date().toISOString().split("T")[0],
     kategori: "",
     sumberdana: "",
     description: "",
@@ -226,7 +226,7 @@ export default function TambahTransaksi() {
                       onChange={handleChange}
                       type="date"
                       className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler placeholder:text-gray-400"
-                      required
+                      max={new Date().toISOString().split("T")[0]}
                     />
                   </div>
 
