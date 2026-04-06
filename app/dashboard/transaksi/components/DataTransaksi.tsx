@@ -24,26 +24,33 @@ export default function DataTransaksi() {
   const [transaksi, setTransaksi] = useState<TransactionData[]>([]);
   const [accounts, setAccounts] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // handleDelete
-  const handleDelete = async (idTransaksi: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus transaksi ini?")) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/transaksi/${idTransaksi}`, {
+      const response = await fetch(`/api/transaksi/${deleteId}`, {
         method: "DELETE",
       });
       const data = await response.json();
       
       if (data.success) {
-        alert(data.message || "Berhasil dihapus");
+        setDeleteId(null);
         window.location.reload();
       } else {
         alert(data.message || "Gagal menghapus transaksi.");
+        setDeleteId(null);
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
       alert("Terjadi kesalahan koneksi saat menghapus transaksi.");
+      setDeleteId(null);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -194,7 +201,7 @@ export default function DataTransaksi() {
                 <td className="px-6 py-4">
                   <div className="flex justify-center">
                     <button 
-                      onClick={() => handleDelete(item.idTransaksi)}
+                      onClick={() => setDeleteId(item.idTransaksi)}
                       className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
                     >
                       <Trash className="w-4 h-4" />
@@ -206,6 +213,40 @@ export default function DataTransaksi() {
           </tbody>
         </table>
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {deleteId && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteId(null)} />
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mb-6">
+                <Trash className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Hapus Riwayat Transaksi</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-8">
+                Apakah anda yakin, ingin menghapus riwayat ini?
+              </p>
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="w-full py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-[0.98] transition-all disabled:opacity-50"
+                >
+                  {isDeleting ? "Menghapus..." : "Ya, Hapus Data"}
+                </button>
+                <button
+                  onClick={() => setDeleteId(null)}
+                  disabled={isDeleting}
+                  className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
