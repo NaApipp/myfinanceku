@@ -78,6 +78,7 @@ Internal API documentation available for data interaction:
 | :----- | :------------------- | :-------------------------------- |
 | `POST` | `/api/auth/login`    | Create a new login data entry.    |
 | `POST` | `/api/auth/register` | Create a new register data entry. |
+| `POST` | `/api/auth/logout`   | Delete a new logout data entry.   |
 
 ### Change Password
 
@@ -95,18 +96,15 @@ Internal API documentation available for data interaction:
 
 | Method    | Endpoint             | Description                        |
 | :-------- | :------------------- | :--------------------------------- |
-| `POST`    | `/api/transaksi`     | Create a new transaksi data entry. |
-| `GET`     | `/api/transaksi`     | Get all transaksi data entry.      |
-| `GET`     | `/api/transaksi/:id` | Get transaksi data entry by id.    |
-| ` DELETE` | `/api/transaksi/:id` | Get transaksi data entry by id.    |
-| ` PUT`    | `/api/transaksi/:id` | Get transaksi data entry by id.    |
+| `POST`    | `/api/transaksi`     | Create a new transaction.          |
+| `GET`     | `/api/transaksi`     | Get all transactions.              |
+| `DELETE`  | `/api/transaksi/:id` | Delete transaction by id.          |
 
 ### Account & Card
 
 | Method    | Endpoint                | Description                        |
 | :-------- | :---------------------- | :--------------------------------- |
-| `POST`    | `/api/account-card`     | Create a new transaksi data entry. |
-| `GET`     | `/api/account-card`     | Get all transaksi data entry.      |
-| `GET`     | `/api/account-card/:id` | Get transaksi data entry by id.    |
-| ` DELETE` | `/api/account-card/:id` | Get transaksi data entry by id.    |
-| ` PUT`    | `/api/account-card/:id` | Get transaksi data entry by id.    |
+| `POST`   | `/api/account-card`     | Create a new account or card.      |
+| `GET`    | `/api/account-card`     | Get all accounts and cards.        |
+| `DELETE` | `/api/account-card/:id` | Delete account or card by id.      |
+| `PUT`    | `/api/account-card/:id` | Update account or card by id.      |
