@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime("24h") // Token berlaku 24 jam
+      .setExpirationTime("1h") // Token berlaku 1 jam
       .sign(secret);
 
     const response = NextResponse.json(
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24, // 24 jam dalam detik
+      maxAge: 60 * 60, // 1 jam dalam detik
       path: "/",
     });
 

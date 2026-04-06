@@ -16,6 +16,18 @@ export default function LoginForm() {
     password: "",
   });
 
+  // Check for expired session from query params
+  useState(() => {
+     if (typeof window !== 'undefined') {
+       const params = new URLSearchParams(window.location.search);
+       if (params.get('expired') === 'true') {
+         setMessage({ type: 'error', text: 'Sesi Anda telah berakhir. Silakan login kembali.' });
+         // Hapus query param agar tidak muncul lagi saat refresh
+         window.history.replaceState({}, '', window.location.pathname);
+       }
+     }
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
