@@ -24,10 +24,12 @@ interface AccountData {
 export default function DataAccoundCard() {
   const [data, setData] = useState<AccountData[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Modal State
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<AccountData | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<AccountData | null>(
+    null,
+  );
   const [formData, setFormData] = useState({
     type_asset: "",
     saldo_awal: 0,
@@ -35,6 +37,12 @@ export default function DataAccoundCard() {
     nama_akun: "",
   });
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  // Confirmation States
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isUpdateConfirmOpen, setIsUpdateConfirmOpen] = useState(false);
+  const [accountToDelete, setAccountToDelete] = useState<string | null>(null);
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   const assetChoices: { [key: string]: string[] } = {
     bank: [
@@ -78,19 +86,32 @@ export default function DataAccoundCard() {
     }).format(Number(amount));
   };
 
-  const handleDelete = async (idAccount: string) => {
+  const handleDelete = async () => {
+    if (!accountToDelete) return;
+
+    setIsActionLoading(true);
     try {
-      const response = await fetch(`/api/account-card/${idAccount}`, {
+      const response = await fetch(`/api/account-card/${accountToDelete}`, {
         method: "DELETE",
       });
       const result = await response.json();
       if (result.success) {
-        setData((prev) => prev.filter((item) => item.idAccount !== idAccount));
+        setData((prev) =>
+          prev.filter((item) => item.idAccount !== accountToDelete),
+        );
+        setIsDeleteConfirmOpen(false);
+        window.location.reload();
       }
-      window.location.reload();
     } catch (error) {
       console.error("Error deleting account:", error);
+    } finally {
+      setIsActionLoading(false);
     }
+  };
+
+  const confirmDelete = (idAccount: string) => {
+    setAccountToDelete(idAccount);
+    setIsDeleteConfirmOpen(true);
   };
 
   const handleEditClick = (item: AccountData) => {
@@ -104,35 +125,46 @@ export default function DataAccoundCard() {
     setIsEditOpen(true);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleUpdate = async () => {
     if (!selectedAccount) return;
-    
+
+    setIsActionLoading(true);
     setMessage({ type: "", text: "" });
     try {
-      const response = await fetch(`/api/account-card/${selectedAccount.idAccount}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `/api/account-card/${selectedAccount.idAccount}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        },
+      );
       const result = await response.json();
       if (result.success) {
         setMessage({ type: "success", text: "Asset berhasil diperbarui!" });
+        setIsUpdateConfirmOpen(false);
         setTimeout(() => {
           setIsEditOpen(false);
           window.location.reload();
         }, 1000);
       } else {
-        setMessage({ type: "error", text: result.message || "Gagal memperbarui asset." });
+        setMessage({
+          type: "error",
+          text: result.message || "Gagal memperbarui asset.",
+        });
       }
     } catch (error) {
       console.error("Error updating account:", error);
       setMessage({ type: "error", text: "Terjadi kesalahan koneksi." });
+    } finally {
+      setIsActionLoading(false);
     }
   };
 
@@ -158,7 +190,9 @@ export default function DataAccoundCard() {
             className="group relative bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden"
           >
             <div className="flex justify-between items-start mb-6">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-100 shadow-sm ${item.type_asset === "bank" ? "bg-blue-50" : "bg-purple-50"}`}>
+              <div
+                className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-100 shadow-sm ${item.type_asset === "bank" ? "bg-blue-50" : "bg-purple-50"}`}
+              >
                 {item.type_asset === "bank" ? (
                   <Building2 className="w-6 h-6 text-blue-600" />
                 ) : (
@@ -167,7 +201,7 @@ export default function DataAccoundCard() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handleDelete(item.idAccount)}
+                  onClick={() => confirmDelete(item.idAccount)}
                   className="p-2 text-gray-400 hover:text-red-800 transition-colors"
                 >
                   <Trash className="w-5 h-5" />
@@ -207,7 +241,7 @@ export default function DataAccoundCard() {
       {/* Modal - Rendered outside the grid to avoid stacking issues */}
       {isEditOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
-          <div 
+          <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={() => setIsEditOpen(false)}
           />
@@ -215,7 +249,7 @@ export default function DataAccoundCard() {
           <div className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <h2 className="text-xl font-bold text-black">Ubah Asset</h2>
-              <button 
+              <button
                 onClick={() => setIsEditOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
@@ -224,9 +258,18 @@ export default function DataAccoundCard() {
             </div>
 
             <div className="max-h-[80vh] overflow-y-auto">
-              <form onSubmit={handleUpdate} className="p-4 flex flex-col gap-6 w-full">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsUpdateConfirmOpen(true);
+                }}
+                className="p-4 flex flex-col gap-6 w-full"
+              >
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="type_asset" className="text-sm font-semibold text-gray-700 uppercase">
+                  <label
+                    htmlFor="type_asset"
+                    className="text-sm font-semibold text-gray-700 uppercase"
+                  >
                     Pilih Tipe Aset
                   </label>
                   <select
@@ -244,7 +287,10 @@ export default function DataAccoundCard() {
 
                 <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex flex-col gap-4 w-full">
                   <div className="flex flex-col gap-3">
-                    <label htmlFor="saldo_awal" className="text-sm font-semibold text-gray-700 uppercase">
+                    <label
+                      htmlFor="saldo_awal"
+                      className="text-sm font-semibold text-gray-700 uppercase"
+                    >
                       saldo awal (rp)
                     </label>
                     <div className="flex items-center gap-2">
@@ -257,7 +303,6 @@ export default function DataAccoundCard() {
                         placeholder="0"
                         value={formData.saldo_awal}
                         onChange={handleChange}
-                        readOnly
                       />
                     </div>
                     <div className="h-[2px] bg-black w-full" />
@@ -265,7 +310,10 @@ export default function DataAccoundCard() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="nama_asset" className="text-sm font-semibold text-gray-700 uppercase">
+                  <label
+                    htmlFor="nama_asset"
+                    className="text-sm font-semibold text-gray-700 uppercase"
+                  >
                     Pilih Nama Asset
                   </label>
                   <select
@@ -277,16 +325,23 @@ export default function DataAccoundCard() {
                     onChange={handleChange}
                   >
                     <option value="">Pilih Nama Asset</option>
-                    {formData.type_asset && assetChoices[formData.type_asset]?.map((name) => (
-                      <option key={name} value={name.toLowerCase().replace(/\s/g, "-")}>
-                        {name}
-                      </option>
-                    ))}
+                    {formData.type_asset &&
+                      assetChoices[formData.type_asset]?.map((name) => (
+                        <option
+                          key={name}
+                          value={name.toLowerCase().replace(/\s/g, "-")}
+                        >
+                          {name}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="nama_akun" className="uppercase text-gray-700 font-semibold text-sm">
+                  <label
+                    htmlFor="nama_akun"
+                    className="uppercase text-gray-700 font-semibold text-sm"
+                  >
                     nama akun /Kartu
                   </label>
                   <input
@@ -310,14 +365,99 @@ export default function DataAccoundCard() {
                 </div>
 
                 {message.text && (
-                  <div className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-medium ${
-                    message.type === "error" ? "bg-red-50 text-red-600 border border-red-100" : "bg-green-50 text-green-600 border border-green-100"
-                  }`}>
-                    {message.type === "error" ? <AlertCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                  <div
+                    className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-medium ${
+                      message.type === "error"
+                        ? "bg-red-50 text-red-600 border border-red-100"
+                        : "bg-green-50 text-green-600 border border-green-100"
+                    }`}
+                  >
+                    {message.type === "error" ? (
+                      <AlertCircle className="w-5 h-5" />
+                    ) : (
+                      <CheckCircle2 className="w-5 h-5" />
+                    )}
                     {message.text}
                   </div>
                 )}
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmOpen && (
+        <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsDeleteConfirmOpen(false)}
+          />
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mb-6">
+                <Trash className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                Apakah Anda yakin ingin menghapus akun / kartu ini?
+              </h3>
+              <span className="text-gray-800 text-sm mb-4">
+                Target dan anggaran yang terkait akan ikut terhapus
+              </span>
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={handleDelete}
+                  disabled={isActionLoading}
+                  className="w-full py-3 bg-red-600 text-white font-bold rounded-2xl hover:bg-red-700 active:scale-[0.98] transition-all disabled:opacity-50"
+                >
+                  {isActionLoading ? "Menghapus..." : "Ya"}
+                </button>
+                <button
+                  onClick={() => setIsDeleteConfirmOpen(false)}
+                  disabled={isActionLoading}
+                  className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  Tidak
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Update Confirmation Modal */}
+      {isUpdateConfirmOpen && (
+        <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsUpdateConfirmOpen(false)}
+          />
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-6">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                Simpan Perubahan?
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-8">
+                Apakah anda yakin, ingin menyimpan perubahan aset ini?
+              </p>
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={handleUpdate}
+                  disabled={isActionLoading}
+                  className="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-2xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
+                >
+                  {isActionLoading ? "Menyimpan..." : "Ya"}
+                </button>
+                <button
+                  onClick={() => setIsUpdateConfirmOpen(false)}
+                  disabled={isActionLoading}
+                  className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  Tidak
+                </button>
+              </div>
             </div>
           </div>
         </div>
