@@ -1,0 +1,292 @@
+"use client";
+import { useState, useEffect } from "react";
+import { AlertCircle, CheckCircle2, Plus, X, Target, Calendar, DollarSign, ArrowUpCircle, ArrowDownCircle, Type } from "lucide-react";
+
+interface Account {
+  idAccount: string;
+  nama_akun: string;
+  nama_asset: string;
+  saldo_awal: number;
+}
+
+export default function FormAddTarget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [formData, setFormData] = useState({
+    nama_target: "",
+    tanggal_target: "",
+    jumlah_target: 0,
+    idAccount: "",
+    prioritas: "biasa_saja",
+    description: "",
+  });
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchAccounts();
+    }
+  }, [isOpen]);
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await fetch("/api/account-card");
+      const data = await response.json();
+      if (data.success) {
+        setAccounts(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch accounts:", err);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const response = await fetch("/api/target", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage({
+          type: "success",
+          text: data.message || "Target berhasil disimpan!",
+        });
+        setFormData({
+          nama_target: "",
+          tanggal_target: "",
+          jumlah_target: 0,
+          idAccount: "",
+          prioritas: "biasa_saja",
+          description: "",
+        });
+        // Optional: close modal after success
+        // setTimeout(() => setIsOpen(false), 2000);
+      } else {
+        setMessage({
+          type: "error",
+          text: data.message || "Gagal menyimpan target.",
+        });
+      }
+    } catch (error: any) {
+      setMessage({
+        type: "error",
+        text: error.message || "Terjadi kesalahan koneksi.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      {/* Trigger Button */}
+      <button
+        onClick={() => setIsOpen(true)}
+        className="flex items-center gap-3 bg-black hover:bg-neutral-800 text-white px-8 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl group border border-white/5"
+      >
+        <div className="relative">
+          <Target className="w-5 h-5 text-blue-400" />
+          <Plus
+            className="w-3 h-3 absolute -bottom-1 -right-1 bg-black rounded-full border border-black"
+            strokeWidth={4}
+          />
+        </div>
+        <span className="text-sm tracking-tight">Buat Target Baru</span>
+      </button>
+
+      {/* Modal Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsOpen(false)}
+          />
+
+          {/* Modal Content */}
+          <div className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-300">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-50 rounded-xl">
+                  <Target className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-black">Target Baru</h2>
+                  <p className="text-xs text-gray-500 font-medium">Tentukan impian finansial Anda</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+
+            {/* Scrollable Form Area */}
+            <div className="overflow-y-auto p-6 custom-scrollbar">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-6"
+              >
+                {/* Nama Target */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="nama_target" className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                    <Type className="w-3.5 h-3.5" /> Nama Target
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    name="nama_target"
+                    id="nama_target"
+                    placeholder="Contoh: Tabungan Mobil"
+                    className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold placeholder:text-gray-300"
+                    value={formData.nama_target}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                {/* Grid Tanggal & Jumlah */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="tanggal_target" className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                      <Calendar className="w-3.5 h-3.5" /> Tanggal Target
+                    </label>
+                    <input
+                      required
+                      type="date"
+                      name="tanggal_target"
+                      id="tanggal_target"
+                      className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold"
+                      value={formData.tanggal_target}
+                      onChange={handleChange}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="jumlah_target" className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                      Rp Nominal Goal
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
+                      <input
+                        required
+                        type="number"
+                        name="jumlah_target"
+                        id="jumlah_target"
+                        placeholder="0"
+                        className="w-full p-4 pl-11 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-bold placeholder:text-gray-300"
+                        value={formData.jumlah_target || ""}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pilih Akun & Prioritas Dropdown */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="status_prioritas" className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                      Prioritas Target
+                    </label>
+                    <select
+                      required
+                      name="prioritas"
+                      id="status_prioritas"
+                      className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold"
+                      value={formData.prioritas}
+                      onChange={handleChange}
+                    >
+                      <option value="penting">Penting</option>
+                      <option value="sedang">Sedang</option>
+                      <option value="biasa_saja">Biasa Saja</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="idAccount" className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+                      Akun Terhubung
+                    </label>
+                    <select
+                      required
+                      name="idAccount"
+                      id="idAccount"
+                      className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold"
+                      value={formData.idAccount}
+                      onChange={handleChange}
+                    >
+                      <option value="">Pilih Akun</option>
+                      {accounts.map((acc) => (
+                        <option key={acc.idAccount} value={acc.idAccount}>
+                          {acc.nama_asset} - {acc.nama_akun}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Deskripsi */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="description" className="text-xs font-bold text-gray-400 uppercase tracking-wider">Keterangan (Opsional)</label>
+                  <textarea
+                    name="description"
+                    id="description"
+                    rows={3}
+                    placeholder="Catatan kecil untuk target ini..."
+                    className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-medium placeholder:text-gray-300 resize-none"
+                    value={formData.description}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                {message.text && (
+                  <div
+                    className={`p-4 rounded-2xl flex items-center gap-3 text-sm font-bold animate-in slide-in-from-top-2 duration-300 ${
+                      message.type === "error"
+                        ? "bg-red-50 text-red-600 border border-red-100"
+                        : "bg-green-50 text-green-600 border border-green-100"
+                    }`}
+                  >
+                    {message.type === "error" ? (
+                      <AlertCircle className="w-5 h-5 shrink-0" />
+                    ) : (
+                      <CheckCircle2 className="w-5 h-5 shrink-0" />
+                    )}
+                    {message.text}
+                  </div>
+                )}
+
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="w-full bg-black hover:bg-neutral-800 disabled:bg-gray-400 text-white font-bold py-5 px-4 rounded-[24px] shadow-xl transition-all transform active:scale-[0.98] mt-2 flex items-center justify-center gap-3"
+                >
+                  {loading ? "Menyimpan..." : "Simpan Target"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+

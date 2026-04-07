@@ -83,6 +83,14 @@ export async function PUT(
       { $set: updateData }
     );
 
+    // Jika saldo_awal diperbarui, sinkronkan target_now di koleksi target
+    if (updateData.saldo_awal !== undefined) {
+      await db.collection("target").updateMany(
+        { idAccount, userId },
+        { $set: { target_now: Number(updateData.saldo_awal) } }
+      );
+    }
+
     if (result.matchedCount === 0) {
       return NextResponse.json(
         { success: false, message: "Data tidak ditemukan atau Anda tidak memiliki akses" },

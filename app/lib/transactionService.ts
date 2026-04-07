@@ -75,6 +75,20 @@ export async function createTransaction({
         { session }
       );
 
+      // Ambil saldo terbaru setelah transaksi untuk sinkronisasi mutlak
+      const updatedAccount = await db.collection("account-card").findOne(
+        { idAccount: idAccount, userId: userId },
+        { session }
+      );
+      const currentBalance = Number(updatedAccount?.saldo_awal || 0);
+
+      // Sinkronisasi: Set target_now dari SEMUA target di akun yang sama ke saldo terbaru
+      await db.collection("target").updateMany(
+        { idAccount: idAccount, userId: userId },
+        { $set: { target_now: currentBalance } },
+        { session }
+      );
+
       // simpan transaksi
       await db.collection("transaksi").insertOne(
         {
@@ -142,6 +156,20 @@ export async function deleteTransaction({
       await db.collection("account-card").updateOne(
         { idAccount: transaction.idAccount },
         { $inc: { saldo_awal: reverseValue } },
+        { session }
+      );
+
+      // Ambil saldo terbaru untuk sinkronisasi mutlak
+      const updatedAccount = await db.collection("account-card").findOne(
+        { idAccount: transaction.idAccount, userId: userId },
+        { session }
+      );
+      const currentBalance = Number(updatedAccount?.saldo_awal || 0);
+
+      // Sinkronisasi: Set target_now dari SEMUA target di akun yang sama ke saldo terbaru
+      await db.collection("target").updateMany(
+        { idAccount: transaction.idAccount, userId: userId },
+        { $set: { target_now: currentBalance } },
         { session }
       );
 
