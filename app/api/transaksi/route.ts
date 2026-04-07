@@ -168,41 +168,60 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req:NextRequest) {
-    try {
-        const token = req.cookies.get("token")?.value;
-        if (!token) {
-          return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        } 
-
-        
-
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
-        const { payload } = await jwtVerify(token, secret);
-        const userId = payload.userId as string;
-
-        // Mengambil instance client MongoDB
-        const client = await clientPromise;
-        // Menghubungkan ke database
-        const db = client.db(process.env.MONGODB_DATABASE);
-        // Mengakses koleksi "transaksi"
-        const transaksiCollection = db.collection("transaksi");
-        const transaksi = await transaksiCollection.find({ userId }).toArray();
-
-        // const data = await transaksiCollection.find({}).sort({ createdAt: -1 }).toArray();
-        return NextResponse.json(
-            {
-                success: true,
-                message: "Data Transaksi berhasil diambil",
-                data: transaksi,
-            },
-            { status: 200 },
-        );
-    } catch (error) {
-        console.error("Error processing transaksi:", error);
-        return NextResponse.json(
-            { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
-            { status: 500 },
-        );
+export async function GET(req: NextRequest) {
+  try {
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+
+    const secret = new TextEncoder().encode(
+      process.env.JWT_SECRET || "default_secret",
+    );
+    const { payload } = await jwtVerify(token, secret);
+    const userId = payload.userId as string;
+
+    // Ambil query parameters untuk pagination
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const skip = (page - 1) * limit;
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DATABASE);
+    const transaksiCollection = db.collection("transaksi");
+
+    // Hitung total data untuk pagination
+    const totalItems = await transaksiCollection.countDocuments({ userId });
+    const totalPages = Math.ceil(totalItems / limit);
+
+    // Ambil data dengan sorting, skip, dan limit
+    const transaksi = await transaksiCollection
+      .find({ userId })
+      .sort({ tanggal_transaksi: -1 }) // Terbaru dulu
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Data Transaksi berhasil diambil",
+        data: transaksi,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalItems,
+          limit,
+        },
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Error processing transaksi:", error);
+    return NextResponse.json(
+      { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
+      { status: 500 },
+    );
+  }
 }

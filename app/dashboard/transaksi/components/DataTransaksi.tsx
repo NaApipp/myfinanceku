@@ -26,6 +26,12 @@ export default function DataTransaksi() {
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const limit = 10;
 
   // handleDelete
   const handleDelete = async () => {
@@ -55,7 +61,8 @@ export default function DataTransaksi() {
   };
 
   // Fetching Data Transaksi & Accounts
-  const fetchData = async () => {
+  const fetchData = async (currentPage: number) => {
+    setLoading(true);
     try {
       // Fetch Accounts first for mapping
       const accResponse = await fetch("/api/account-card");
@@ -68,11 +75,13 @@ export default function DataTransaksi() {
         setAccounts(accMap);
       }
 
-      const response = await fetch("/api/transaksi");
+      const response = await fetch(`/api/transaksi?page=${currentPage}&limit=${limit}`);
       if (!response.ok) throw new Error("Gagal mengambil data Transaksi");
       const data = await response.json();
       if (data.success) {
         setTransaksi(data.data);
+        setTotalPages(data.pagination.totalPages);
+        setTotalItems(data.pagination.totalItems);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -82,8 +91,8 @@ export default function DataTransaksi() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(page);
+  }, [page]);
 
   if (loading) {
     return (
@@ -213,6 +222,62 @@ export default function DataTransaksi() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-gray-50 bg-gray-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-xs text-gray-500 font-medium">
+            Menampilkan <span className="text-gray-900">{(page - 1) * limit + 1}</span> - <span className="text-gray-900">{Math.min(page * limit, totalItems)}</span> dari <span className="text-gray-900">{totalItems}</span> transaksi
+          </div>
+          
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-white border border-transparent hover:border-gray-200 rounded-lg transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              Sebelumnya
+            </button>
+            
+            <div className="flex items-center">
+              {[...Array(totalPages)].map((_, i) => {
+                const pageNum = i + 1;
+                // Simple logic to show current, first, last, and relative pages
+                if (
+                  pageNum === 1 ||
+                  pageNum === totalPages ||
+                  (pageNum >= page - 1 && pageNum <= page + 1)
+                ) {
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setPage(pageNum)}
+                      className={`w-8 h-8 flex items-center justify-center text-xs font-bold rounded-lg transition-all ${
+                        page === pageNum
+                          ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                          : "text-gray-500 hover:bg-white hover:border-gray-200 border border-transparent"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                } else if (pageNum === page - 2 || pageNum === page + 2) {
+                  return <span key={pageNum} className="px-1 text-gray-300">...</span>;
+                }
+                return null;
+              })}
+            </div>
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-white border border-transparent hover:border-gray-200 rounded-lg transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              Berikutnya
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Custom Delete Confirmation Modal */}
       {deleteId && (
