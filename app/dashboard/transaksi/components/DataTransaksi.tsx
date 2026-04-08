@@ -23,6 +23,7 @@ interface Account {
 export default function DataTransaksi() {
   const [transaksi, setTransaksi] = useState<TransactionData[]>([]);
   const [accounts, setAccounts] = useState<{ [key: string]: string }>({});
+  const [categories, setCategories] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -60,19 +61,35 @@ export default function DataTransaksi() {
     }
   };
 
-  // Fetching Data Transaksi & Accounts
+  // Fetching Data Transaksi, Accounts, & Categories
   const fetchData = async (currentPage: number) => {
     setLoading(true);
     try {
-      // Fetch Accounts first for mapping
-      const accResponse = await fetch("/api/account-card");
-      const accData = await accResponse.json();
+      // Fetch Accounts and Categories parallel for mapping
+      const [accResponse, catResponse] = await Promise.all([
+        fetch("/api/account-card"),
+        fetch("/api/kategori")
+      ]);
+
+      const [accData, catData] = await Promise.all([
+        accResponse.json(),
+        catResponse.json()
+      ]);
+
       if (accData.success) {
         const accMap: { [key: string]: string } = {};
         accData.data.forEach((acc: Account) => {
           accMap[acc.idAccount] = `${acc.nama_asset} - ${acc.nama_akun}`;
         });
         setAccounts(accMap);
+      }
+
+      if (catData.success) {
+        const catMap: { [key: string]: string } = {};
+        catData.data.forEach((cat: any) => {
+          catMap[cat.idKategori] = cat.nama_kategori;
+        });
+        setCategories(catMap);
       }
 
       const response = await fetch(`/api/transaksi?page=${currentPage}&limit=${limit}`);
@@ -167,7 +184,7 @@ export default function DataTransaksi() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col text-left">
-                    <span className="text-sm text-black font-medium capitalize">{item.kategori}</span>
+                    <span className="text-sm text-black font-medium capitalize">{categories[item.kategori] || item.kategori}</span>
                     <span className="text-xs text-gray-400">{item.description}</span>
                   </div>
                 </td>
