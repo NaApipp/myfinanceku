@@ -7,8 +7,14 @@ interface AccountData {
   nama_asset: string;
 }
 
+interface CategoryData {
+  idKategori: string;
+  nama_kategori: string;
+}
+
 export default function TambahTransaksi() {
   const [data, setData] = useState<AccountData[]>([]);
+  const [dataCategory, setDataCategory] = useState<CategoryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [formData, setFormData] = useState({
@@ -24,24 +30,31 @@ export default function TambahTransaksi() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Fetching API
+  // Combined Fetching for Accounts and Categories
   useEffect(() => {
     setMounted(true);
-    const fetchAccounts = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const response = await fetch("/api/account-card");
-        const result = await response.json();
-        if (result.success) {
-          setData(result.data || []);
-        }
+        const [resAccounts, resCategories] = await Promise.all([
+          fetch("/api/account-card"),
+          fetch("/api/kategori")
+        ]);
+
+        const jsonAccounts = await resAccounts.json();
+        const jsonCategories = await resCategories.json();
+
+        if (jsonAccounts.success) setData(jsonAccounts.data || []);
+        if (jsonCategories.success) setDataCategory(jsonCategories.data || []);
+        
       } catch (error) {
-        console.error("Error fetching account data:", error);
+        console.error("Error fetching initial data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAccounts();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -265,12 +278,15 @@ export default function TambahTransaksi() {
                         required
                       >
                         <option value="">Pilih Kategori</option>
-                        <option value="makanan">Makanan</option>
-                        <option value="transportasi">Transportasi</option>
-                        <option value="pembayaran">Pembayaran</option>
-                        <option value="pendapatan">Pendapatan</option>
-                        <option value="transfer">Transfer</option>
-                        <option value="lainnya">Lainnya</option>
+                        {dataCategory.map((item) => (
+                        <option
+                          key={item.idKategori}
+                          value={item.idKategori}
+                          className="uppercase"
+                        >
+                          {item.nama_kategori}
+                        </option>
+                      ))}
                       </select>
                     </div>
                   </div>
