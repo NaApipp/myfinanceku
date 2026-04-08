@@ -1,0 +1,164 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { 
+  Target, 
+  Trash2, 
+  AlertCircle, 
+  Calendar, 
+  Wallet,
+  Loader2
+} from "lucide-react";
+
+interface Anggaran {
+  _id: string;
+  idAnggaran: string;
+  nama_anggaran: string;
+  kategori_anggaran: string;
+  limit_anggaran: number;
+  periode_anggaran: string;
+}
+
+interface Category {
+  idKategori: string;
+  nama_kategori: string;
+}
+
+export default function DataAnggaran() {
+  const [anggarans, setAnggarans] = useState<Anggaran[]>([]);
+  const [categories, setCategories] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  const fetchData = async () => {
+    try {
+      const [resAnggaran, resCategories] = await Promise.all([
+        fetch("/api/anggaran"),
+        fetch("/api/kategori")
+      ]);
+
+      const dataAnggaran = await resAnggaran.json();
+      const dataCategories = await resCategories.json();
+
+      if (dataAnggaran.success) {
+        setAnggarans(dataAnggaran.data);
+      }
+
+      if (dataCategories.success) {
+        const catMap: Record<string, string> = {};
+        dataCategories.data.forEach((cat: Category) => {
+          catMap[cat.idKategori] = cat.nama_kategori;
+        });
+        setCategories(catMap);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus anggaran ini?")) return;
+    
+    setIsDeleting(id);
+    try {
+      const response = await fetch(`/api/anggaran/${id}`, {
+        method: "DELETE"
+      });
+      const data = await response.json();
+      if (data.success) {
+        setAnggarans(anggarans.filter(a => a.idAnggaran !== id));
+      }
+    } catch (error) {
+      console.error("Error deleting anggaran:", error);
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="bg-white rounded-[32px] p-8 border border-gray-100 animate-pulse h-48" />
+        ))}
+      </div>
+    );
+  }
+
+  if (anggarans.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] border border-dashed border-gray-200">
+        <div className="p-4 bg-gray-50 rounded-full mb-4">
+          <AlertCircle className="w-8 h-8 text-gray-400" />
+        </div>
+        <h3 className="text-xl font-bold text-black">Belum ada anggaran</h3>
+        <p className="text-gray-500 text-sm">Mulai atur keuangan Anda dengan membuat anggaran baru.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {anggarans.map((item) => (
+        <div 
+          key={item.idAnggaran}
+          className="group relative bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300"
+        >
+          <div className="flex justify-between items-start mb-6">
+            <div className="p-3 bg-blue-50 rounded-2xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+              <Wallet className="w-6 h-6" />
+            </div>
+            <button 
+              onClick={() => handleDelete(item.idAnggaran)}
+              disabled={isDeleting === item.idAnggaran}
+              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+            >
+              {isDeleting === item.idAnggaran ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Trash2 className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-1">
+                {categories[item.kategori_anggaran] || "Kategori Umum"}
+              </p>
+              <h3 className="text-xl font-black text-black leading-tight">
+                {item.nama_anggaran}
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-2 text-gray-400">
+              <Calendar className="w-4 h-4" />
+              {/* <span className="text-sm font-bold">
+                {new Date(item.periode_anggaran).toLocaleDateString("id-ID", {
+                  month: "long",
+                  year: "numeric"
+                })}
+              </span> */}
+              <span className="text-sm font-bold">{item.periode_anggaran}</span>
+            </div>
+
+            <div className="pt-4 border-t border-gray-50">
+              <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">
+                Sisa Anggaran
+              </p>
+              <h4 className="text-2xl font-black text-black">
+                Rp {item.limit_anggaran.toLocaleString("id-ID")}
+              </h4>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

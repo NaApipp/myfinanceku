@@ -105,6 +105,15 @@ export async function createTransaction({
         },
         { session }
       );
+
+      // Jika pengeluaran, kurangi limit anggaran yang sesuai dengan kategori
+      if (type_transaksi === "pengeluaran") {
+        await db.collection("anggaran").updateMany(
+          { userId, kategori_anggaran: kategori },
+          { $inc: { limit_anggaran: -nominal_transaksi } },
+          { session }
+        );
+      }
     });
 
     return { success: true };
@@ -178,6 +187,15 @@ export async function deleteTransaction({
         { idTransaksi: transaction.idTransaksi },
         { session }
       );
+
+      // Jika pengeluaran, kembalikan limit anggaran yang sesuai dengan kategori
+      if (transaction.type_transaksi === "pengeluaran") {
+        await db.collection("anggaran").updateMany(
+          { userId, kategori_anggaran: transaction.kategori },
+          { $inc: { limit_anggaran: transaction.nominal_transaksi } },
+          { session }
+        );
+      }
     });
 
     return { success: true };
