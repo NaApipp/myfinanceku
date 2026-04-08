@@ -208,7 +208,7 @@ export default function Page() {
                 )}
               </button>
               <Link
-                href="/dashboard/pengaturan"
+                href="/pengaturan"
                 className="font-poppins font-semibold items-center justify-center w-full px-6 py-2.5 text-center text-[#374151] duration-200 bg-[#E5E7EB] border-2 border-[#9CA3AF] rounded-full nline-flex hover:bg-transparent hover:border-[#9CA3AF] hover:text-[#374151] focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
               >
                 Kembali

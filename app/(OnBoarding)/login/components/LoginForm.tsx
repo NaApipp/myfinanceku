@@ -52,7 +52,7 @@ export default function LoginForm() {
 
         // Redirect berdasarkan response API
         setTimeout(() => {
-          router.push(result.redirectTo || "/dashboard");
+          router.push(result.redirectTo || "/general");
         }, 1000);
       } else {
         setMessage({

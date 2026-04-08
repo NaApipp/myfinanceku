@@ -22,7 +22,7 @@ export default function Keamanan() {
           </div>
         </div>
         <Link
-          href="/dashboard/pengaturan/ubah-password"
+          href="/pengaturan/ubah-password"
           className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
         >
           <ChevronRight className="text-black dark:text-white" width={24} height={24} />

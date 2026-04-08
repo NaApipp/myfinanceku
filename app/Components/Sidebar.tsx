@@ -51,7 +51,7 @@ export default function Sidebar() {
 
         <ul className="mt-6 space-y-1">
           <li>
-            <Link href="/dashboard" className={getPathActive("/dashboard")}>
+            <Link href="/general" className={getPathActive("/general")}>
               <House />
 
               <span className="text-sm font-medium"> General </span>
@@ -60,8 +60,8 @@ export default function Sidebar() {
 
           <li>
             <Link
-              href="/dashboard/transaksi"
-              className={getPathActive("/dashboard/transaksi")}
+              href="/transaksi"
+              className={getPathActive("/transaksi")}
             >
               <ClockFading />
 
@@ -71,8 +71,8 @@ export default function Sidebar() {
 
           <li>
             <Link
-              href="/dashboard/akun-kartu"
-              className={getPathActive("/dashboard/akun-kartu")}
+              href="/akun-kartu"
+              className={getPathActive("/akun-kartu")}
             >
               <Wallet />
 
@@ -82,8 +82,8 @@ export default function Sidebar() {
 
           <li>
             <Link
-              href="/dashboard/anggaran"
-              className={getPathActive("/dashboard/anggaran")}
+              href="/anggaran"
+              className={getPathActive("/anggaran")}
             >
               <ChartPie />
 
@@ -93,8 +93,8 @@ export default function Sidebar() {
 
           <li>
             <Link
-              href="/dashboard/target"
-              className={getPathActive("/dashboard/target")}
+              href="/target"
+              className={getPathActive("/target")}
             >
               <Target />
 
@@ -104,8 +104,8 @@ export default function Sidebar() {
 
           <li>
             <Link
-              href="/dashboard/pengaturan"
-              className={getPathActive("/dashboard/pengaturan")}
+              href="/pengaturan"
+              className={getPathActive("/pengaturan")}
             >
               <Settings />
 
