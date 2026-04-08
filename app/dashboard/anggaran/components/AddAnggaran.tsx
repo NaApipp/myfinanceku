@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { AlertCircle, CheckCircle2, Plus, X, Target, Calendar, DollarSign, ArrowUpCircle, ArrowDownCircle, Type } from "lucide-react";
+import { AlertCircle, CheckCircle2, Plus, X, Target, Calendar, Type, ChartPie } from "lucide-react";
 
 interface Kategori {
     idKategori: string,
@@ -97,7 +97,7 @@ export default function FormAddAnggaran() {
         className="flex items-center gap-3 bg-black hover:bg-neutral-800 text-white px-8 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl group border border-white/5"
       >
         <div className="relative">
-          <Target className="w-5 h-5 text-blue-400" />
+          <ChartPie className="w-5 h-5 text-blue-400" />
           <Plus
             className="w-3 h-3 absolute -bottom-1 -right-1 bg-black rounded-full border border-black"
             strokeWidth={4}
