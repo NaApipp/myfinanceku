@@ -29,6 +29,7 @@ export default function DataAnggaran() {
   const [categories, setCategories] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -62,9 +63,12 @@ export default function DataAnggaran() {
     fetchData();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus anggaran ini?")) return;
+
+  const handleDelete = async () => {
+    if (!deleteConfirmId) return;
+    const id = deleteConfirmId;
     
+    setDeleteConfirmId(null);
     setIsDeleting(id);
     try {
       const response = await fetch(`/api/anggaran/${id}`, {
@@ -115,7 +119,7 @@ export default function DataAnggaran() {
               <Wallet className="w-6 h-6" />
             </div>
             <button 
-              onClick={() => handleDelete(item.idAnggaran)}
+              onClick={() => setDeleteConfirmId(item.idAnggaran)}
               disabled={isDeleting === item.idAnggaran}
               className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
             >
@@ -138,14 +142,14 @@ export default function DataAnggaran() {
             </div>
 
             <div className="flex items-center gap-2 text-gray-400">
-              <Calendar className="w-4 h-4" />
-              {/* <span className="text-sm font-bold">
+              {/* <Calendar className="w-4 h-4" /> */}
+              <p className="text-sm font-bold">Periode Anggaran:</p>
+              <span className="text-sm font-bold">
                 {new Date(item.periode_anggaran).toLocaleDateString("id-ID", {
                   month: "long",
                   year: "numeric"
                 })}
-              </span> */}
-              <span className="text-sm font-bold">{item.periode_anggaran}</span>
+              </span>
             </div>
 
             <div className="pt-4 border-t border-gray-50">
@@ -159,6 +163,41 @@ export default function DataAnggaran() {
           </div>
         </div>
       ))}
+      
+      {/* Custom Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200" 
+            onClick={() => setDeleteConfirmId(null)} 
+          />
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mb-6">
+                <Trash2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Hapus Anggaran</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-8">
+                Apakah anda yakin ingin menghapus anggaran ini? Tindakan ini tidak dapat dipulihkan.
+              </p>
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={handleDelete}
+                  className="w-full py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-[0.98] transition-all"
+                >
+                  Ya, Hapus
+                </button>
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
