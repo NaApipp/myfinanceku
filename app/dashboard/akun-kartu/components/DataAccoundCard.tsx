@@ -180,6 +180,19 @@ export default function DataAccoundCard() {
       </div>
     );
   }
+  if (data.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center p-12 mt-8 bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+            <CreditCard className="w-10 h-10 text-gray-300" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900">Belum ada Akun Kartu / Wallet</h3>
+          <p className="text-gray-500 text-sm mt-1">
+            Mulai rencanakan impian finansial Anda sekarang.
+          </p>
+        </div>
+      );
+    }
 
   return (
     <div className="flex flex-col gap-8 mt-8">
