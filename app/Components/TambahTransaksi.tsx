@@ -279,15 +279,20 @@ export default function TambahTransaksi() {
                       >
                         <option value="">Pilih Kategori</option>
                         {dataCategory.map((item) => (
-                        <option
-                          key={item.idKategori}
-                          value={item.idKategori}
-                          className="uppercase"
-                        >
-                          {item.nama_kategori}
-                        </option>
-                      ))}
+                          <option
+                            key={item.idKategori}
+                            value={item.idKategori}
+                            className="uppercase"
+                          >
+                            {item.nama_kategori}
+                          </option>
+                        ))}
                       </select>
+                      {dataCategory.length === 0 && (
+                        <p className="text-[10px] text-red-500 font-medium mt-1">
+                          ⚠️ Kategori belum tersedia. Tambah di Pengaturan.
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -315,6 +320,11 @@ export default function TambahTransaksi() {
                         </option>
                       ))}
                     </select>
+                    {data.length === 0 && (
+                      <p className="text-[10px] text-red-500 font-medium mt-1">
+                        ⚠️ Sumber dana belum tersedia. Tambah di Akun & Kartu.
+                      </p>
+                    )}
                   </div>
 
                   {/* Input Keterangan Transaksi */}
