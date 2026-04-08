@@ -84,6 +84,7 @@ function ModalProfil() {
     email: "",
     no_hp: "",
   });
+  const [isUpdateConfirmOpen, setIsUpdateConfirmOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -113,10 +114,9 @@ function ModalProfil() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage({ type: "", text: "" });
+  const handleUpdate = async () => {
     setLoading(true);
+    setMessage({ type: "", text: "" });
 
     try {
       const response = await fetch("/api/update-user", {
@@ -147,15 +147,9 @@ function ModalProfil() {
         sessionStorage.setItem("user", JSON.stringify(updatedSessionUser));
         
         // Refresh page or trigger state update in parent if needed
-        // For now, we just keep the form data updated from response
-        setFormData({
-          first_name: data.user.first_name || "",
-          last_name: data.user.last_name || "",
-          username: data.user.username || "",
-          email: data.user.email || "",
-          no_hp: data.user.no_hp || "",
-        });
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         setMessage({
           type: "error",
@@ -169,12 +163,13 @@ function ModalProfil() {
       });
     } finally {
       setLoading(false);
+      setIsUpdateConfirmOpen(false);
     }
   };
 
   return (
     <div>
-      <button onClick={() => setIsOpen(true)}>
+      <button onClick={() => setIsOpen(true)} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors cursor-pointer">
         <ChevronRight
           className="text-black dark:text-white"
           width={24}
@@ -183,7 +178,7 @@ function ModalProfil() {
       </button>
       {/* Modal Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -208,7 +203,10 @@ function ModalProfil() {
             {/* Scrollable Form Area */}
             <div className="max-height-[80vh] overflow-y-auto">
               <form
-                onSubmit={handleSubmit}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsUpdateConfirmOpen(true);
+                }}
                 className="p-4 flex flex-col gap-6 w-full"
               >
                 <div className="flex flex-col gap-2">
@@ -332,6 +330,45 @@ function ModalProfil() {
           </div>
         </div>
       )}
+      {/* Update Confirmation Modal */}
+      {isUpdateConfirmOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsUpdateConfirmOpen(false)}
+          />
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-6">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                Simpan Perubahan?
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-8">
+                Apakah anda yakin, ingin menyimpan perubahan profil ini?
+              </p>
+              <div className="flex flex-col gap-3 w-full">
+                <button
+                  onClick={handleUpdate}
+                  disabled={loading}
+                  className="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-2xl hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
+                >
+                  {loading ? "Menyimpan..." : "Ya"}
+                </button>
+                <button
+                  onClick={() => setIsUpdateConfirmOpen(false)}
+                  disabled={loading}
+                  className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  Tidak
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
