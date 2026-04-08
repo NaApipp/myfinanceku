@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const {
+        const { 
             nama_kategori
         } = body;
 
@@ -75,20 +75,20 @@ export async function GET(req:NextRequest) {
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
-        const userId = payload.userId as string;
+        const userId = String(payload.userId);
 
         // Mengambil instance client MongoDB
         const client = await clientPromise;
         // Menghubungkan ke database
         const db = client.db(process.env.MONGODB_DATABASE);
-        // Mengakses koleksi "transaksi"
-        const transaksiCollection = db.collection("category");
-        const transaksi = await transaksiCollection.find({ userId }).toArray();
+        // Mengakses koleksi "category"
+        const categoryCollection = db.collection("category");
+        const categories = await categoryCollection.find({ userId }).toArray();
         return NextResponse.json(
             {
                 success: true,
                 message: "Data Category berhasil diambil",
-                data: transaksi,
+                data: categories,
             },
             { status: 200 },
         );
