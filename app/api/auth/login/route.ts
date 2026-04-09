@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
+import { refresh } from "next/cache";
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
-      .setExpirationTime("365d") // Token berlaku 1 tahun (unlimited simulasi)
+      .setExpirationTime("1d") // Token berlaku 1 tahun (unlimited simulasi)
       .sign(secret);
 
     const response = NextResponse.json(
