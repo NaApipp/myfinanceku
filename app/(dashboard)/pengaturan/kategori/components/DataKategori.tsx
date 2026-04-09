@@ -1,6 +1,6 @@
 "use client";
 
-import { List, Trash } from "lucide-react";
+import { List, Trash, Edit, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Kategori {
@@ -33,6 +33,16 @@ export default function DataKategori() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   
+  const [editingKategori, setEditingKategori] = useState<Kategori | null>(null);
+  const [newNamaKategori, setNewNamaKategori] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // handleEditClick
+  const handleEditClick = (item: Kategori) => {
+    setEditingKategori(item);
+    setNewNamaKategori(item.nama_kategori);
+  };
+  
   // handleDelete
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -57,6 +67,35 @@ export default function DataKategori() {
       setDeleteId(null);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  // handleUpdate
+  const handleUpdate = async () => {
+    if (!editingKategori || !newNamaKategori.trim()) return;
+    setIsUpdating(true);
+
+    try {
+      const response = await fetch(`/api/kategori/${editingKategori.idKategori}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nama_kategori: newNamaKategori }),
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setEditingKategori(null);
+        window.location.reload();
+      } else {
+        alert(data.message || "Gagal memperbarui kategori.");
+      }
+    } catch (error) {
+      console.error("Error updating category:", error);
+      alert("Terjadi kesalahan koneksi saat memperbarui kategori.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -105,6 +144,9 @@ export default function DataKategori() {
                       >
                         <Trash className="w-4 h-4" />
                       </button>
+                      <button onClick={() => handleEditClick(item)} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                        <Edit className="w-4 h-4" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -143,6 +185,52 @@ export default function DataKategori() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Category Modal */}
+      {editingKategori && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setEditingKategori(null)} />
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-md rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+             <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Edit Kategori</h3>
+                <button onClick={() => setEditingKategori(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+             </div>
+
+             <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Nama Kategori</label>
+                  <input
+                    type="text"
+                    value={newNamaKategori}
+                    onChange={(e) => setNewNamaKategori(e.target.value)}
+                    className="w-full text-black px-4 py-3 rounded-2xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                    placeholder="Masukkan nama kategori..."
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3 pt-4">
+                  <button
+                    onClick={handleUpdate}
+                    disabled={isUpdating || !newNamaKategori.trim()}
+                    className="w-full py-4 bg-black text-white font-bold rounded-2xl hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg shadow-blue-500/20"
+                  >
+                    {isUpdating ? "Menyimpan..." : "Simpan Perubahan"}
+                  </button>
+                  <button
+                    onClick={() => setEditingKategori(null)}
+                    disabled={isUpdating}
+                    className="w-full py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                  >
+                    Batal
+                  </button>
+                </div>
+             </div>
           </div>
         </div>
       )}

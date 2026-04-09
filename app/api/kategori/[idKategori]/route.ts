@@ -51,3 +51,61 @@ export async function DELETE(
     );
   }
 }
+
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ idKategori: string }> },
+) {
+  try {
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
+    const { payload } = await jwtVerify(token, secret);
+    const userId = payload.userId ? String(payload.userId) : null;
+
+    if (!userId) {
+      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+    }
+
+    const { idKategori } = await params;
+    const body = await req.json();
+    const { nama_kategori } = body;
+
+    if (!nama_kategori) {
+      return NextResponse.json({ message: "Nama kategori wajib diisi" }, { status: 400 });
+    }
+
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGODB_DATABASE);
+    const categoryCollection = db.collection("category");
+
+    const result = await categoryCollection.updateOne(
+      { idKategori, userId },
+      { $set: { nama_kategori } }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { success: false, message: "Data tidak ditemukan atau Anda tidak memiliki akses" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Data Kategori berhasil diperbarui",
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Error processing category update:", error);
+    return NextResponse.json(
+      { success: false, message: "Terjadi kesalahan saat memproses pembaruan" },
+      { status: 500 },
+    );
+  }
+}
