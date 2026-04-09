@@ -7,6 +7,7 @@ import BudgetsOverview from "./components/BudgetsOverview";
 import TargetProgress from "./components/TargetProgress";
 import { Plus, LayoutDashboard, Calendar, Search } from "lucide-react";
 import { useState, useEffect } from "react";
+import TambahTransaksi from "@/app/components/TambahTransaksi";
 
 export default function GeneralPage() {
   const [greeting, setGreeting] = useState("");
@@ -72,13 +73,7 @@ export default function GeneralPage() {
               className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl py-3 pl-11 pr-6 text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all w-full md:w-64"
             />
           </div>
-          <a
-            href="/transaksi"
-            className="p-3 bg-black dark:bg-white dark:text-black text-white rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-black/10 flex items-center gap-2 font-bold px-6"
-          >
-            <Plus className="w-5 h-5" />
-            <span className="hidden sm:inline">Transaksi Baru</span>
-          </a>
+          <TambahTransaksi />
         </div>
       </header>
 
