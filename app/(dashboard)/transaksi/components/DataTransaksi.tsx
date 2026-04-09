@@ -9,6 +9,7 @@ interface TransactionData {
   nominal_transaksi: string;
   tanggal_transaksi: string;
   kategori: string;
+  nama_kategori?: string; // New field for permanent record
   idAccount: string;
   nama_asset?: string; // New field for permanent record
   description: string;
@@ -184,7 +185,17 @@ export default function DataTransaksi() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col text-left">
-                    <span className="text-sm text-black font-medium capitalize">{categories[item.kategori] || item.kategori}</span>
+                    <span className="text-sm text-black font-medium capitalize">
+                      {categories[item.kategori] || (
+                        <div className="flex flex-col gap-1">
+                           <div className="flex items-center gap-2">
+                             <span className="text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
+                               Kategori Telah Terhapus
+                             </span>
+                           </div>
+                        </div>
+                      )}
+                    </span>
                     <span className="text-xs text-gray-400">{item.description}</span>
                   </div>
                 </td>

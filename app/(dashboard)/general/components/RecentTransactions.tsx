@@ -9,6 +9,7 @@ interface TransactionData {
   nominal_transaksi: string;
   tanggal_transaksi: string;
   kategori: string;
+  nama_kategori?: string;
   idAccount: string;
   description: string;
 }
@@ -121,8 +122,12 @@ export default function RecentTransactions() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-gray-900 capitalize">
-                      {categories[item.kategori] || item.kategori}
+                    <span className="text-sm font-bold text-gray-900 capitalize flex items-center gap-2">
+                      {categories[item.kategori] || (
+                        <>
+                          <span className="text-rose-500 bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight">Terhapus</span>
+                        </>
+                      )}
                     </span>
                     <span className="text-xs text-gray-500 font-medium">{formatDate(item.tanggal_transaksi)} • {item.description || 'Tanpa keterangan'}</span>
                   </div>

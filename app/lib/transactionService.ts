@@ -89,6 +89,12 @@ export async function createTransaction({
         { session }
       );
 
+      // Ambil nama kategori untuk record permanen
+      const categoryDoc = await db.collection("category").findOne(
+        { idKategori: kategori, userId },
+        { session }
+      );
+
       // simpan transaksi
       await db.collection("transaksi").insertOne(
         {
@@ -100,6 +106,7 @@ export async function createTransaction({
           nominal_transaksi,
           tanggal_transaksi,
           kategori,
+          nama_kategori: categoryDoc?.nama_kategori || "Kategori Terhapus", // Store name permanently
           description,
           createdAt: formatDateWIB(new Date()),
         },
