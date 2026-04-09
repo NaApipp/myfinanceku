@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import bcrypt from "bcryptjs";
+import z from "zod";
 
 function formatDateWIB(date: Date) {
   const fmt = new Intl.DateTimeFormat("en-GB", {
@@ -23,23 +24,70 @@ function formatDateWIB(date: Date) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { last_name, first_name, full_name, email, password, username, no_hp, level } =
-      await req.json();
+    const body = await req.json();
 
-    // Validation input simple
-    if (
-      !last_name ||
-      !first_name ||
-      !email ||
-      !password ||
-      !username ||
-      !no_hp
-    ) {
+    const registerSchema = z.object({
+      first_name: z
+        .string()
+        .trim()
+        .min(1, "Nama depan harus diisi")
+        .regex(/^[^0-9]*$/, {
+          message: "Nama Tidak boleh mengandung angka",
+        }),
+      last_name: z
+        .string()
+        .trim()
+        .min(1, "Nama belakang harus diisi")
+        .regex(/^[^0-9]*$/, {
+          message: "Nama Tidak boleh mengandung angka",
+        }),
+      // Validasi Email
+      email: z.string().trim().email("Format email tidak valid"),
+
+      // Validasi Password
+      password: z
+        .string()
+        .min(6, "Password minimal 6 karakter")
+        .regex(/[A-Z]/, "Harus ada huruf besar")
+        .regex(/[a-z]/, "Harus ada huruf kecil")
+        .regex(/[0-9]/, "Harus ada angka")
+        .regex(/[^A-Za-z0-9]/, "Harus ada simbol"),
+
+      // Validasi Username
+      username: z
+        .string()
+        .trim()
+        .min(5, "Username minimal 5 karakter")
+        .max(30, "Username maksimal 30 karakter")
+        .regex(/^[a-zA-Z0-9_]+$/, {
+          message: "Hanya boleh mengandung huruf, angka, dan underscore",
+        }),
+
+      // Validasi No Hp
+      no_hp: z
+        .string()
+        .trim()
+        .min(10, "Nomor HP minimal 10 digit")
+        .regex(/^[0-9]+$/, {
+          message: "Hanya boleh mengandung angka",
+        }),
+      level: z.string(),
+    });
+
+    const validation = registerSchema.safeParse(body);
+
+    if (!validation.success) {
       return NextResponse.json(
-        { message: "Semua kolom harus diisi" },
+        {
+          message: validation.error.issues[0].message,
+          errors: validation.error.issues,
+        },
         { status: 400 },
       );
     }
+
+    const { last_name, first_name, email, password, username, no_hp, level } =
+      validation.data;
 
     const client = await clientPromise;
     // DB and Colecction Name
@@ -47,7 +95,9 @@ export async function POST(req: NextRequest) {
     const usersCollection = db.collection("users");
 
     //  Vakidation check on db email and username
-    const existingUser = await usersCollection.findOne({ email, username });
+    const existingUser = await usersCollection.findOne({
+      $or: [{ email }, { username }],
+    });
     if (existingUser) {
       return NextResponse.json(
         { message: "Email atau Username sudah terdaftar" },
@@ -60,8 +110,8 @@ export async function POST(req: NextRequest) {
 
     // Time Format create Account
     const formattedDate = formatDateWIB(new Date());
-  
-  // Generate ID based on current document count
+
+    // Generate ID based on current document count
     const count = await usersCollection.countDocuments();
     const idUser = `${String(count + 1).padStart(6, "0")}`;
 
