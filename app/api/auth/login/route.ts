@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
-import { refresh } from "next/cache";
+import { randomUUID } from "crypto";
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,6 +39,9 @@ export async function POST(req: NextRequest) {
     const secret = new TextEncoder().encode(
       process.env.JWT_SECRET || "default_secret",
     );
+    const refreshSecret = new TextEncoder().encode(
+      process.env.JWT_REFRESH_SECRET || "default_refresh_secret",
+    );
     const token = await new SignJWT({
       userId: user.idUser || user._id.toString(), // Menggunakan idUser dari DB atau _id sebagai fallback
       username: user.username,
@@ -50,6 +53,13 @@ export async function POST(req: NextRequest) {
       .setExpirationTime("1d") // Token berlaku 1 tahun (unlimited simulasi)
       .sign(secret);
 
+    const refreshToken = await new SignJWT({ userId: user.idUser || user._id.toString() })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("14d")
+      .setJti(randomUUID())
+      .sign(refreshSecret);
+
     const response = NextResponse.json(
       {
         message: "Login berhasil",
@@ -60,18 +70,26 @@ export async function POST(req: NextRequest) {
           level: user.level,
           full_name: user.full_name,
           token: token,
+          refreshToken: refreshToken,
         },
       },
       { status: 200 },
     );
 
-    // Set cookie
+    // Set cookies
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      // maxAge dihapus agar menjadi session cookie (terhapus saat tab/browser tutup)
       path: "/",
+    });
+
+    response.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 14, // 14 hari
     });
 
     return response;
