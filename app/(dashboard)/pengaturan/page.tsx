@@ -2,6 +2,7 @@ import ProfilPengguna from "./components/ProfilPengguna";
 import Tampilan from "./components/Tampilan";
 import Keamanan from "./components/Keamanan"
 import Feature from "./components/Feature"
+import SupportCenter from "./components/SupportCenter"
 
 export default function page() {
   return (
@@ -10,6 +11,7 @@ export default function page() {
         <Keamanan />
         <Feature />
         <Tampilan />
+        <SupportCenter />
     </div>
   )
 }
