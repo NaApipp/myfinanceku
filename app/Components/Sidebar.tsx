@@ -23,10 +23,30 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   //   Handle Logout
-  const handleLogout = (e: React.FormEvent) => {
+  const handleLogout = async (e: React.FormEvent) => {
     e.preventDefault();
-    sessionStorage.removeItem("user");
-    router.push("/login");
+    try {
+      const sessionUser = sessionStorage.getItem("user");
+      let token = "";
+      if (sessionUser) {
+        try {
+          const parsed = JSON.parse(sessionUser);
+          token = parsed.token || "";
+        } catch (err) {}
+      }
+
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      sessionStorage.removeItem("user");
+      window.location.href = "/login";
+    }
   };
 
   // Path Active Logic
