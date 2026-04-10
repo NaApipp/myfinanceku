@@ -44,7 +44,7 @@ export default function TargetProgress() {
 
   if (loading) {
     return (
-      <div className="bg-black rounded-[40px] p-8 border border-white/10 animate-pulse h-full min-h-[220px]">
+      <div className="bg-black dark:bg-neutral-900 rounded-[40px] p-8 border border-white/10 animate-pulse h-full min-h-[220px]">
         <div className="h-6 w-32 bg-white/10 rounded mb-6"></div>
         <div className="h-10 w-48 bg-white/10 rounded mb-4"></div>
         <div className="h-2 w-full bg-white/10 rounded-full"></div>
@@ -54,7 +54,7 @@ export default function TargetProgress() {
 
   if (!target) {
     return (
-      <div className="bg-black rounded-[40px] p-8 text-white h-full flex flex-col justify-center items-center text-center relative overflow-hidden group">
+      <div className="bg-black dark:bg-neutral-900 rounded-[40px] p-8 text-white h-full flex flex-col justify-center items-center text-center relative overflow-hidden group">
         <Target className="w-12 h-12 text-white/20 mb-4 group-hover:scale-110 transition-transform duration-500" />
         <h3 className="text-xl font-bold mb-2">Mulai Tabungan</h3>
         <p className="text-white/50 text-sm mb-6 max-w-[200px]">Atur target impian Anda dan mulai kumpulkan dana sekarang.</p>
@@ -69,7 +69,7 @@ export default function TargetProgress() {
   const percentage = Math.min(Math.round((target.target_now / target.jumlah_target) * 100), 100);
 
   return (
-    <div className="bg-black rounded-[40px] p-8 text-white h-full relative overflow-hidden group">
+    <div className="bg-black dark:bg-neutral-900 border border-white/5 rounded-[40px] p-8 text-white h-full relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-8">
         <div className="p-3 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10 group-hover:rotate-12 transition-transform duration-500">
           <Target className="w-6 h-6 text-white" />

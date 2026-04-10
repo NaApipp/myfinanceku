@@ -94,16 +94,16 @@ export default function FormAddAnggaran() {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-3 bg-black hover:bg-neutral-800 text-white px-8 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl group border border-white/5"
+        className="flex items-center gap-3 bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black px-8 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl group border border-white/5 dark:border-black/5"
       >
         <div className="relative">
           <ChartPie className="w-5 h-5 text-blue-400" />
           <Plus
-            className="w-3 h-3 absolute -bottom-1 -right-1 bg-black rounded-full border border-black"
+            className="w-3 h-3 absolute -bottom-1 -right-1 bg-black dark:bg-white rounded-full border border-black dark:border-white text-white dark:text-black"
             strokeWidth={4}
           />
         </div>
-        <span className="text-sm tracking-tight">Buat Anggaran Baru</span>
+        <span className="text-sm tracking-tight text-white dark:text-black">Buat Anggaran Baru</span>
       </button>
 
       {/* Modal Overlay */}
@@ -116,21 +116,21 @@ export default function FormAddAnggaran() {
           />
 
           {/* Modal Content */}
-          <div className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-300">
+          <div className="relative bg-white dark:bg-neutral-900 w-full max-w-lg rounded-[32px] shadow-2xl flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-300 border border-white/5">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 flex-shrink-0">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5 flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-50 rounded-xl">
-                  <Target className="w-6 h-6 text-blue-600" />
+                <div className="p-2 bg-blue-50 dark:bg-blue-500/10 rounded-xl">
+                  <ChartPie className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-black">Anggaran Baru</h2>
-                  <p className="text-xs text-gray-500 font-medium">Tentukan impian finansial Anda</p>
+                  <h2 className="text-xl font-bold text-black dark:text-white">Anggaran Baru</h2>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Tentukan impian finansial Anda</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
               >
                 <X className="w-6 h-6 text-gray-400" />
               </button>
@@ -153,7 +153,7 @@ export default function FormAddAnggaran() {
                     name="nama_anggaran"
                     id="nama_anggaran"
                     placeholder="Contoh: Tabungan Mobil"
-                    className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold placeholder:text-gray-300"
+                    className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-semibold placeholder:text-gray-300 dark:placeholder:text-gray-600"
                     value={formData.nama_anggaran}
                     onChange={handleChange}
                   />
@@ -170,7 +170,7 @@ export default function FormAddAnggaran() {
                       type="date"
                       name="periode_anggaran"
                       id="periode_anggaran"
-                      className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold"
+                      className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-semibold"
                       value={formData.periode_anggaran}
                       onChange={handleChange}
                       min={new Date().toISOString().split("T")[0]}
@@ -188,7 +188,7 @@ export default function FormAddAnggaran() {
                         name="limit_anggaran"
                         id="limit_anggaran"
                         placeholder="0"
-                        className="w-full p-4 pl-11 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-bold placeholder:text-gray-300"
+                        className="w-full p-4 pl-11 rounded-2xl border border-gray-100 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-bold placeholder:text-gray-300 dark:placeholder:text-gray-600"
                         value={formData.limit_anggaran || ""}
                         onChange={handleChange}
                       />
@@ -206,7 +206,7 @@ export default function FormAddAnggaran() {
                       required
                       name="kategori_anggaran"
                       id="kategori_anggaran"
-                      className="w-full p-4 rounded-2xl border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 text-black font-semibold"
+                      className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-semibold"
                       value={formData.kategori_anggaran}
                       onChange={handleChange}
                     >
@@ -245,7 +245,7 @@ export default function FormAddAnggaran() {
                 <button
                   disabled={loading}
                   type="submit"
-                  className="w-full bg-black hover:bg-neutral-800 disabled:bg-gray-400 text-white font-bold py-5 px-4 rounded-[24px] shadow-xl transition-all transform active:scale-[0.98] mt-2 flex items-center justify-center gap-3"
+                  className="w-full bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white dark:text-black font-bold py-5 px-4 rounded-[24px] shadow-xl transition-all transform active:scale-[0.98] mt-2 flex items-center justify-center gap-3"
                 >
                   {loading ? "Menyimpan..." : "Simpan Anggaran"}
                 </button>

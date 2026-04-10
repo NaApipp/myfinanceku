@@ -163,12 +163,12 @@ export default function DataTarget() {
 
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 mt-8 bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200">
-        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
-          <Target className="w-10 h-10 text-gray-300" />
+      <div className="flex flex-col items-center justify-center p-12 mt-8 bg-gray-50 dark:bg-white/5 rounded-[40px] border-2 border-dashed border-gray-200 dark:border-white/10">
+        <div className="w-20 h-20 bg-white dark:bg-neutral-900 rounded-full flex items-center justify-center shadow-sm mb-4">
+          <Target className="w-10 h-10 text-gray-300 dark:text-gray-600" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900">Belum ada target</h3>
-        <p className="text-gray-500 text-sm mt-1">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">Belum ada target</h3>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
           Mulai rencanakan impian finansial Anda sekarang.
         </p>
       </div>
@@ -188,12 +188,12 @@ export default function DataTarget() {
           return (
             <div
               key={item.idTarget}
-              className="group relative bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1 overflow-hidden"
+              className="group relative bg-white dark:bg-neutral-900 p-8 rounded-[40px] border border-gray-100 dark:border-white/5 shadow-sm transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5 hover:-translate-y-1 overflow-hidden"
             >
               {/* Header */}
               <div className="flex justify-between items-start mb-6">
                 <div
-                  className={`p-4 rounded-2xl ${isCompleted ? "bg-green-50" : "bg-blue-50"}`}
+                  className={`p-4 rounded-2xl ${isCompleted ? "bg-green-50 dark:bg-green-500/10" : "bg-blue-50 dark:bg-blue-500/10"}`}
                 >
                   <Target
                     className={`w-6 h-6 ${isCompleted ? "text-green-600" : "text-blue-600"}`}
@@ -206,13 +206,13 @@ export default function DataTarget() {
                         setTargetToDelete(item.idTarget);
                         setIsDeleteConfirmOpen(true);
                       }}
-                      className="p-3 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all"
+                      className="p-3 text-gray-300 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-2xl transition-all"
                     >
                       <Trash className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => handleEditClick(item)}
-                      className="p-3 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-2xl transition-all"
+                      className="p-3 text-gray-300 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-2xl transition-all"
                     >
                       <Edit className="w-5 h-5" />
                     </button>
@@ -222,7 +222,7 @@ export default function DataTarget() {
 
               {/* Content */}
               <div className="space-y-2 mb-8">
-                <h3 className="text-xl font-black text-black leading-tight tracking-tight">
+                <h3 className="text-xl font-black text-black dark:text-white leading-tight tracking-tight">
                   {item.nama_target}
                 </h3>
                 <div className="flex items-center gap-2 text-gray-400">
@@ -238,7 +238,7 @@ export default function DataTarget() {
                     <p className="text-[10px] font-black text-gray-400 tracking-widest uppercase mb-1">
                       Terkumpul
                     </p>
-                    <p className="text-lg font-black text-black tracking-tight">
+                    <p className="text-lg font-black text-black dark:text-white tracking-tight">
                       {formatCurrency(item.target_now)}
                     </p>
                   </div>
@@ -253,7 +253,7 @@ export default function DataTarget() {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="relative h-4 bg-gray-50 rounded-full overflow-hidden border border-gray-100">
+                <div className="relative h-4 bg-gray-50 dark:bg-white/5 rounded-full overflow-hidden border border-gray-100 dark:border-white/5">
                   <div
                     className={`absolute top-0 left-0 h-full transition-all duration-1000 ease-out rounded-full ${
                       isCompleted ? "bg-green-500" : "bg-blue-600"
@@ -281,7 +281,7 @@ export default function DataTarget() {
                 </div>
               </div>
               <div className="flex items-center justify-center m-7">
-                <div className="w-full rounded border border-gray-500"></div>
+                <div className="w-full rounded border border-gray-500 dark:border-gray-600"></div>
               </div>
               {item.prioritas && (
                 <div className="flex justify-between mt-3">
@@ -323,15 +323,15 @@ export default function DataTarget() {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
             onClick={() => setIsDeleteConfirmOpen(false)}
           />
-          <div className="relative bg-white w-full max-w-sm rounded-[40px] shadow-2xl p-10 animate-in zoom-in slide-in-from-bottom-4 duration-300">
+          <div className="relative bg-white dark:bg-neutral-900 w-full max-w-sm rounded-[40px] shadow-2xl p-10 animate-in zoom-in slide-in-from-bottom-4 duration-300">
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-red-50 text-red-600 rounded-3xl flex items-center justify-center mb-6 rotate-12 group-hover:rotate-0 transition-transform">
+              <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-3xl flex items-center justify-center mb-6 rotate-12 group-hover:rotate-0 transition-transform">
                 <Trash className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-black text-black mb-2 tracking-tight">
+              <h3 className="text-2xl font-black text-black dark:text-white mb-2 tracking-tight">
                 Hapus Target?
               </h3>
-              <p className="text-gray-500 text-sm mb-8 px-4 font-medium leading-relaxed">
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-8 px-4 font-medium leading-relaxed">
                 Tindakan ini tidak dapat dibatalkan dan saldo akun Anda mungkin
                 terpengaruh.
               </p>
@@ -346,7 +346,7 @@ export default function DataTarget() {
                 <button
                   onClick={() => setIsDeleteConfirmOpen(false)}
                   disabled={isActionLoading}
-                  className="w-full py-5 bg-gray-50 text-gray-400 font-black rounded-3xl hover:bg-gray-100 transition-all active:scale-[0.98]"
+                  className="w-full py-5 bg-gray-50 dark:bg-white/5 text-gray-400 font-black rounded-3xl hover:bg-gray-100 dark:hover:bg-white/10 transition-all active:scale-[0.98]"
                 >
                   Batal
                 </button>

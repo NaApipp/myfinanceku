@@ -72,18 +72,18 @@ export default function RecentTransactions() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-[32px] p-6 border border-gray-100 animate-pulse h-64">
-        <div className="h-6 w-48 bg-gray-100 rounded mb-6"></div>
+      <div className="bg-white dark:bg-neutral-900 rounded-[32px] p-6 border border-gray-100 dark:border-white/5 animate-pulse h-64">
+        <div className="h-6 w-48 bg-gray-100 dark:bg-white/5 rounded mb-6"></div>
         {[1, 2, 3].map(i => (
-          <div key={i} className="flex items-center justify-between py-4 border-b border-gray-50 last:border-0">
+          <div key={i} className="flex items-center justify-between py-4 border-b border-gray-50 dark:border-white/5 last:border-0">
              <div className="flex items-center gap-3">
-               <div className="w-10 h-10 bg-gray-100 rounded-full"></div>
+               <div className="w-10 h-10 bg-gray-100 dark:bg-white/5 rounded-full"></div>
                <div className="flex flex-col gap-1">
-                 <div className="h-4 w-24 bg-gray-100 rounded"></div>
-                 <div className="h-3 w-32 bg-gray-100 rounded"></div>
+                 <div className="h-4 w-24 bg-gray-100 dark:bg-white/5 rounded"></div>
+                 <div className="h-3 w-32 bg-gray-100 dark:bg-white/5 rounded"></div>
                </div>
              </div>
-             <div className="h-4 w-20 bg-gray-100 rounded"></div>
+             <div className="h-4 w-20 bg-gray-100 dark:bg-white/5 rounded"></div>
           </div>
         ))}
       </div>
@@ -91,29 +91,29 @@ export default function RecentTransactions() {
   }
 
   return (
-    <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
-      <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-        <h3 className="font-bold text-lg text-gray-900">Transaksi Terakhir</h3>
+    <div className="bg-white dark:bg-neutral-900 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden flex flex-col h-full transition-colors">
+      <div className="p-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
+        <h3 className="font-bold text-lg text-gray-900 dark:text-white">Transaksi Terakhir</h3>
         <a href="/transaksi" className="text-sm font-bold text-blue-600 hover:text-blue-700">Lihat Semua</a>
       </div>
       
       <div className="flex-1">
         {transaksi.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 text-center h-full">
-            <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-3">
-              <Receipt className="w-6 h-6 text-gray-300" />
+            <div className="w-12 h-12 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-3">
+              <Receipt className="w-6 h-6 text-gray-300 dark:text-gray-500" />
             </div>
-            <p className="text-sm text-gray-500 font-medium">Belum ada transaksi</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Belum ada transaksi</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-50 px-6">
+          <div className="divide-y divide-gray-50 dark:divide-white/5 px-6">
             {transaksi.map((item) => (
               <div key={item.idTransaksi} className="py-4 flex items-center justify-between group transition-colors">
                 <div className="flex items-center gap-4">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
                     item.type_transaksi === 'pemasukan' 
-                    ? 'bg-emerald-50 text-emerald-600' 
-                    : 'bg-rose-50 text-rose-600'
+                    ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' 
+                    : 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
                   }`}>
                     {item.type_transaksi === 'pemasukan' ? (
                       <ArrowDownCircle className="w-5 h-5" />
@@ -122,19 +122,19 @@ export default function RecentTransactions() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-gray-900 capitalize flex items-center gap-2">
+                    <span className="text-sm font-bold text-gray-900 dark:text-white capitalize flex items-center gap-2">
                       {categories[item.kategori] || (
                         <>
-                          <span className="text-rose-500 bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight">Terhapus</span>
+                          <span className="text-rose-500 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight">Terhapus</span>
                         </>
                       )}
                     </span>
-                    <span className="text-xs text-gray-500 font-medium">{formatDate(item.tanggal_transaksi)} • {item.description || 'Tanpa keterangan'}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{formatDate(item.tanggal_transaksi)} • {item.description || 'Tanpa keterangan'}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <span className={`text-sm font-bold ${
-                    item.type_transaksi === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'
+                    item.type_transaksi === 'pemasukan' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                   }`}>
                     {item.type_transaksi === 'pemasukan' ? '+' : '-'} {formatCurrency(item.nominal_transaksi)}
                   </span>

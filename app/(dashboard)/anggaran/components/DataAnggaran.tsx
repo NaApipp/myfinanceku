@@ -146,12 +146,12 @@ export default function DataAnggaran() {
 
   if (anggarans.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] border border-dashed border-gray-200">
-        <div className="p-4 bg-gray-50 rounded-full mb-4">
-          <AlertCircle className="w-8 h-8 text-gray-400" />
+      <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-neutral-900/50 rounded-[40px] border border-dashed border-gray-200 dark:border-white/10">
+        <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-full mb-4">
+          <AlertCircle className="w-8 h-8 text-gray-400 dark:text-gray-500" />
         </div>
-        <h3 className="text-xl font-bold text-black">Belum ada anggaran</h3>
-        <p className="text-gray-500 text-sm">
+        <h3 className="text-xl font-bold text-black dark:text-white">Belum ada anggaran</h3>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
           Mulai atur keuangan Anda dengan membuat anggaran baru.
         </p>
       </div>
@@ -163,17 +163,17 @@ export default function DataAnggaran() {
       {anggarans.map((item) => (
         <div
           key={item.idAnggaran}
-          className="group relative bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300"
+          className="group relative bg-white dark:bg-neutral-900 rounded-[32px] p-8 border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-xl hover:border-blue-100 dark:hover:border-blue-500/30 transition-all duration-300"
         >
           <div className="flex justify-between items-start mb-6">
-            <div className="p-3 bg-blue-50 rounded-2xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-2xl text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white transition-colors">
               <Wallet className="w-6 h-6" />
             </div>
             <div className="">
               <button
                 onClick={() => setDeleteConfirmId(item.idAnggaran)}
                 disabled={isDeleting === item.idAnggaran}
-                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-white/5 rounded-xl transition-all"
               >
                 {isDeleting === item.idAnggaran ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -184,7 +184,7 @@ export default function DataAnggaran() {
               <button
                 onClick={() => handleEditClick(item)}
                 disabled={isUpdating === item.idAnggaran}
-                className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all"
+                className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-white/5 rounded-xl transition-all"
               >
                 {isUpdating === item.idAnggaran ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -197,15 +197,15 @@ export default function DataAnggaran() {
 
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-1">
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 dark:text-blue-400 mb-1">
                 {categories[item.kategori_anggaran] || "Kategori Umum"}
               </p>
-              <h3 className="text-xl font-black text-black leading-tight">
+              <h3 className="text-xl font-black text-black dark:text-white leading-tight">
                 {item.nama_anggaran}
               </h3>
             </div>
 
-            <div className="flex items-center gap-2 text-gray-400">
+            <div className="flex items-center gap-2 text-gray-400 dark:text-gray-500">
               {/* <Calendar className="w-4 h-4" /> */}
               <p className="text-sm font-bold">Periode Anggaran:</p>
               <span className="text-sm font-bold">
@@ -216,11 +216,11 @@ export default function DataAnggaran() {
               </span>
             </div>
 
-            <div className="pt-4 border-t border-gray-50">
-              <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">
+            <div className="pt-4 border-t border-gray-50 dark:border-white/5">
+              <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase mb-1">
                 Sisa Anggaran
               </p>
-              <h4 className="text-2xl font-black text-black">
+              <h4 className="text-2xl font-black text-black dark:text-white">
                 Rp {item.limit_anggaran.toLocaleString("id-ID")}
               </h4>
             </div>
@@ -273,14 +273,14 @@ export default function DataAnggaran() {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={() => setIsUpdateModalOpen(false)}
           />
-          <div className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+          <div className="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200 border border-white/5">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-black dark:text-white">
                 Edit Anggaran
               </h3>
               <button
                 onClick={() => setIsUpdateModalOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
               >
                 <AlertCircle className="w-6 h-6 text-gray-400 rotate-45" />
               </button>
@@ -300,7 +300,7 @@ export default function DataAnggaran() {
                       nama_anggaran: e.target.value,
                     })
                   }
-                  className="w-full p-4 rounded-2xl border border-gray-100 bg-gray-50 text-black font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black text-black dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   required
                 />
               </div>
@@ -318,7 +318,7 @@ export default function DataAnggaran() {
                       limit_anggaran: Number(e.target.value),
                     })
                   }
-                  className="w-full p-4 rounded-2xl border border-gray-100 bg-gray-50 text-black font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black text-black dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   required
                 />
               </div>
@@ -336,7 +336,7 @@ export default function DataAnggaran() {
                       periode_anggaran: e.target.value,
                     })
                   }
-                  className="w-full p-4 rounded-2xl border border-gray-100 bg-gray-50 text-black font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black text-black dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   required
                 />
               </div>
@@ -344,7 +344,7 @@ export default function DataAnggaran() {
               <div className="pt-4 flex gap-3">
                 <button
                   type="submit"
-                  className="flex-1 py-4 bg-black text-white font-bold rounded-2xl hover:bg-neutral-800 transition-all uppercase text-sm tracking-widest"
+                  className="flex-1 py-4 bg-black dark:bg-white text-white dark:text-black font-bold rounded-2xl hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-all uppercase text-sm tracking-widest"
                 >
                   Simpan Perubahan
                 </button>

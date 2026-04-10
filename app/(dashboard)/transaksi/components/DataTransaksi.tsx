@@ -140,63 +140,63 @@ export default function DataTransaksi() {
 
   const getStyleKategori = (type_transaksi: string) => {
     if (type_transaksi === "pemasukan") {
-      return "bg-emerald-50 text-emerald-600 border-emerald-100";
+      return "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20";
     } else {
-      return "bg-rose-50 text-rose-600 border-rose-100";
+      return "bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20";
     }
   };
 
   if (transaksi.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-20 bg-gray-50/50 rounded-[32px] border-2 border-dashed border-gray-200 mt-6">
-        <div className="p-4 bg-white rounded-full shadow-sm mb-4">
-          <Receipt className="w-10 h-10 text-gray-300" />
+      <div className="flex flex-col items-center justify-center p-20 bg-gray-50/50 dark:bg-neutral-900/50 rounded-[32px] border-2 border-dashed border-gray-200 dark:border-white/10 mt-6">
+        <div className="p-4 bg-white dark:bg-white/5 rounded-full shadow-sm mb-4">
+          <Receipt className="w-10 h-10 text-gray-300 dark:text-gray-500" />
         </div>
-        <h3 className="text-lg font-bold text-gray-900">Belum ada transaksi</h3>
-        <p className="text-gray-500 text-sm mt-1">Mulai catat transaksi harian Anda di sini.</p>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Belum ada transaksi</h3>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Mulai catat transaksi harian Anda di sini.</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full overflow-hidden bg-white rounded-[32px] border border-gray-100 shadow-sm mt-6">
+    <div className="w-full overflow-hidden bg-white dark:bg-neutral-900 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm mt-6">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-gray-50">
-              <th className="px-6 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Tanggal</th>
-              <th className="px-6 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Deskripsi</th>
-              <th className="px-6 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Tipe</th>
-              <th className="px-6 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider">Sumber Dana</th>
-              <th className="px-6 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Nominal</th>
-              <th className="px-6 py-5 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Aksi</th>
+            <tr className="border-b border-gray-50 dark:border-white/5">
+              <th className="px-6 py-5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tanggal</th>
+              <th className="px-6 py-5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Deskripsi</th>
+              <th className="px-6 py-5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-center">Tipe</th>
+              <th className="px-6 py-5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Sumber Dana</th>
+              <th className="px-6 py-5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-right">Nominal</th>
+              <th className="px-6 py-5 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-gray-50 dark:divide-white/5">
             {transaksi.map((item, index) => (
-              <tr key={item.idTransaksi || index} className="hover:bg-gray-50/50 transition-colors group">
+              <tr key={item.idTransaksi || index} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:bg-blue-50 dark:group-hover:bg-blue-500/10 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                       <Calendar className="w-4 h-4" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700">{formatDate(item.tanggal_transaksi)}</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{formatDate(item.tanggal_transaksi)}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col text-left">
-                    <span className="text-sm text-black font-medium capitalize">
+                    <span className="text-sm text-black dark:text-white font-medium capitalize">
                       {categories[item.kategori] || (
                         <div className="flex flex-col gap-1">
                            <div className="flex items-center gap-2">
-                             <span className="text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
+                             <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
                                Kategori Telah Terhapus
                              </span>
                            </div>
                         </div>
                       )}
                     </span>
-                    <span className="text-xs text-gray-400">{item.description}</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500">{item.description}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -213,15 +213,15 @@ export default function DataTransaksi() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
-                    <Wallet className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm font-semibold text-gray-700 uppercase tracking-tight">
+                    <Wallet className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 uppercase tracking-tight">
                       {accounts[item.idAccount] || (
                         <div className="flex flex-col gap-1">
-                          <span className="text-rose-400 text-[10px] italic border border-rose-100 bg-rose-50 px-2 py-0.5 rounded-md w-fit">
+                          <span className="text-rose-400 text-[10px] italic border border-rose-100 dark:border-rose-500/20 bg-rose-50 dark:bg-rose-500/10 px-2 py-0.5 rounded-md w-fit">
                             Akun / Card di Hapus
                           </span>
                           {item.nama_asset && (
-                            <span className="text-[10px] text-gray-400 lowercase italic font-normal">
+                            <span className="text-[10px] text-gray-400 dark:text-gray-500 lowercase italic font-normal">
                               Sebelumnya menggunakan: {item.nama_asset}
                             </span>
                           )}
@@ -231,7 +231,7 @@ export default function DataTransaksi() {
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <span className={`text-sm font-bold tracking-tight ${item.type_transaksi === 'pemasukan' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  <span className={`text-sm font-bold tracking-tight ${item.type_transaksi === 'pemasukan' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                     {item.type_transaksi === 'pemasukan' ? '+' : '-'} {formatCurrency(item.nominal_transaksi)}
                   </span>
                 </td>
@@ -239,7 +239,7 @@ export default function DataTransaksi() {
                   <div className="flex justify-center">
                     <button 
                       onClick={() => setDeleteId(item.idTransaksi)}
-                      className="p-2 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                      className="p-2 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all"
                     >
                       <Trash className="w-4 h-4" />
                     </button>
@@ -253,16 +253,16 @@ export default function DataTransaksi() {
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-gray-50 bg-gray-50/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-gray-500 font-medium">
-            Menampilkan <span className="text-gray-900">{(page - 1) * limit + 1}</span> - <span className="text-gray-900">{Math.min(page * limit, totalItems)}</span> dari <span className="text-gray-900">{totalItems}</span> transaksi
+        <div className="px-6 py-4 border-t border-gray-50 dark:border-white/5 bg-gray-50/30 dark:bg-black/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+            Menampilkan <span className="text-gray-900 dark:text-white">{(page - 1) * limit + 1}</span> - <span className="text-gray-900 dark:text-white">{Math.min(page * limit, totalItems)}</span> dari <span className="text-gray-900 dark:text-white">{totalItems}</span> transaksi
           </div>
           
           <div className="flex items-center gap-1">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-white border border-transparent hover:border-gray-200 rounded-lg transition-all disabled:opacity-30 disabled:pointer-events-none"
+              className="px-3 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-white/10 border border-transparent hover:border-gray-200 dark:hover:border-white/10 rounded-lg transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               Sebelumnya
             </button>
@@ -283,14 +283,14 @@ export default function DataTransaksi() {
                       className={`w-8 h-8 flex items-center justify-center text-xs font-bold rounded-lg transition-all ${
                         page === pageNum
                           ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                          : "text-gray-500 hover:bg-white hover:border-gray-200 border border-transparent"
+                          : "text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-white/10 hover:border-gray-200 dark:hover:border-white/10 border border-transparent"
                       }`}
                     >
                       {pageNum}
                     </button>
                   );
                 } else if (pageNum === page - 2 || pageNum === page + 2) {
-                  return <span key={pageNum} className="px-1 text-gray-300">...</span>;
+                  return <span key={pageNum} className="px-1 text-gray-300 dark:text-gray-600">...</span>;
                 }
                 return null;
               })}
@@ -299,7 +299,7 @@ export default function DataTransaksi() {
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-white border border-transparent hover:border-gray-200 rounded-lg transition-all disabled:opacity-30 disabled:pointer-events-none"
+              className="px-3 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-white dark:hover:bg-white/10 border border-transparent hover:border-gray-200 dark:hover:border-white/10 rounded-lg transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               Berikutnya
             </button>
@@ -309,9 +309,9 @@ export default function DataTransaksi() {
 
       {/* Custom Delete Confirmation Modal */}
       {deleteId && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteId(null)} />
-          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+          <div className="relative bg-white dark:bg-neutral-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200 border border-white/5">
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mb-6">
                 <Trash className="w-8 h-8" />

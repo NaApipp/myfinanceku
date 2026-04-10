@@ -49,7 +49,7 @@ export default function GeneralPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] dark:bg-gray-950 p-6 lg:p-10 space-y-10">
+    <div className="min-h-screen bg-[#FDFDFF] dark:bg-black p-6 lg:p-10 space-y-10 transition-colors duration-300">
       {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -70,7 +70,7 @@ export default function GeneralPage() {
             <input 
               type="text" 
               placeholder="Cari transaksi..." 
-              className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl py-3 pl-11 pr-6 text-sm outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all w-full md:w-64"
+              className="bg-white dark:bg-neutral-900 border border-gray-100 dark:border-white/5 rounded-2xl py-3 pl-11 pr-6 text-sm text-black dark:text-white outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all w-full md:w-64"
             />
           </div>
           <TambahTransaksi />

@@ -182,12 +182,12 @@ export default function DataAccoundCard() {
   }
   if (data.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center p-12 mt-8 bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
-            <CreditCard className="w-10 h-10 text-gray-300" />
+        <div className="flex flex-col items-center justify-center p-12 mt-8 bg-gray-50 dark:bg-neutral-900/50 rounded-[40px] border-2 border-dashed border-gray-200 dark:border-white/10">
+          <div className="w-20 h-20 bg-white dark:bg-white/5 rounded-full flex items-center justify-center shadow-sm mb-4">
+            <CreditCard className="w-10 h-10 text-gray-300 dark:text-gray-500" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900">Belum ada Akun Kartu / Wallet</h3>
-          <p className="text-gray-500 text-sm mt-1">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white">Belum ada Akun Kartu / Wallet</h3>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
             Mulai rencanakan impian finansial Anda sekarang.
           </p>
         </div>
@@ -200,28 +200,28 @@ export default function DataAccoundCard() {
         {data.map((item) => (
           <div
             key={item.idAccount}
-            className="group relative bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden"
+            className="group relative bg-white dark:bg-neutral-900 p-6 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden"
           >
             <div className="flex justify-between items-start mb-6">
               <div
-                className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-100 shadow-sm ${item.type_asset === "bank" ? "bg-blue-50" : "bg-purple-50"}`}
+                className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-white/5 shadow-sm ${item.type_asset === "bank" ? "bg-blue-50 dark:bg-blue-500/10" : "bg-purple-50 dark:bg-purple-500/10"}`}
               >
                 {item.type_asset === "bank" ? (
-                  <Building2 className="w-6 h-6 text-blue-600" />
+                  <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 ) : (
-                  <Smartphone className="w-6 h-6 text-purple-600" />
+                  <Smartphone className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => confirmDelete(item.idAccount)}
-                  className="p-2 text-gray-400 hover:text-red-800 transition-colors"
+                  className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-800 dark:hover:text-red-400 transition-colors"
                 >
                   <Trash className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => handleEditClick(item)}
-                  className="p-2 text-gray-400 hover:text-blue-800 transition-colors"
+                  className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-800 dark:hover:text-blue-400 transition-colors"
                 >
                   <Edit className="w-5 h-5" />
                 </button>
@@ -229,20 +229,20 @@ export default function DataAccoundCard() {
             </div>
 
             <div className="space-y-1">
-              <p className="text-black text-xl font-extrabold uppercase tracking-widest">
+              <p className="text-black dark:text-white text-xl font-extrabold uppercase tracking-widest">
                 {item.nama_asset}
               </p>
-              <h3 className="text-xs font-bold text-gray-400 truncate">
+              <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 truncate">
                 {item.nama_akun}
               </h3>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-50 flex items-end justify-between">
+            <div className="mt-6 pt-6 border-t border-gray-50 dark:border-white/5 flex items-end justify-between">
               <div>
-                <p className="text-gray-400 text-black text-[10px] uppercase font-bold tracking-tight mb-1">
+                <p className="text-gray-400 dark:text-gray-500 text-[10px] uppercase font-bold tracking-tight mb-1">
                   Saldo Tersedia
                 </p>
-                <p className="text-2xl font-black text-black tracking-tight">
+                <p className="text-2xl font-black text-black dark:text-white tracking-tight">
                   {formatCurrency(item.saldo_awal)}
                 </p>
               </div>
@@ -259,12 +259,12 @@ export default function DataAccoundCard() {
             onClick={() => setIsEditOpen(false)}
           />
 
-          <div className="relative bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-black">Ubah Asset</h2>
+          <div className="relative bg-white dark:bg-neutral-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/5">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/5">
+              <h2 className="text-xl font-bold text-black dark:text-white">Ubah Asset</h2>
               <button
                 onClick={() => setIsEditOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
               >
                 <X className="w-6 h-6 text-gray-400" />
               </button>
@@ -281,7 +281,7 @@ export default function DataAccoundCard() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="type_asset"
-                    className="text-sm font-semibold text-gray-700 uppercase"
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase"
                   >
                     Pilih Tipe Aset
                   </label>
@@ -290,7 +290,7 @@ export default function DataAccoundCard() {
                     name="type_asset"
                     value={formData.type_asset}
                     onChange={handleChange}
-                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black"
+                    className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white"
                   >
                     <option value="">Pilih Tipe Asset</option>
                     <option value="bank">Bank</option>
@@ -298,41 +298,41 @@ export default function DataAccoundCard() {
                   </select>
                 </div>
 
-                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex flex-col gap-4 w-full">
+                <div className="bg-gray-50 dark:bg-black p-6 rounded-2xl border border-gray-100 dark:border-white/5 flex flex-col gap-4 w-full">
                   <div className="flex flex-col gap-3">
                     <label
                       htmlFor="saldo_awal"
-                      className="text-sm font-semibold text-gray-700 uppercase"
+                      className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase"
                     >
                       saldo awal (rp)
                     </label>
                     <div className="flex items-center gap-2">
-                      <h1 className="text-black font-bold text-[24px]">Rp</h1>
+                      <h1 className="text-black dark:text-white font-bold text-[24px]">Rp</h1>
                       <input
                         type="number"
                         name="saldo_awal"
                         id="saldo_awal"
-                        className="w-full bg-transparent placeholder:text-gray-400 text-black px-1 py-2 text-2xl font-bold focus:outline-none"
+                        className="w-full bg-transparent placeholder:text-gray-400 dark:placeholder:text-gray-600 text-black dark:text-white px-1 py-2 text-2xl font-bold focus:outline-none"
                         placeholder="0"
                         value={formData.saldo_awal}
                         onChange={handleChange}
                       />
                     </div>
-                    <div className="h-[2px] bg-black w-full" />
+                    <div className="h-[2px] bg-black dark:bg-white w-full" />
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="nama_asset"
-                    className="text-sm font-semibold text-gray-700 uppercase"
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase"
                   >
                     Pilih Nama Asset
                   </label>
                   <select
                     name="nama_asset"
                     id="nama_asset"
-                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black"
+                    className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white"
                     disabled={!formData.type_asset}
                     value={formData.nama_asset}
                     onChange={handleChange}
@@ -353,7 +353,7 @@ export default function DataAccoundCard() {
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="nama_akun"
-                    className="uppercase text-gray-700 font-semibold text-sm"
+                    className="uppercase text-gray-700 dark:text-gray-300 font-semibold text-sm"
                   >
                     nama akun /Kartu
                   </label>
@@ -362,7 +362,7 @@ export default function DataAccoundCard() {
                     name="nama_akun"
                     id="nama_akun"
                     placeholder="Contoh: Tabungan utama"
-                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black placeholder:text-gray-400"
+                    className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600"
                     value={formData.nama_akun}
                     onChange={handleChange}
                   />
@@ -371,7 +371,7 @@ export default function DataAccoundCard() {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-black hover:bg-black/90 text-white font-bold py-2 px-4 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full bg-black dark:bg-white hover:bg-black/90 dark:hover:bg-white/90 text-white dark:text-black font-bold py-2 px-4 rounded-2xl shadow-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     Simpan Asset
                   </button>
@@ -400,12 +400,12 @@ export default function DataAccoundCard() {
       )}
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && (
-        <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setIsDeleteConfirmOpen(false)}
           />
-          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+          <div className="relative bg-white dark:bg-neutral-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200 border border-white/5">
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mb-6">
                 <Trash className="w-8 h-8" />
@@ -413,7 +413,7 @@ export default function DataAccoundCard() {
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                 Apakah Anda yakin ingin menghapus akun / kartu ini?
               </h3>
-              <span className="text-gray-800 text-sm mb-4">
+              <span className="text-gray-800 dark:text-gray-400 text-sm mb-4">
                 Target dan anggaran yang terkait akan ikut terhapus
               </span>
               <div className="flex flex-col gap-3 w-full">
@@ -439,12 +439,12 @@ export default function DataAccoundCard() {
 
       {/* Update Confirmation Modal */}
       {isUpdateConfirmOpen && (
-        <div className="fixed inset-0 z-200 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setIsUpdateConfirmOpen(false)}
           />
-          <div className="relative bg-white dark:bg-slate-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+          <div className="relative bg-white dark:bg-neutral-900 w-full max-w-sm rounded-[32px] shadow-2xl p-8 animate-in fade-in zoom-in duration-200 border border-white/5">
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-6">
                 <CheckCircle2 className="w-8 h-8" />
