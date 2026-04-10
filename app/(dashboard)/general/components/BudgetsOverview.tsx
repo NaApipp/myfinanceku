@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PieChart, AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 interface AnggaranData {
   idAnggaran: string;
@@ -90,7 +91,7 @@ export default function BudgetsOverview() {
     <div className="bg-white dark:bg-neutral-900 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm p-6 flex flex-col h-full transition-colors">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-lg text-gray-900 dark:text-white">Anggaran</h3>
-        <a href="/anggaran" className="text-sm font-bold text-blue-600 hover:text-blue-700">Lihat Semua</a>
+        <Link href="/anggaran" className="text-sm font-bold text-blue-600 hover:text-blue-700">Lihat Semua</Link>
       </div>
 
       <div className="space-y-6 flex-1">

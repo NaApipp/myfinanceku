@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Wallet, CreditCard, Landmark } from "lucide-react";
+import Link from "next/link";
 
 interface AccountData {
   idAccount: string;
   type_asset: string;
   nama_asset: string;
   saldo_awal: string;
-  nama_akun: string;
+  nama_akun: string
 }
 
 export default function AccountsOverview() {
@@ -66,7 +67,7 @@ export default function AccountsOverview() {
     <div className="bg-white dark:bg-neutral-900 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm p-6 flex flex-col h-full transition-colors">
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-bold text-lg text-gray-900 dark:text-white">Akun & Kartu</h3>
-        <a href="/akun-kartu" className="text-sm font-bold text-blue-600 hover:text-blue-700">Manajemen</a>
+        <Link href="/akun-kartu" className="text-sm font-bold text-blue-600 hover:text-blue-700">Manajemen</Link>
       </div>
 
       <div className="space-y-3 flex-1">
@@ -83,7 +84,7 @@ export default function AccountsOverview() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-bold text-gray-900 dark:text-white">{acc.nama_akun}</span>
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">{acc.type_asset}</span>
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">{acc.type_asset} - {acc.nama_asset}</span>
                 </div>
               </div>
               <div className="text-right">

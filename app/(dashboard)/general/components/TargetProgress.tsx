@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Target, TrendingUp, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 interface TargetData {
   idTarget: string;
@@ -58,9 +59,9 @@ export default function TargetProgress() {
         <Target className="w-12 h-12 text-white/20 mb-4 group-hover:scale-110 transition-transform duration-500" />
         <h3 className="text-xl font-bold mb-2">Mulai Tabungan</h3>
         <p className="text-white/50 text-sm mb-6 max-w-[200px]">Atur target impian Anda dan mulai kumpulkan dana sekarang.</p>
-        <a href="/target" className="px-6 py-2 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-transform">
+        <Link href="/target" className="px-6 py-2 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-transform">
           Buat Target
-        </a>
+        </Link>
         <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl" />
       </div>
     );
@@ -110,9 +111,9 @@ export default function TargetProgress() {
               </div>
               <span className="text-[10px] text-white/60 font-medium">Progress sangat baik!</span>
             </div>
-            <a href="/target" className="flex items-center gap-1 text-[10px] font-bold text-white/80 hover:text-white transition-colors">
+            <Link href="/target" className="flex items-center gap-1 text-[10px] font-bold text-white/80 hover:text-white transition-colors">
               Detail <ChevronRight className="w-3 h-3" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

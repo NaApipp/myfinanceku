@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Calendar, Receipt, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import Link from "next/link";
 
 interface TransactionData {
   idTransaksi: string;
@@ -94,7 +95,7 @@ export default function RecentTransactions() {
     <div className="bg-white dark:bg-neutral-900 rounded-[32px] border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden flex flex-col h-full transition-colors">
       <div className="p-6 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
         <h3 className="font-bold text-lg text-gray-900 dark:text-white">Transaksi Terakhir</h3>
-        <a href="/transaksi" className="text-sm font-bold text-blue-600 hover:text-blue-700">Lihat Semua</a>
+        <Link href="/transaksi" className="text-sm font-bold text-blue-600 hover:text-blue-700">Lihat Semua</Link>
       </div>
       
       <div className="flex-1">
