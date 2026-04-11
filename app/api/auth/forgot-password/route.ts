@@ -39,13 +39,13 @@ export async function POST(req: Request) {
   await resend.emails.send({
   from: 'myfinanceku@resend.dev',
   to: email,
-  subject: 'Reset Password | Testing Development By Apip',
+  subject: 'Reset Password',
   html: `
   <!DOCTYPE html>
   <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Reset Password | Testing Development By Apip</title>
+    <title>Reset Password</title>
   </head>
   <body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:20px;">
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
             <!-- Content -->
             <tr>
               <td style="padding:30px;color:#333333;">
-                <h2 style="margin-top:0;">Reset Password | Testing Development By Apip</h2>
+                <h2 style="margin-top:0;">Reset Password</h2>
                 <p>Kami menerima permintaan untuk mereset password akun kamu.</p>
                 <p>Klik tombol di bawah ini untuk melanjutkan:</p>
 
