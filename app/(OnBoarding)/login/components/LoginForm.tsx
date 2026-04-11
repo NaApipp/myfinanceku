@@ -130,7 +130,7 @@ export default function LoginForm() {
               Password
             </label>
             <Link
-              className="text-xs font-medium text-blue-600 hover:text-blue-500 hidden"
+              className="text-xs font-medium text-blue-600 hover:text-blue-500"
               href="/lupa-password"
             >
               Lupa password?

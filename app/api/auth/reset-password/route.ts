@@ -1,54 +1,37 @@
-import { NextResponse } from "next/server";
-import clientPromise from "@/app/lib/mongodb";
-import bcrypt from "bcryptjs";
+// app/api/reset-password/route.js
+import bcrypt from 'bcryptjs'
+import clientPromise from '@/app/lib/mongodb'
 
 export async function POST(req: Request) {
-  const { email, otp, newPassword } = await req.json();
+  const { token, password } = await req.json()
 
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DATABASE);
+  const client = await clientPromise
+  const db = client.db(process.env.MONGODB_DATABASE)
 
-  const user = await db.collection("users").findOne({
-    $or: [{ email }],
-  });
+  const user = await db.collection('users').findOne({
+    resetToken: token,
+    resetTokenExpiry: { $gt: new Date() }
+  })
 
-  if (!user || !user.resetOtp || !user.otpExpired) {
-    return NextResponse.json(
-      { error: "Data tidak valid" },
+  if (!user) {
+    return Response.json(
+      { message: 'Invalid or expired token' },
       { status: 400 }
-    );
+    )
   }
 
-  if (user.resetOtp !== otp) {
-    return NextResponse.json(
-      { error: "OTP salah" },
-      { status: 400 }
-    );
-  }
+  const hashedPassword = await bcrypt.hash(password, 10)
 
-  if (new Date(user.otpExpired) < new Date()) {
-    return NextResponse.json(
-      { error: "OTP kadaluarsa" },
-      { status: 400 }
-    );
-  }
-
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  await db.collection("users").updateOne(
+  await db.collection('users').updateOne(
     { _id: user._id },
     {
-      $set: {
-        password: hashedPassword,
-      },
+      $set: { password: hashedPassword },
       $unset: {
-        resetOtp: "",
-        otpExpired: "",
-      },
+        resetToken: "",
+        resetTokenExpiry: ""
+      }
     }
-  );
+  )
 
-  return NextResponse.json({
-    message: "Password berhasil direset",
-  });
+  return Response.json({ message: 'Password updated' })
 }
