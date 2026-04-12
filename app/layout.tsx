@@ -33,7 +33,8 @@ export const viewport: Viewport = {
   themeColor: '#ffffff',
 }
 
-export const metadata = {
+export const metadata: Metadata = {
+  metadataBase: new URL("https://myfinanceku.vercel.app"),
   // Judul default website (dipakai kalau halaman tidak override title)
   title: {
     default: "MyFinanceKu",
@@ -79,8 +80,7 @@ export const metadata = {
     apple: "/icon/logo.png", // icon untuk iOS
   },
 
-  // Warna theme browser (mobile address bar, dll)
-  themeColor: "#ffffff",
+
 
   // Open Graph (untuk share ke Facebook, LinkedIn, dll)
   openGraph: {
