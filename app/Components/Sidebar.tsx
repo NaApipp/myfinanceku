@@ -18,6 +18,8 @@ import { usePathname } from "next/navigation";
 
 import TambahTransaksi from "./TambahTransaksi";
 
+import Image from "next/image";
+
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -62,12 +64,12 @@ export default function Sidebar() {
   return (
     <div className="flex h-screen w-64 flex-col justify-between border-e bg-[#FAFAFA] dark:bg-neutral-950 border-gray-200 dark:border-white/5 transition-colors duration-300">
       <div className="px-4 py-6">
-        <span className="flex items-center gap-1 ml-4 text-lg text-gray-700 dark:text-gray-200">
-          <Wallet className="text-lime-500" />
+        <Link href="/general" className="flex items-center gap-2 ml-4 text-lg text-gray-700 dark:text-gray-200">
+          <Image src="/icon/logo.png" alt="Logo" width={45} height={45} />
           <span className="font-semibold text-black dark:text-white">
             MyFinanceKu
           </span>
-        </span>
+        </Link>
 
         <ul className="mt-6 space-y-1">
           <li>
