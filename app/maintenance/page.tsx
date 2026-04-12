@@ -4,10 +4,6 @@ import Image from 'next/image'
 export const metadata: Metadata = {
   title: 'Maintenance',
   description: 'Website sedang dalam perbaikan. Silakan kembali beberapa saat lagi.',
-  robots: {
-    index: false,
-    follow: false,
-  },
 }
 
 export default function MaintenancePage() {

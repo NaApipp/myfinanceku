@@ -4,10 +4,6 @@ import Image from 'next/image'
 export const metadata: Metadata = {
   title: 'Coming Soon',
   description: 'Fitur baru segera hadir di MyFinanceKu. Nantikan update terbaru kami!',
-  robots: {
-    index: false,
-    follow: false,
-  },
 }
 
 export default function ComingSoonPage() {
