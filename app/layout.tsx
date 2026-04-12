@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionTimeoutHandler from "@/app/components/SessionTimeoutHandler";
@@ -26,6 +26,12 @@ const geistMono = Geist_Mono({
 // }
 
 // app/layout.js atau layout.tsx
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#ffffff',
+}
 
 export const metadata = {
   // Judul default website (dipakai kalau halaman tidak override title)
@@ -75,9 +81,6 @@ export const metadata = {
 
   // Warna theme browser (mobile address bar, dll)
   themeColor: "#ffffff",
-
-  // Viewport untuk responsive design
-  viewport: "width=device-width, initial-scale=1",
 
   // Open Graph (untuk share ke Facebook, LinkedIn, dll)
   openGraph: {
