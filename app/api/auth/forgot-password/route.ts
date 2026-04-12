@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const user = await db.collection('users').findOne({ email })
   // SECURITY: jangan kasih tahu apakah email ada
   if (!user) {
-    return Response.json({ message: 'If email exists, reset link sent' })
+    return Response.json({ message: 'Link Reset Password Telah Dikirim' })
   }
 
   const token = crypto.randomBytes(32).toString('hex')
@@ -106,5 +106,5 @@ export async function POST(req: Request) {
   `,
 });
 
-  return Response.json({ message: 'If email exists, reset link sent' })
+  return Response.json({ message: 'Link Reset Password Telah Dikirim' })
 }
