@@ -28,7 +28,7 @@ export default function SupportCenter() {
           </div>
         </div>
         <Link
-          href="https://discord.com/"
+          href="https://discord.gg/FUeeHJWU9c"
           className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-3xl transition-colors"
         >
           {/* <ChevronRight className="text-black dark:text-white" width={24} height={24} /> */}
