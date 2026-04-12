@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/app/lib/mongodb";
+import z from "zod";
 
 function formatDateWIB(date: Date) {
   const fmt = new Intl.DateTimeFormat("en-GB", {
@@ -23,7 +24,30 @@ function formatDateWIB(date: Date) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, currentPassword, newPassword } = await req.json();
+    const body = await req.json();
+
+    const changePasswordSchema = z.object({
+      email: z.string().trim().email("Format email tidak valid"),
+      currentPassword: z.string().min(1, "Password lama wajib diisi"),
+      newPassword: z
+        .string()
+        .min(6, "Password minimal 6 karakter")
+        .regex(/[A-Z]/, "Password harus mengandung huruf besar")
+        .regex(/[a-z]/, "Password harus mengandung huruf kecil")
+        .regex(/[0-9]/, "Password harus mengandung angka")
+        .regex(/[^A-Za-z0-9]/, "Password harus mengandung simbol"),
+    });
+
+    const validation = changePasswordSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { message: validation.error.issues[0].message },
+        { status: 400 },
+      );
+    }
+
+    const { email, currentPassword, newPassword } = validation.data;
 
     if (!email || !currentPassword || !newPassword) {
       return NextResponse.json(

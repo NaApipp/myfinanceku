@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import clientPromise from "@/app/lib/mongodb";
+import { z } from "zod";
+
+// Schema Zod
+const kategoriSchema = z.object({
+    nama_kategori: z
+        .string()
+        .min(3, "Nama kategori minimal 3 karakter")
+        .max(50, "Nama kategori maksimal 50 karakter")
+});
 
 export async function POST(req: NextRequest) {
     try {
@@ -11,39 +20,54 @@ export async function POST(req: NextRequest) {
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
-        const userId = payload.userId ? String(payload.userId) : null;
 
-        if (!userId) {
+        if (!payload || !payload.userId) {
             return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
         }
 
-        const body = await req.json();
-        const { 
-            nama_kategori
-        } = body;
+        const userId = String(payload.userId);
 
-        if (!nama_kategori) {
+        const body = await req.json();
+
+        // VALIDASI ZOD
+        const result = kategoriSchema.safeParse(body);
+
+        if (!result.success) {
             return NextResponse.json(
-                { message: "field wajib diisi" },
-                { status: 400 },
+                {
+                    success: false,
+                    message: result.error.issues[0].message,
+                },
+                { status: 400 }
             );
         }
 
-        // Mengambil instance client dari shared koneksi MongoDB (reusable connection)
+        const { nama_kategori } = result.data;
+
         const client = await clientPromise;
-        // Menghubungkan ke database sesuai konfigurasi di environment variable (.env)
         const db = client.db(process.env.MONGODB_DATABASE);
-        // Menentukan koleksi "transaksi" yang akan digunakan untuk operasi data
-        const transaksiCollection = db.collection("category");
-        // Generate unique ID using random string to avoid collisions if accounts are deleted
+        const kategoriCollection = db.collection("category");
+
+        // Cek duplikasi kategori per user
+        const existing = await kategoriCollection.findOne({
+            userId,
+            nama_kategori,
+        });
+
+        if (existing) {
+            return NextResponse.json(
+                { success: false, message: "Kategori sudah ada" },
+                { status: 409 }
+            );
+        }
+
         const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
         const idKategori = `KTGR-${userId.slice(-4)}-${uniqueId}`;
-        
-        // Insert data transaksi
-        const transaksi = await transaksiCollection.insertOne({
-            userId: String(userId),
-            idKategori: String(idKategori),
-            nama_kategori: String(nama_kategori),
+
+        await kategoriCollection.insertOne({
+            userId,
+            idKategori,
+            nama_kategori,
         });
 
         return NextResponse.json(
@@ -55,18 +79,18 @@ export async function POST(req: NextRequest) {
                     nama_kategori,
                 },
             },
-            { status: 201 },
+            { status: 201 }
         );
     } catch (error) {
         console.error("Error processing category:", error);
         return NextResponse.json(
             { success: false, message: "Terjadi kesalahan saat memproses category" },
-            { status: 500 },
+            { status: 500 }
         );
     }
 }
 
-export async function GET(req:NextRequest) {
+export async function GET(req: NextRequest) {
     try {
         const token = req.cookies.get("token")?.value;
         if (!token) {
@@ -75,28 +99,32 @@ export async function GET(req:NextRequest) {
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
+
+        if (!payload || !payload.userId) {
+            return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+        }
+
         const userId = String(payload.userId);
 
-        // Mengambil instance client MongoDB
         const client = await clientPromise;
-        // Menghubungkan ke database
         const db = client.db(process.env.MONGODB_DATABASE);
-        // Mengakses koleksi "category"
         const categoryCollection = db.collection("category");
+
         const categories = await categoryCollection.find({ userId }).toArray();
+
         return NextResponse.json(
             {
                 success: true,
                 message: "Data Category berhasil diambil",
                 data: categories,
             },
-            { status: 200 },
+            { status: 200 }
         );
     } catch (error) {
         console.error("Error processing category:", error);
         return NextResponse.json(
             { success: false, message: "Terjadi kesalahan saat memproses category" },
-            { status: 500 },
+            { status: 500 }
         );
     }
 }

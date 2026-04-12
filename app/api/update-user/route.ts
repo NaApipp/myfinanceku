@@ -1,15 +1,65 @@
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
+import z from "zod";
 
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { first_name, last_name, email, no_hp, username } = body;
 
+    const registerSchema = z.object({
+          first_name: z
+            .string()
+            .trim()
+            .min(1, "Nama depan harus diisi")
+            .regex(/^[^0-9]*$/, {
+              message: "Nama Tidak boleh mengandung angka",
+            }),
+          last_name: z
+            .string()
+            .trim()
+            .min(1, "Nama belakang harus diisi")
+            .regex(/^[^0-9]*$/, {
+              message: "Nama Tidak boleh mengandung angka",
+            }),
+
+          // Validasi Email
+          email: z.string().trim().email("Format email tidak valid"),
+    
+          // Validasi Username
+          username: z
+            .string()
+            .trim()
+            .min(5, "Username minimal 5 karakter")
+            .max(30, "Username maksimal 30 karakter")
+            .regex(/^[a-zA-Z0-9_]+$/, {
+              message: "Hanya boleh mengandung huruf, angka, dan underscore",
+            }),
+    
+          // Validasi No Hp
+          no_hp: z
+            .string()
+            .trim()
+            .min(10, "Nomor HP minimal 10 digit")
+            .regex(/^[0-9]+$/, {
+              message: "Hanya boleh mengandung angka",
+            }),
+        });
+    
+        const validation = registerSchema.safeParse(body);
+
     // Ambil token dari body atau cookie
     const token = body.token || request.cookies.get("token")?.value;
-
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          message: validation.error.issues[0].message,
+          errors: validation.error.issues,
+        },
+        { status: 400 },
+      );
+    }
     if (!token) {
       return NextResponse.json(
         { message: "Token tidak ditemukan, silakan login kembali" },
@@ -168,4 +218,4 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
+

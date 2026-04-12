@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
+import z from "zod";
 
 export async function DELETE(
   req: NextRequest,
@@ -74,7 +75,33 @@ export async function PUT(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
     const transaksiCollection = db.collection("account-card");
-    
+
+    const registerSchema = z.object({
+      type_asset: z.string().min(1, "Tipe asset wajib diisi"),
+      nama_asset: z.string().min(1, "Nama asset wajib diisi"),
+      saldo_awal: z.coerce
+        .number()
+        .positive("Saldo tidak boleh negatif")
+        .min(1, "Saldo awal wajib diisi"),
+
+      nama_akun: z
+        .string()
+        .regex(/^[a-zA-Z0-9]+$/, {
+          message: "Hanya boleh mengandung huruf, angka",
+        })
+        .optional(),
+    });
+
+    const validation = registerSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { message: validation.error.issues[0].message },
+        { status: 400 },
+      );
+    }
+
+    const { type_asset, nama_asset, saldo_awal, nama_akun } = validation.data;
     // Hapus _id dari body jika ada untuk menghindari error saat update
     const { _id, ...updateData } = body;
 

@@ -1,6 +1,7 @@
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
+import z from "zod";
 
 export async function POST(req: NextRequest) {
     try {
@@ -14,14 +15,32 @@ export async function POST(req: NextRequest) {
         const userId = String(payload.userId);
 
         const body = await req.json();
-        const {
-            nama_anggaran,
-            kategori_anggaran,
-            limit_anggaran,
-            periode_anggaran,
-        } = body;
 
-        if (!nama_anggaran || !kategori_anggaran || !limit_anggaran || !periode_anggaran) {
+        const registerSchema = z.object({
+            nama_anggaran: z.string().min(1, "Nama anggaran wajib diisi"),
+            kategori_anggaran: z.string().min(1, "Kategori anggaran wajib diisi"),
+            limit_anggaran: z.coerce
+                .number()
+                .positive("Limit anggaran tidak boleh negatif")
+                .min(1, "Limit anggaran wajib diisi"),
+            periode_anggaran: z.string().min(1, "Periode anggaran wajib diisi").refine((val) => {
+                const input = new Date(val);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return input >= today;
+            }, { message: "Periode anggaran tidak boleh kurang dari hari ini" }),
+        });
+
+        const validation = registerSchema.safeParse(body);
+
+        if (!validation.success) {
+            return NextResponse.json(
+                { message: validation.error.issues[0].message },
+                { status: 400 },
+            );
+        }
+
+        if (!validation) {
             return NextResponse.json(
                 { message: "Semua field wajib diisi" },
                 { status: 400 },
@@ -37,10 +56,7 @@ export async function POST(req: NextRequest) {
         const anggaranData = await anggaranCollection.insertOne({
             userId: String(userId),
             idAnggaran: String(idAnggaran),
-            nama_anggaran: String(nama_anggaran),
-            kategori_anggaran: String(kategori_anggaran),
-            limit_anggaran: Number(limit_anggaran),
-            periode_anggaran: String(periode_anggaran),
+            ...validation.data,
         });
 
         return NextResponse.json(
@@ -49,10 +65,7 @@ export async function POST(req: NextRequest) {
                 message: "Anggaran berhasil ditambahkan",
                 data: {
                     idAnggaran,
-                    nama_anggaran,
-                    kategori_anggaran,
-                    limit_anggaran,
-                    periode_anggaran,
+                    ...validation.data,
                 },
             },
             { status: 201 },
