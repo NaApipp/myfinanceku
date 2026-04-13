@@ -57,8 +57,8 @@ export default function ProfilPengguna() {
             {/* Container fullname and email */}
             <div className="grid grid-cols-1 md:grid-cols-2 mt-8 gap-6">
                 <div className="flex flex-col gap-3">
-                    <label htmlFor="full_name" className="text-xs uppercase font-bold text-gray-400 tracking-widest">Nama Lengkap</label>
-                    <input type="text" name="full_name" id="full_name" value={user?.full_name} readOnly className="border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 bg-gray-50 dark:bg-white/5 font-medium text-black dark:text-white" disabled />
+                    <label htmlFor="full_name" className="text-xs uppercase font-bold text-gray-400 tracking-widest">Username</label>
+                    <input type="text" name="full_name" id="full_name" value={user?.username} readOnly className="border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 bg-gray-50 dark:bg-white/5 font-medium text-black dark:text-white" disabled />
                 </div>
                 <div className="flex flex-col gap-3">
                     <label htmlFor="email" className="text-xs uppercase font-bold text-gray-400 tracking-widest">Alamat Email</label>
