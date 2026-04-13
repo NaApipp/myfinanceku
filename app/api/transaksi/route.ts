@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import { createTransaction } from "@/app/lib/transactionService";
+import { z } from "zod";
+
+const transaksiSchema = z.object({
+  type_transaksi: z.string().min(1, "Tipe transaksi wajib diisi"),
+  nominal_transaksi: z.coerce
+    .number({ message: "Nominal harus berupa angka" })
+    .positive("Nominal harus lebih dari 0"),
+  tanggal_transaksi: z.string().min(1, "Tanggal transaksi wajib diisi"),
+  kategori: z.string().min(1, "Kategori wajib diisi"),
+  sumberdana: z.string().min(1, "Sumber dana wajib diisi"),
+  description: z.string().optional().or(z.literal("")),
+});
 
 // export async function POST(req: NextRequest) {
 //   try {
@@ -123,7 +135,17 @@ export async function POST(req: NextRequest) {
     // Generate unique ID using random string to avoid collisions if transactions are deleted
     const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
     const idTransaksi = `TRX-${userId.slice(-4)}-${uniqueId}`;
+    
     const body = await req.json();
+    const validation = transaksiSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json(
+        { message: validation.error.issues[0].message },
+        { status: 400 }
+      );
+    }
+
     const {
       type_transaksi,
       nominal_transaksi,
@@ -131,21 +153,14 @@ export async function POST(req: NextRequest) {
       kategori,
       sumberdana: idAccount,
       description,
-    } = body;
-
-    if (!type_transaksi || !nominal_transaksi || !tanggal_transaksi || !kategori || !idAccount) {
-      return NextResponse.json(
-        { message: "Semua field wajib diisi" },
-        { status: 400 }
-      );
-    }
+    } = validation.data;
 
     const result = await createTransaction({
       userId,
-      idAccount,
+      idAccount: idAccount as string,
       idTransaksi,
       type_transaksi,
-      nominal_transaksi: Number(nominal_transaksi),
+      nominal_transaksi,
       tanggal_transaksi,
       kategori,
       description,
