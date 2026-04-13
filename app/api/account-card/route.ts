@@ -33,13 +33,7 @@ export async function POST(req: NextRequest) {
         .positive("Saldo tidak boleh negatif")
         .min(1, "Saldo awal wajib diisi"),
 
-      nama_akun: z
-        .string()
-        .min(5, "Nama akun minimal 5 karakter")
-        .regex(/^[a-zA-Z0-9]+$/, {
-          message: "Hanya boleh mengandung huruf, angka",
-        })
-        .optional(),
+      nama_akun: z.string(),
     });
 
     const validation = registerSchema.safeParse(body);

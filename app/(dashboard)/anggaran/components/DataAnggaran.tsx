@@ -92,7 +92,9 @@ export default function DataAnggaran() {
   const [editFormData, setEditFormData] = useState<Anggaran | null>(null);
 
   const handleEditClick = (item: Anggaran) => {
-    setEditFormData(item);
+    // Format tanggal ke YYYY-MM-DD untuk input type="date"
+    const formattedDate = item.periode_anggaran.split("T")[0];
+    setEditFormData({ ...item, periode_anggaran: formattedDate });
     setIsUpdateModalOpen(true);
   };
 
@@ -110,6 +112,7 @@ export default function DataAnggaran() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nama_anggaran: editFormData.nama_anggaran,
+          kategori_anggaran: editFormData.kategori_anggaran,
           limit_anggaran: Number(editFormData.limit_anggaran),
           periode_anggaran: editFormData.periode_anggaran,
         }),
@@ -303,6 +306,30 @@ export default function DataAnggaran() {
                   className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black text-black dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-400 uppercase">
+                  Kategori Anggaran
+                </label>
+                <select
+                  value={editFormData.kategori_anggaran}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      kategori_anggaran: e.target.value,
+                    })
+                  }
+                  className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black text-black dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  required
+                >
+                  <option value="">Pilih Kategori</option>
+                  {Object.entries(categories).map(([id, name]) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-2">

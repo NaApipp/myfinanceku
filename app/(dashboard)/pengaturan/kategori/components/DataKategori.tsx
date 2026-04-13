@@ -133,7 +133,7 @@ export default function DataKategori() {
             <tbody>
               {data.map((item, index) => (
                 <tr key={item.idKategori || index}>
-                  <td className="px-4 py-2 text-left text-sm font-semibold text-black">
+                  <td className="px-4 py-2 text-left text-sm font-semibold text-black dark:text-white">
                     {item.nama_kategori}
                   </td>
                   <td className="px-6 py-4">
@@ -208,7 +208,7 @@ export default function DataKategori() {
                     type="text"
                     value={newNamaKategori}
                     onChange={(e) => setNewNamaKategori(e.target.value)}
-                    className="w-full text-black px-4 py-3 rounded-2xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
+                    className="w-full text-black dark:text-white px-4 py-3 rounded-2xl bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium"
                     placeholder="Masukkan nama kategori..."
                     autoFocus
                   />

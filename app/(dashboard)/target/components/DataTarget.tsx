@@ -37,16 +37,14 @@ export default function DataTarget() {
     prioritas: "",
     description: "",
   });
-  useEffect(() => {
-    fetchTargets();
-  }, []);
+ 
 
   const fetchTargets = async () => {
     try {
       const response = await fetch("/api/target");
       const result = await response.json();
       if (result.success) {
-        setData(result.targets || []);
+        setData(result.data || []);
       }
     } catch (error) {
       console.error("Error fetching targets:", error);
@@ -54,6 +52,9 @@ export default function DataTarget() {
       setLoading(false);
     }
   };
+   useEffect(() => {
+    fetchTargets();
+  }, []);
 
   const handleDelete = async () => {
     if (!targetToDelete) return;

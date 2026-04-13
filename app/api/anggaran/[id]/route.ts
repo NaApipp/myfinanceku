@@ -73,12 +73,7 @@ export async function PUT(
         .number()
         .positive("Limit anggaran tidak boleh negatif")
         .min(1, "Limit anggaran wajib diisi"),
-      periode_anggaran: z.string().min(1, "Periode anggaran wajib diisi").refine((val) => {
-        const input = new Date(val);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return input >= today;
-      }, { message: "Periode anggaran tidak boleh kurang dari hari ini" }),
+      periode_anggaran: z.string().min(1, "Periode anggaran wajib diisi"),
     });
 
     const validation = anggaranSchema.safeParse(body);

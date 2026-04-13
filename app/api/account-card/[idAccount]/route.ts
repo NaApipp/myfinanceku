@@ -84,12 +84,7 @@ export async function PUT(
         .positive("Saldo tidak boleh negatif")
         .min(1, "Saldo awal wajib diisi"),
 
-      nama_akun: z
-        .string()
-        .regex(/^[a-zA-Z0-9]+$/, {
-          message: "Hanya boleh mengandung huruf, angka",
-        })
-        .optional(),
+      nama_akun: z.string(),
     });
 
     const validation = registerSchema.safeParse(body);
