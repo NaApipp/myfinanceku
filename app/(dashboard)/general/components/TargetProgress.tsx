@@ -22,9 +22,9 @@ export default function TargetProgress() {
       try {
         const response = await fetch("/api/target");
         const result = await response.json();
-        if (result.success && result.targets && result.targets.length > 0) {
+        if (result.success && result.data && result.data.length > 0) {
           // Get the most prioritized target or just the first one
-          setTarget(result.targets[0]);
+          setTarget(result.data[0]);
         }
       } catch (error) {
         console.error("Error fetching target:", error);
