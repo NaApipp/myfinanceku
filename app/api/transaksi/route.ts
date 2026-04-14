@@ -196,23 +196,38 @@ export async function GET(req: NextRequest) {
     const { payload } = await jwtVerify(token, secret);
     const userId = payload.userId as string;
 
-    // Ambil query parameters untuk pagination
+    // Ambil query parameters untuk pagination dan filter
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
     const skip = (page - 1) * limit;
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
     const transaksiCollection = db.collection("transaksi");
 
-    // Hitung total data untuk pagination
-    const totalItems = await transaksiCollection.countDocuments({ userId });
+    // Bangun query filter
+    const query: any = { userId };
+    
+    if (startDate || endDate) {
+      query.tanggal_transaksi = {};
+      if (startDate) {
+        query.tanggal_transaksi.$gte = startDate;
+      }
+      if (endDate) {
+        query.tanggal_transaksi.$lte = endDate;
+      }
+    }
+
+    // Hitung total data untuk pagination sesuai filter
+    const totalItems = await transaksiCollection.countDocuments(query);
     const totalPages = Math.ceil(totalItems / limit);
 
-    // Ambil data dengan sorting, skip, dan limit
+    // Ambil data dengan sorting, skip, limit, dan filter
     const transaksi = await transaksiCollection
-      .find({ userId })
+      .find(query)
       .sort({ tanggal_transaksi: -1 }) // Terbaru dulu
       .skip(skip)
       .limit(limit)
