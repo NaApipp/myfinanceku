@@ -62,7 +62,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="flex h-screen w-64 flex-col justify-between border-e bg-[#FAFAFA] dark:bg-neutral-950 border-gray-200 dark:border-white/5 transition-colors duration-300">
+    <div className="hidden lg:flex h-screen w-64 flex-col justify-between border-e bg-[#FAFAFA] dark:bg-neutral-950 border-gray-200 dark:border-white/5 transition-colors duration-300">
       <div className="px-4 py-6">
         <Link href="/general" className="flex items-center gap-2 ml-4 text-lg text-gray-700 dark:text-gray-200">
           <Image src="/icon/logo.png" alt="Logo" width={45} height={45} />
