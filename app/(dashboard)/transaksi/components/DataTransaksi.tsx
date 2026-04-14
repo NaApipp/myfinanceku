@@ -183,8 +183,10 @@ export default function DataTransaksi() {
             </div>
           </div>
           
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          {/* Filter Transaksi bY Range Transaction Date*/}
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto mt-3 md:mt-0">
             <div className="relative flex-1 md:flex-initial">
+              <label htmlFor="startDate" className="block text-xs font-bold text-gray-900 dark:text-white mb-2">Dari Tanggal</label>
               <input
                 type="date"
                 value={startDate}
@@ -192,12 +194,12 @@ export default function DataTransaksi() {
                   setStartDate(e.target.value);
                   setPage(1);
                 }}
-                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
+                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
                 placeholder="Dari Tanggal"
               />
             </div>
-            <div className="text-gray-400 dark:text-gray-600 font-medium hidden sm:block">sampai</div>
             <div className="relative flex-1 md:flex-initial">
+              <label htmlFor="endDate" className="block mb-2 text-xs font-bold text-gray-900 dark:text-white">Sampai Tanggal</label>
               <input
                 type="date"
                 value={endDate}
@@ -205,7 +207,7 @@ export default function DataTransaksi() {
                   setEndDate(e.target.value);
                   setPage(1);
                 }}
-                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
+                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
                 placeholder="Sampai Tanggal"
               />
             </div>
@@ -213,7 +215,7 @@ export default function DataTransaksi() {
             {(startDate || endDate) && (
               <button
                 onClick={handleResetFilter}
-                className="p-2.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all group"
+                className="p-2.5 mt-4 md:mt-0 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all group"
                 title="Reset Filter"
               >
                 <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />

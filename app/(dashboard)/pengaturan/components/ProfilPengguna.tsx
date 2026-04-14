@@ -43,9 +43,9 @@ export default function ProfilPengguna() {
 
         <div className="text-black dark:text-white flex flex-col bg-white dark:bg-neutral-900 rounded-[32px] shadow-md p-8 border border-gray-100 dark:border-white/5 transition-colors duration-300">
             {/* fullname, email, level */}
-            <div className="flex items-center gap-5">
+            <div className="flex flex-col md:flex-row items-center gap-5">
                 <User className="bg-slate-200 p-2 rounded-full text-white" width={100} height={100}/>
-                <div className="text-black dark:text-white flex flex-col gap-2">
+                <div className="text-black dark:text-white flex flex-col items-center md:items-start gap-2">
                     <p className="text-2xl font-black">{user?.full_name}</p>
                     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{user?.no_hp}</p>
                     <div className={`mt-1 w-min inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-widest ${getLevelStyle(user?.level || "")}`}>

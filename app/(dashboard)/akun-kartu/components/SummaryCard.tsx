@@ -65,7 +65,7 @@ export default function SummaryCard() {
   return (
     <div className="relative overflow-hidden bg-black dark:bg-neutral-900 border border-white/5 p-8 rounded-[40px] shadow-2xl text-white group">
       <div className="absolute top-0 right-0 p-8">
-        <div className="p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10 group-hover:scale-110 transition-transform duration-500">
+        <div className="p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/10 group-hover:scale-110 transition-transform duration-500 hidden md:block">
           <Wallet className="w-8 h-8 text-white" />
         </div>
       </div>
