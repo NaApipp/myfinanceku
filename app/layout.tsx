@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionTimeoutHandler from "@/app/components/SessionTimeoutHandler";
 
+import SWRegister from "./sw-register";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,10 +30,10 @@ const geistMono = Geist_Mono({
 // app/layout.js atau layout.tsx
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
-  themeColor: '#ffffff',
-}
+  themeColor: "#ffffff",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://myfinanceku.vercel.app"),
@@ -41,8 +43,12 @@ export const metadata: Metadata = {
     template: "%s | MyFinanceKu", // Format judul untuk tiap halaman
   },
 
+  // Manifest Setup
+  manifest: "/manifest.json",
+
   // Deskripsi website (penting untuk SEO)
-  description: "Aplikasi pencatat keuangan pribadi yang user friendly. Mari kurasi masa depan finansial anda bersama MyFinanceKu",
+  description:
+    "Aplikasi pencatat keuangan pribadi yang user friendly. Mari kurasi masa depan finansial anda bersama MyFinanceKu",
 
   // Keyword untuk SEO (opsional, tidak terlalu berpengaruh di search engine modern)
   keywords: [
@@ -103,8 +109,6 @@ export const metadata: Metadata = {
     ],
     apple: "/icon/logo.png", // icon untuk iOS
   },
-
-
 
   // Open Graph (untuk share ke Facebook, LinkedIn, dll)
   openGraph: {
@@ -179,6 +183,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <SWRegister /> 
         {children}
         <SessionTimeoutHandler />
       </body>

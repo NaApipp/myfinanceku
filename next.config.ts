@@ -1,12 +1,29 @@
 import type { NextConfig } from "next";
 
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+  register: true,
+  skipWaiting: true,
+  fallbacks: {
+    document: '/offline'
+  }
+});
+
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com',
+      },
+    ],
+  },
+  experimental: {
+    // any other experimental features
+  }
 };
 
-module.exports = {
-  allowedDevOrigins: ['192.168.18.11'],
-}
-
-export default nextConfig;
+export default withPWA(nextConfig);
