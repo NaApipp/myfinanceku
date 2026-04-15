@@ -5,7 +5,6 @@ import SessionTimeoutHandler from "@/app/components/SessionTimeoutHandler";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
-import SWRegister from "./sw-register";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -187,7 +186,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <SWRegister /> 
         {children}
         <SessionTimeoutHandler />
       </body>
