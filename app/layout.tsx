@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionTimeoutHandler from "@/app/components/SessionTimeoutHandler";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import OfflineHandler from "@/app/components/OfflineHandler";
 
 
 const geistSans = Geist({
@@ -16,24 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
-const router = useRouter();
-
-  useEffect(() => {
-    function handleOffline() {
-      router.push("/offline");
-    }
-
-    if (!navigator.onLine) {
-      router.push("/offline");
-    }
-
-    window.addEventListener("offline", handleOffline);
-
-    return () => {
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -186,6 +167,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <OfflineHandler />
         {children}
         <SessionTimeoutHandler />
       </body>
