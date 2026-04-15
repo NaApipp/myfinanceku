@@ -1,13 +1,16 @@
-import type { NextConfig } from "next";
+// next.config.ts
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
+import type { NextConfig } from "next";
+import withPWAInit from "next-pwa";
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
   fallbacks: {
-    document: '/offline'
-  }
+    document: "/offline",
+  },
 });
 
 const nextConfig: NextConfig = {

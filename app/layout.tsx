@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
 
   // Manifest Setup
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
 
   // Deskripsi website (penting untuk SEO)
   description:
