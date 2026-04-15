@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Halaman yang tidak perlu login
-  const publicRoutes = ["/login", "/register", "/"]
+  const publicRoutes = ["/login", "/register", "/", "/coming-soon", "/maintenance"]
   const isPublicRoute = publicRoutes.includes(pathname)
 
   // 1. Jika TIDAK ada token
