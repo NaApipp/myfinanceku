@@ -50,9 +50,6 @@ export const metadata: Metadata = {
     template: "%s | MyFinanceKu", // Format judul untuk tiap halaman
   },
 
-  // Manifest Setup
-  manifest: "/manifest.webmanifest",
-
   // Deskripsi website (penting untuk SEO)
   description:
     "Aplikasi pencatat keuangan pribadi yang user friendly. Mari kurasi masa depan finansial anda bersama MyFinanceKu",
