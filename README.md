@@ -1,40 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyFinanceKu
 
-## Getting Started
+MyFinanceKu adalah sebuah **Web Application** yang dirancang untuk membantu pengelolaan sistem keuangan secara terorganisir dan efisien. Aplikasi ini menyediakan sistem manajemen keuangan yang terstruktur dengan dukungan **multi-role user**, sehingga setiap pengguna memiliki hak akses dan kemampuan yang berbeda sesuai dengan perannya.
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+MyFinanceKu dibangun menggunakan **Next.js** sebagai framework utama untuk pengembangan aplikasi web modern dan **MongoDB** sebagai sistem manajemen basis data yang stabil dan scalable.
 
 ---
 
 ## User Testing
+
 **USER 1**
 
 - `Username: user_testing`
 - `Password: Testing1#`
 
-
 **USER 2**
 
 - `Username: testing_user`
 - `Password: Testing1#`
-
-
 
 ---
 
@@ -47,6 +29,44 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 - **Database**: (MongoDB)
 - **Deployment**: (Vercel)
 - **Version**: (3.0.0)
+
+---
+
+# 4. 🚀 Instalasi
+
+### Prasyarat
+
+- Node.js 18+
+- npm atau yarn
+- Akun MongoDB Atlas (untuk database)
+
+### Langkah-langkah
+
+1. **Clone repository**
+
+   ```bash
+   git clone https://github.com/NaApipp/myfinanceku.git myfinaneku
+   cd myfinanceku
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Setup environment variables**
+
+   Buat file `.env` di root folder:
+
+   ```env
+   MONGODB_URI=
+   MONGODB_DATABASE=
+   AUTH_SECRET=
+   JWT_SECRET=
+   RESEND_API_KEY=
+   NEXT_PUBLIC_APP_URL=
+   ```
 
 ---
 
@@ -74,37 +94,68 @@ Internal API documentation available for data interaction:
 
 ### Auth
 
-| Method | Endpoint             | Description                       |
-| :----- | :------------------- | :-------------------------------- |
-| `POST` | `/api/auth/login`    | Create a new login data entry.    |
-| `POST` | `/api/auth/register` | Create a new register data entry. |
-| `POST` | `/api/auth/logout`   | Delete a new logout data entry.   |
+| Method | Endpoint                    | Description                       |
+| :----- | :-------------------------- | :-------------------------------- |
+| `POST` | `/api/auth/login`           | Create a new login data entry.    |
+| `POST` | `/api/auth/register`        | Create a new register data entry. |
+| `POST` | `/api/auth/logout`          | Delete a new logout data entry.   |
+| `POST` | `/api/auth/forgot-password` | Delete a new logout data entry.   |
+| `POST` | `/api/auth/reset-password`  | Delete a new logout data entry.   |
 
 ### Change Password
 
-| Method | Endpoint               | Description                              |
-| :----- | :--------------------- | :--------------------------------------- |
+| Method | Endpoint                        | Description                              |
+| :----- | :------------------------------ | :--------------------------------------- |
 | `POST` | `/api/settings/change-password` | Create a new change password data entry. |
 
 ### Change Data User
 
-| Method | Endpoint                | Description             |
-| :----- | :---------------------- | :---------------------- |
-| `POST` | `/api/settings/change-data-user` | Update data user entry. |
+| Method | Endpoint           | Description             |
+| :----- | :----------------- | :---------------------- |
+| `POST` | `/api/update-user` | Update data user entry. |
 
 ### Transaksi
 
-| Method    | Endpoint             | Description                        |
-| :-------- | :------------------- | :--------------------------------- |
-| `POST`    | `/api/transaksi`     | Create a new transaction.          |
-| `GET`     | `/api/transaksi`     | Get all transactions.              |
-| `DELETE`  | `/api/transaksi/:id` | Delete transaction by id.          |
+| Method   | Endpoint             | Description               |
+| :------- | :------------------- | :------------------------ |
+| `POST`   | `/api/transaksi`     | Create a new transaction. |
+| `GET`    | `/api/transaksi`     | Get all transactions.     |
+| `DELETE` | `/api/transaksi/:id` | Delete transaction by id. |
 
 ### Account & Card
 
-| Method    | Endpoint                | Description                        |
-| :-------- | :---------------------- | :--------------------------------- |
-| `POST`   | `/api/account-card`     | Create a new account or card.      |
-| `GET`    | `/api/account-card`     | Get all accounts and cards.        |
-| `DELETE` | `/api/account-card/:id` | Delete account or card by id.      |
-| `PUT`    | `/api/account-card/:id` | Update account or card by id.      |
+| Method   | Endpoint                | Description                   |
+| :------- | :---------------------- | :---------------------------- |
+| `POST`   | `/api/account-card`     | Create a new account or card. |
+| `GET`    | `/api/account-card`     | Get all accounts and cards.   |
+| `DELETE` | `/api/account-card/:id` | Delete account or card by id. |
+| `PUT`    | `/api/account-card/:id` | Update account or card by id. |
+
+### Target
+
+| Method   | Endpoint                | Description          |
+| :------- | :---------------------- | :------------------- |
+| `POST`   | `/api/target`           | Create a new target. |
+| `GET`    | `/api/target`           | Get all targets.     |
+| `DELETE` | `/api/target/:idTarget` | Delete target by id. |
+| `PUT`    | `/api/target/:idTarget` | Update target by id. |
+
+### Anggaran
+
+| Method   | Endpoint            | Description            |
+| :------- | :------------------ | :--------------------- |
+| `POST`   | `/api/anggaran`     | Create a new anggaran. |
+| `GET`    | `/api/anggaran`     | Get all anggaran.      |
+| `DELETE` | `/api/anggaran/:id` | Delete anggaran by id. |
+| `PUT`    | `/api/anggaran/:id` | Update anggaran by id. |
+
+### Kategori
+
+| Method   | Endpoint                    | Description            |
+| :------- | :-------------------------- | :--------------------- |
+| `POST`   | `/api/kategori`             | Create a new kategori. |
+| `GET`    | `/api/kategori`             | Get all kategori.      |
+| `DELETE` | `/api/kategori/:idKategori` | Delete kategori by id. |
+| `PUT`    | `/api/kategori/:idKategori` | Update kategori by id. |
+
+---
