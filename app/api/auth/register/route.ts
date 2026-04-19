@@ -48,10 +48,10 @@ export async function POST(req: NextRequest) {
       password: z
         .string()
         .min(6, "Password minimal 6 karakter")
-        .regex(/[A-Z]/, "Harus ada huruf besar")
-        .regex(/[a-z]/, "Harus ada huruf kecil")
-        .regex(/[0-9]/, "Harus ada angka")
-        .regex(/[^A-Za-z0-9]/, "Harus ada simbol"),
+        .regex(/[A-Z]/, "Password harus mengandung huruf besar")
+        .regex(/[a-z]/, "Password harus mengandung huruf kecil")
+        .regex(/[0-9]/, "Password harus mengandung angka")
+        .regex(/[^A-Za-z0-9]/, "Password harus mengandung simbol"),
 
       // Validasi Username
       username: z
@@ -73,6 +73,16 @@ export async function POST(req: NextRequest) {
         }),
         
       level: z.string(),
+
+      // Validasi Term On Service
+      term_on_service: z.boolean().refine((value) => value === true, {
+        message: "Anda harus menyetujui syarat dan ketentuan",
+      }),
+
+      // Validasi Term On Privacy
+      privacy_policy: z.boolean().refine((value) => value === true, {
+        message: "Anda harus menyetujui kebijakan privasi",
+      }),
     });
 
     const validation = registerSchema.safeParse(body);
@@ -127,6 +137,10 @@ export async function POST(req: NextRequest) {
       username,
       no_hp,
       level,
+      agreements: {
+        term_on_service: validation.data.term_on_service,
+        privacy_policy: validation.data.privacy_policy,
+      },
       createdAt: formattedDate,
     });
 

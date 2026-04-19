@@ -4,7 +4,8 @@
 
   import Link from "next/link";
 
-
+  import TermOnService from "@/app/components/doc/TermOnService";
+  import PrivacyPolicy from "@/app/components/doc/PrivacyPolicy";
 
   export default function RegistrasiForm() {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,8 @@
       username: '',
       no_hp: '',
       level: 'basic',
+      term_on_service: false,
+      privacy_policy: false,
     });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,7 +44,7 @@
         }
 
         setMessage({ type: 'success', text: 'Registrasi berhasil! Silakan login.' });
-        setFormData({ first_name: '', last_name: '', email: '', password: '', username: '', no_hp: '', level: 'basic' });
+        setFormData({ first_name: '', last_name: '', email: '', password: '', username: '', no_hp: '', level: 'basic', term_on_service: false, privacy_policy: false });
       } catch (error: any) {
         setMessage({ type: 'error', text: error.message });
       } finally {
@@ -175,6 +178,32 @@
             />
           </div>
 
+          {/* Terms On Serviece */}
+          <div className="flex flex-row items-center gap-2">
+            <input  
+              checked={formData.term_on_service}
+              onChange={(e) => setFormData({ ...formData, term_on_service: e.target.checked })}
+              type="checkbox"
+              className="text-black w-4 h-4 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+            />
+            <label className="text-sm font-semibold text-slate-500 flex">
+              Saya menyetujui <TermOnService />
+            </label>
+          </div>
+
+          {/* Privacy policy */}
+          <div className="flex flex-row items-center gap-2">
+            <input
+              checked={formData.privacy_policy}
+              onChange={(e) => setFormData({ ...formData, privacy_policy: e.target.checked })}
+              type="checkbox"
+              className="text-black w-4 h-4 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+            />
+            <label className="text-sm font-semibold text-slate-500 flex items-center">
+              Saya menyetujui <PrivacyPolicy />
+            </label>
+          </div>
+
           <button
             disabled={isLoading}
             className="w-full h-12 mt-4 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
@@ -197,7 +226,7 @@
         <div className="mt-8 relative hidden">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-200"></div>
-          </div>
+          </div>  
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-white px-3 text-slate-500 font-medium">Atau daftar dengan</span>
           </div>
