@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     const user = await usersCollection.findOne({ username });
     if (!user) {
       return NextResponse.json(
-        { message: "User tidak ditemukan" },
+        { message: "Username atau Passwordd salah" },
         { status: 404 },
       );
     }
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     // Verifikasi password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return NextResponse.json({ message: "Password salah" }, { status: 401 });
+      return NextResponse.json({ message: "Username atau Password salah" }, { status: 401 });
     }
 
     // Generate JWT
