@@ -27,22 +27,33 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const registerSchema = z.object({
+      // First Name
       first_name: z
         .string()
         .trim()
         .min(1, "Nama depan harus diisi")
+        .max(50, "Nama depan maksimal 50 karakter")
         .regex(/^[^0-9]*$/, {
           message: "Nama Tidak boleh mengandung angka",
         }),
+      // Last Name
       last_name: z
         .string()
         .trim()
         .min(1, "Nama belakang harus diisi")
+        .max(50, "Nama belakang maksimal 50 karakter")
         .regex(/^[^0-9]*$/, {
           message: "Nama Tidak boleh mengandung angka",
         }),
       // Validasi Email
-      email: z.string().trim().email("Format email tidak valid"),
+      email: z
+        .string()
+        .trim()
+        .email("Format email tidak valid")
+        .endsWith(
+          "@gmail.com",
+          "Email hanya bisa menggunakan domain @gmail.com",
+        ),
 
       // Validasi Password
       password: z
@@ -60,7 +71,17 @@ export async function POST(req: NextRequest) {
         .min(5, "Username minimal 5 karakter")
         .max(30, "Username maksimal 30 karakter")
         .regex(/^[a-zA-Z0-9_]+$/, {
-          message: "Hanya boleh mengandung huruf, angka, dan underscore",
+          message: "Username hanya boleh mengandung huruf, angka, dan underscore",
+        })
+        .refine((val) => !val.includes(" "), {
+          message: "Username tidak boleh berisi spasi",
+        })
+        .refine((val) => val === val.trim(), {
+          message: "Username tidak boleh diawali atau diakhiri spasi",
+        })
+        // Validasi Tidak Boleh Hanya Angka
+        .refine((val) => !/^\d+$/.test(val), {
+          message: "Username tidak boleh hanya angka",
         }),
 
       // Validasi No Hp
@@ -68,10 +89,25 @@ export async function POST(req: NextRequest) {
         .string()
         .trim()
         .min(10, "Nomor HP minimal 10 digit")
-        .regex(/^[0-9]+$/, {
-          message: "Hanya boleh mengandung angka",
+        .max(15, "Nomor HP maksimal 15 digit")
+        // Validasi Hanya Angka
+        .refine((val) => /^\+?\d+$/.test(val), {
+          message: "Nomor HP hanya boleh angka",
+        })
+        // Validasi Awalan 08, 62, atau +62
+        .refine((val) => /^(08|62|\+62)/.test(val), {
+          message: "Format tidak valid (tidak diawali 08/62)",
+        })
+        // Validasi Leading Zero Berlebih
+        .refine((val) => !/^0{2,}/.test(val), {
+          message: "Format tidak valid (leading zero berlebih)",
+        })
+        // Validasi Spasi Di Awal dan Akhir
+        .refine((val) => val === val.trim(), {
+          message: "Nomor HP tidak boleh diawali atau diakhiri spasi",
         }),
-        
+
+      // Validasi Level
       level: z.string(),
 
       // Validasi Term On Service
