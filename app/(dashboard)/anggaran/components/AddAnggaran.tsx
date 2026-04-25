@@ -13,7 +13,7 @@ export default function FormAddAnggaran() {
   const [formData, setFormData] = useState({
     nama_anggaran: "",
     kategori_anggaran: "",
-    limit_anggaran: 0,
+    limit_anggaran: "" as string,
     periode_anggaran: "",
   });
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -37,6 +37,23 @@ export default function FormAddAnggaran() {
     }
   };
 
+
+  // Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
+
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      limit_anggaran: formatRupiah(value),
+    }));
+  };
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
@@ -49,13 +66,19 @@ export default function FormAddAnggaran() {
     setLoading(true);
     setMessage({ type: "", text: "" });
 
+    // Bersihkan titik dan konversi ke Number sebelum dikirim ke API
+    const cleanData = {
+      ...formData,
+      limit_anggaran: Number(String(formData.limit_anggaran).replace(/\./g, "")) || 0,
+    };
+
     try {
       const response = await fetch("/api/anggaran", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
 
       const data = await response.json();
@@ -68,7 +91,7 @@ export default function FormAddAnggaran() {
         setFormData({
           nama_anggaran: "",
           kategori_anggaran: "",
-          limit_anggaran: 0,
+          limit_anggaran: "",
           periode_anggaran: "",
         });
         // Optional: close modal after success
@@ -184,13 +207,13 @@ export default function FormAddAnggaran() {
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
                       <input
                         required
-                        type="number"
+                        type="text"
                         name="limit_anggaran"
                         id="limit_anggaran"
                         placeholder="0"
                         className="w-full p-4 pl-11 rounded-2xl border border-gray-100 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-bold placeholder:text-gray-300 dark:placeholder:text-gray-600"
-                        value={formData.limit_anggaran || ""}
-                        onChange={handleChange}
+                        value={formData.limit_anggaran}
+                        onChange={handleRupiahChange}
                       />
                     </div>
                   </div>

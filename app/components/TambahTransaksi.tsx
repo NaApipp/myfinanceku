@@ -30,6 +30,22 @@ export default function TambahTransaksi() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  // Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
+
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      nominal_transaksi: formatRupiah(value),
+    }));
+  };
+
   // Combined Fetching for Accounts and Categories
   useEffect(() => {
     setMounted(true);
@@ -88,12 +104,18 @@ export default function TambahTransaksi() {
     setIsSubmitting(true);
 
     try {
+      // Hilangkan titik dan konversi ke Number sebelum dikirim ke API
+      const cleanData = {
+        ...formData,
+        nominal_transaksi: Number(formData.nominal_transaksi.replace(/\./g, "")) || 0,
+      };
+
       const response = await fetch("/api/transaksi", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
 
       const data = await response.json();
@@ -227,13 +249,13 @@ export default function TambahTransaksi() {
                       <div className="flex items-center gap-2">
                         <h1 className="text-black font-bold text-[24px]">Rp</h1>
                         <input
-                          type="number"
+                          type="text"
                           name="nominal_transaksi"
                           id="nominal_transaksi"
                           className="w-full bg-transparent placeholder:text-gray-400 text-black px-1 py-2 text-2xl font-bold focus:outline-none"
                           placeholder="0"
                           value={formData.nominal_transaksi}
-                          onChange={handleChange}
+                          onChange={handleRupiahChange}
                           required
                         />
                       </div>

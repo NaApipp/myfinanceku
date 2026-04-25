@@ -15,7 +15,7 @@ export default function FormAddTarget() {
   const [formData, setFormData] = useState({
     nama_target: "",
     tanggal_target: "",
-    jumlah_target: 0,
+    jumlah_target: "" as string,
     idAccount: "",
     prioritas: "biasa_saja",
     description: "",
@@ -40,7 +40,22 @@ export default function FormAddTarget() {
       console.error("Failed to fetch accounts:", err);
     }
   };
+// Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
 
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      jumlah_target: formatRupiah(value),
+    }));
+  };
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
@@ -53,13 +68,20 @@ export default function FormAddTarget() {
     setLoading(true);
     setMessage({ type: "", text: "" });
 
+    // Gunakan cara yang lebih aman untuk mengambil angka murni
+    const rawValue = String(formData.jumlah_target).replace(/[^0-9]/g, "");
+    const cleanData = {
+      ...formData,
+      jumlah_target: parseInt(rawValue, 10) || 0,
+    };
+
     try {
       const response = await fetch("/api/target", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
 
       const data = await response.json();
@@ -72,7 +94,7 @@ export default function FormAddTarget() {
         setFormData({
           nama_target: "",
           tanggal_target: "",
-          jumlah_target: 0,
+          jumlah_target: "",
           idAccount: "",
           prioritas: "biasa_saja",
           description: "",
@@ -190,13 +212,13 @@ export default function FormAddTarget() {
                       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
                       <input
                         required
-                        type="number"
+                        type="text"
                         name="jumlah_target"
                         id="jumlah_target"
                         placeholder="0"
                         className="w-full p-4 pl-11 rounded-2xl border border-gray-100 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-bold placeholder:text-gray-300 dark:placeholder:text-gray-600"
-                        value={formData.jumlah_target || ""}
-                        onChange={handleChange}
+                        value={formData.jumlah_target}
+                        onChange={handleRupiahChange}
                       />
                     </div>
                   </div>

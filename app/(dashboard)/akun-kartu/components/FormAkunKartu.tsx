@@ -6,19 +6,44 @@ export default function FormAkunKartu() {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     type_asset: "",
-    saldo_awal: 0,
+    saldo_awal: "" as string,
     nama_asset: "",
     nama_akun: "",
   });
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
+
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      saldo_awal: formatRupiah(value),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Hilangkan titik dan konversi ke Number sebelum dikirim ke API
+    const cleanData = {
+      ...formData,
+      saldo_awal: Number(formData.saldo_awal.replace(/\./g, "")) || 0,
+    };
+
     setMessage({ type: "", text: "" });
 
     try {
@@ -27,24 +52,33 @@ export default function FormAkunKartu() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        setMessage({ type: "success", text: data.message || "Asset berhasil disimpan!" });
+        setMessage({
+          type: "success",
+          text: data.message || "Asset berhasil disimpan!",
+        });
         setFormData({
           type_asset: "",
-          saldo_awal: 0,
+          saldo_awal: "",
           nama_asset: "",
           nama_akun: "",
         });
       } else {
-        setMessage({ type: "error", text: data.message || "Gagal menyimpan asset." });
+        setMessage({
+          type: "error",
+          text: data.message || "Gagal menyimpan asset.",
+        });
       }
     } catch (error: any) {
-      setMessage({ type: "error", text: error.message || "Terjadi kesalahan koneksi." });
+      setMessage({
+        type: "error",
+        text: error.message || "Terjadi kesalahan koneksi.",
+      });
     }
   };
 
@@ -73,16 +107,21 @@ export default function FormAkunKartu() {
       >
         <div className="relative">
           <CreditCard className="w-5 h-5 text-blue-400" />
-          <Plus className="w-3 h-3 absolute -bottom-1 -right-1 bg-black dark:bg-white rounded-full border border-black dark:border-white text-white dark:text-black" strokeWidth={4} />
+          <Plus
+            className="w-3 h-3 absolute -bottom-1 -right-1 bg-black dark:bg-white rounded-full border border-black dark:border-white text-white dark:text-black"
+            strokeWidth={4}
+          />
         </div>
-        <span className="text-sm tracking-tight text-white dark:text-black">Tambah Akun Baru</span>
+        <span className="text-sm tracking-tight text-white dark:text-black">
+          Tambah Akun Baru
+        </span>
       </button>
 
       {/* Modal Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={() => setIsOpen(false)}
           />
@@ -91,8 +130,10 @@ export default function FormAkunKartu() {
           <div className="relative bg-white dark:bg-neutral-900 w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/5">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/5">
-              <h2 className="text-xl font-bold text-black dark:text-white">Tambah Asset Baru</h2>
-              <button 
+              <h2 className="text-xl font-bold text-black dark:text-white">
+                Tambah Asset Baru
+              </h2>
+              <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors"
               >
@@ -102,7 +143,10 @@ export default function FormAkunKartu() {
 
             {/* Scrollable Form Area */}
             <div className="max-height-[80vh] overflow-y-auto">
-              <form onSubmit={handleSubmit} className="p-4 flex flex-col gap-6 w-full">
+              <form
+                onSubmit={handleSubmit}
+                className="p-4 flex flex-col gap-6 w-full"
+              >
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="type_asset"
@@ -133,15 +177,17 @@ export default function FormAkunKartu() {
                       saldo awal (rp)
                     </label>
                     <div className="flex items-center gap-2">
-                      <h1 className="text-black dark:text-white font-bold text-[24px]">Rp</h1>
+                      <h1 className="text-black dark:text-white font-bold text-[24px]">
+                        Rp
+                      </h1>
                       <input
-                        type="number"
+                        type="text"
                         name="saldo_awal"
                         id="saldo_awal"
                         className="w-full bg-transparent placeholder:text-gray-400 dark:placeholder:text-gray-600 text-black dark:text-white px-1 py-2 text-2xl font-bold focus:outline-none"
                         placeholder="0"
                         value={formData.saldo_awal}
-                        onChange={handleChange}
+                        onChange={handleRupiahChange}
                       />
                     </div>
                     <div className="h-[2px] bg-black dark:bg-white w-full" />
@@ -169,13 +215,19 @@ export default function FormAkunKartu() {
                     <option value="">Pilih Nama Asset</option>
                     {formData.type_asset === "bank" &&
                       assetChoices.bank.map((name) => (
-                        <option key={name} value={name.toLowerCase().replace(/\s/g, "-")}>
+                        <option
+                          key={name}
+                          value={name.toLowerCase().replace(/\s/g, "-")}
+                        >
                           {name}
                         </option>
                       ))}
                     {formData.type_asset === "e-wallet" &&
                       assetChoices["e-wallet"].map((name) => (
-                        <option key={name} value={name.toLowerCase().replace(/\s/g, "-")}>
+                        <option
+                          key={name}
+                          value={name.toLowerCase().replace(/\s/g, "-")}
+                        >
                           {name}
                         </option>
                       ))}
