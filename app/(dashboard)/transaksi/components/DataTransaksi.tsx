@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Trash, Calendar, Wallet, Receipt, ArrowDownCircle, ArrowUpCircle, Filter, X } from "lucide-react";
 
 interface TransactionData {
+  _id?: string;
   idTransaksi: string;
   type_transaksi: string;
   nominal_transaksi: string;
@@ -265,7 +266,7 @@ export default function DataTransaksi() {
               </thead>
               <tbody className="divide-y divide-gray-50 dark:divide-white/5">
                 {transaksi.map((item, index) => (
-                  <tr key={item.idTransaksi || index} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
+                  <tr key={item.idTransaksi || item._id || index} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:bg-blue-50 dark:group-hover:bg-blue-500/10 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
@@ -329,7 +330,7 @@ export default function DataTransaksi() {
                     <td className="px-6 py-4">
                       <div className="flex justify-center">
                         <button 
-                          onClick={() => setDeleteId(item.idTransaksi)}
+                          onClick={() => setDeleteId(item.idTransaksi || item._id || null)}
                           className="p-2 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all"
                         >
                           <Trash className="w-4 h-4" />

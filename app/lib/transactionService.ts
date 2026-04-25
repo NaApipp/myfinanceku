@@ -1,4 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 
 function formatDateWIB(date: Date) {
@@ -148,15 +149,22 @@ export async function deleteTransaction({
   try {
     await session.withTransaction(async () => {
       // 1. ambil transaksi
+      const query: any = { userId };
+      if (idTransaksi.startsWith("TRX-")) {
+        query.idTransaksi = idTransaksi;
+      } else if (idTransaksi.length === 24) {
+        try {
+          query._id = new ObjectId(idTransaksi);
+        } catch (e) {
+          query.idTransaksi = idTransaksi;
+        }
+      } else {
+        query.idTransaksi = idTransaksi;
+      }
+
       const transaction = await db
         .collection("transaksi")
-        .findOne(
-          {
-            idTransaksi: idTransaksi,
-            userId,
-          },
-          { session }
-        );
+        .findOne(query, { session });
 
       if (!transaction) {
         throw new Error("Transaksi tidak ditemukan");
@@ -191,7 +199,7 @@ export async function deleteTransaction({
 
       // 4. Delete transaksi
       await db.collection("transaksi").deleteOne(
-        { idTransaksi: transaction.idTransaksi },
+        { _id: transaction._id },
         { session }
       );
 
