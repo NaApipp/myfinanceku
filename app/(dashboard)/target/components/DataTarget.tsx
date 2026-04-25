@@ -33,7 +33,7 @@ export default function DataTarget() {
   const [formData, setFormData] = useState({
     nama_target: "",
     tanggal_target: "",
-    jumlah_target: 0,
+    jumlah_target: "" as string,
     prioritas: "",
     description: "",
   });
@@ -104,11 +104,17 @@ export default function DataTarget() {
 
     setIsActionLoading(true);
     setMessage({ type: "", text: "" });
+     const rawValue = String(formData.jumlah_target).replace(/[^0-9]/g, "");
+    const cleanData = {
+      ...formData,
+      jumlah_target: parseInt(rawValue, 10) || 0,
+    };
+
     try {
       const response = await fetch(`/api/target/${selectedTarget.idTarget}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(cleanData),
       });
       const result = await response.json();
       if (result.success) {
@@ -131,16 +137,32 @@ export default function DataTarget() {
       setIsActionLoading(false);
     }
   };
-  const handleEditClick = (item: TargetData) => {
+   const handleEditClick = (item: TargetData) => {
     setSelectedTarget(item);
     setFormData({
       nama_target: item.nama_target,
       tanggal_target: item.tanggal_target,
-      jumlah_target: item.jumlah_target,
+      jumlah_target: formatRupiah(String(item.jumlah_target)),
       prioritas: item.prioritas,
       description: item.description,
     });
     setIsEditOpen(true);
+  };
+
+  // Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
+
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      jumlah_target: formatRupiah(value),
+    }));
   };
 
   const handleChange = (
@@ -412,13 +434,13 @@ export default function DataTarget() {
                     <div className="flex items-center gap-2">
                       <h1 className="text-black font-bold text-[24px]">Rp</h1>
                       <input
-                        type="number"
+                        type="text"
                         name="jumlah_target"
                         id="jumlah_target"
                         className="w-full bg-transparent placeholder:text-gray-400 text-black px-1 py-2 text-2xl font-bold focus:outline-none"
                         placeholder="0"
                         value={formData.jumlah_target}
-                        onChange={handleChange}
+                        onChange={handleRupiahChange}
                       />
                     </div>
                     <div className="h-[2px] bg-black w-full" />

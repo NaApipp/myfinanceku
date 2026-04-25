@@ -32,7 +32,7 @@ export default function DataAccoundCard() {
   );
   const [formData, setFormData] = useState({
     type_asset: "",
-    saldo_awal: 0,
+    saldo_awal: "" as string,
     nama_asset: "",
     nama_akun: "",
   });
@@ -118,11 +118,27 @@ export default function DataAccoundCard() {
     setSelectedAccount(item);
     setFormData({
       type_asset: item.type_asset,
-      saldo_awal: Number(item.saldo_awal),
+      saldo_awal: formatRupiah(String(item.saldo_awal)),
       nama_asset: item.nama_asset,
       nama_akun: item.nama_akun,
     });
     setIsEditOpen(true);
+  };
+
+  // Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
+
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      saldo_awal: formatRupiah(value),
+    }));
   };
 
   const handleChange = (
@@ -137,13 +153,19 @@ export default function DataAccoundCard() {
 
     setIsActionLoading(true);
     setMessage({ type: "", text: "" });
+    const rawValue = String(formData.saldo_awal).replace(/[^0-9]/g, "");
+    const cleanData = {
+      ...formData,
+      saldo_awal: parseInt(rawValue, 10) || 0,
+    };
+
     try {
       const response = await fetch(
         `/api/account-card/${selectedAccount.idAccount}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(cleanData),
         },
       );
       const result = await response.json();
@@ -309,13 +331,13 @@ export default function DataAccoundCard() {
                     <div className="flex items-center gap-2">
                       <h1 className="text-black dark:text-white font-bold text-[24px]">Rp</h1>
                       <input
-                        type="number"
+                        type="text"
                         name="saldo_awal"
                         id="saldo_awal"
                         className="w-full bg-transparent placeholder:text-gray-400 dark:placeholder:text-gray-600 text-black dark:text-white px-1 py-2 text-2xl font-bold focus:outline-none"
                         placeholder="0"
                         value={formData.saldo_awal}
-                        onChange={handleChange}
+                        onChange={handleRupiahChange}
                       />
                     </div>
                     <div className="h-[2px] bg-black dark:bg-white w-full" />

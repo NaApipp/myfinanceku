@@ -94,8 +94,29 @@ export default function DataAnggaran() {
   const handleEditClick = (item: Anggaran) => {
     // Format tanggal ke YYYY-MM-DD untuk input type="date"
     const formattedDate = item.periode_anggaran.split("T")[0];
-    setEditFormData({ ...item, periode_anggaran: formattedDate });
+    setEditFormData({ 
+      ...item, 
+      periode_anggaran: formattedDate,
+      limit_anggaran: formatRupiah(String(item.limit_anggaran)) as any
+    });
     setIsUpdateModalOpen(true);
+  };
+
+  // Format Rupiah (Modern & Typed)
+  const formatRupiah = (angka: string): string => {
+    const numberString = angka.replace(/[^0-9]/g, "");
+    if (!numberString) return "";
+    const parsed = parseInt(numberString, 10);
+    return new Intl.NumberFormat("id-ID").format(parsed);
+  };
+
+  const handleRupiahChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    if (!editFormData) return;
+    setEditFormData((prev) => prev ? ({
+      ...prev,
+      limit_anggaran: formatRupiah(value) as any,
+    }) : null);
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -106,6 +127,7 @@ export default function DataAnggaran() {
     setIsUpdateModalOpen(false);
     setIsUpdating(id);
 
+    const rawValue = String(editFormData.limit_anggaran).replace(/[^0-9]/g, "");
     try {
       const response = await fetch(`/api/anggaran/${id}`, {
         method: "PUT",
@@ -113,7 +135,7 @@ export default function DataAnggaran() {
         body: JSON.stringify({
           nama_anggaran: editFormData.nama_anggaran,
           kategori_anggaran: editFormData.kategori_anggaran,
-          limit_anggaran: Number(editFormData.limit_anggaran),
+          limit_anggaran: parseInt(rawValue, 10) || 0,
           periode_anggaran: editFormData.periode_anggaran,
         }),
       });
@@ -337,14 +359,9 @@ export default function DataAnggaran() {
                   Limit Anggaran (Rp)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   value={editFormData.limit_anggaran}
-                  onChange={(e) =>
-                    setEditFormData({
-                      ...editFormData,
-                      limit_anggaran: Number(e.target.value),
-                    })
-                  }
+                  onChange={handleRupiahChange}
                   className="w-full p-4 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black text-black dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   required
                 />
