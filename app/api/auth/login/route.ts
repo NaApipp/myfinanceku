@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
           no_hp: user.no_hp,
           level: user.level,
           full_name: user.full_name,
+          image_url: user.image_url || null,
           token: token,
           refreshToken: refreshToken,
         },
