@@ -129,12 +129,6 @@ export default function LoginForm() {
             <label className="text-sm font-semibold text-slate-700">
               Password
             </label>
-            <Link
-              className="text-xs font-medium text-blue-600 hover:text-blue-500"
-              href="/lupa-password"
-            >
-              Lupa password?
-            </Link>
           </div>
           <input
             value={formData.password}
@@ -144,6 +138,19 @@ export default function LoginForm() {
             required
             className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
           />
+          <div className="flex flex-row-reverse justify-end items-center gap-2">
+            <Link
+              className="text-xs font-medium text-blue-600 hover:text-blue-500"
+              href="/lupa-password"
+            >
+              Lupa password?
+            </Link>
+            <div className="w-px h-4 bg-slate-400" />
+            <Link className="text-xs font-medium text-blue-600 hover:text-blue-500"
+              href="https://discord.gg/FUeeHJWU9c">
+            Support Center
+            </Link>
+          </div>
         </div>
 
         <button
