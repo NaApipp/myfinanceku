@@ -100,7 +100,8 @@ export default function FormAddTarget() {
           description: "",
         });
         // Optional: close modal after success
-        // setTimeout(() => setIsOpen(false), 2000);
+        setTimeout(() => setIsOpen(false), 3000);
+        setTimeout(() => window.location.reload(), 3500);
       } else {
         setMessage({
           type: "error",
