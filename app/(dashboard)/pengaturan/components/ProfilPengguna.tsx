@@ -171,7 +171,7 @@ export default function ProfilPengguna() {
                             <User className="text-white" width={50} height={50}/>
                         )}
                     </div>
-                    
+                    {/* Button Upload Foto Profile */}
                     {/* <label 
                         htmlFor="photo-upload" 
                         className={`absolute bottom-0 right-0 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full cursor-pointer shadow-md transition-all duration-200 ${isUploading ? 'opacity-70 pointer-events-none' : 'opacity-100'}`}

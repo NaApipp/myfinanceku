@@ -10,6 +10,8 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 export default function Page() {
@@ -34,6 +36,9 @@ export default function Page() {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -145,15 +150,28 @@ export default function Page() {
               >
                 Password Saat Ini
               </label>
-              <input
-                id="currentPassword"
-                type="password"
-                required
-                value={formData.currentPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-500 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all text-sm outline-none"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  id="currentPassword"
+                  type={showCurrentPassword ? "text" : "password"}
+                  required
+                  value={formData.currentPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-gray-500 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all text-sm outline-none pr-12"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-200 transition-colors focus:outline-none"
+                >
+                  {showCurrentPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-1.5">
@@ -163,15 +181,28 @@ export default function Page() {
               >
                 Password Baru
               </label>
-              <input
-                id="newPassword"
-                type="password"
-                required
-                value={formData.newPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-500  border-none rounded-2xl focus:ring-2 focus:ring-black dark:focus:ring-white transition-all text-sm outline-none"
-                placeholder="Minimal 6 karakter"
-              />
+              <div className="relative">
+                <input
+                  id="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  required
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-gray-500  border-none rounded-2xl focus:ring-2 focus:ring-black dark:focus:ring-white transition-all text-sm outline-none pr-12"
+                  placeholder="Minimal 6 karakter"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-200 transition-colors focus:outline-none"
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-1.5">
@@ -181,15 +212,28 @@ export default function Page() {
               >
                 Konfirmasi Password Baru
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-500 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all text-sm outline-none"
-                placeholder="Ulangi password baru"
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-gray-500 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all text-sm outline-none pr-12"
+                  placeholder="Ulangi password baru"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-200 transition-colors focus:outline-none"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="pt-4 flex flex-col gap-3">
