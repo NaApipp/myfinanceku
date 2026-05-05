@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
-import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
+import { renderToBuffer } from "@react-pdf/renderer";
+import { LaporanPDF } from "@/app/components/pdf/LaporanPdf";
 
 export const runtime = "nodejs";
 
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
 
     const balance = totalIncome - totalExpense;
 
-    // 5. Format Helpers
+    // 5. Format Helpers for the component
     const formatCurrency = (amount: number) => {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -88,206 +88,38 @@ export async function GET(req: NextRequest) {
       });
     };
 
-    // 6. Generate HTML Template
-    const html = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-          body { 
-            font-family: 'Inter', sans-serif; 
-            color: #1f2937; 
-            line-height: 1.5;
-            margin: 0;
-            padding: 40px;
-          }
-          .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-          }
-          .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2563eb;
-          }
-          .report-info {
-            text-align: right;
-          }
-          .report-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-          }
-          .period {
-            color: #6b7280;
-            font-size: 14px;
-          }
-          .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 40px;
-          }
-          .summary-card {
-            background: #f9fafb;
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid #f3f4f6;
-          }
-          .summary-label {
-            font-size: 12px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 4px;
-          }
-          .summary-value {
-            font-size: 18px;
-            font-weight: 600;
-          }
-          .income { color: #059669; }
-          .expense { color: #dc2626; }
-          
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 40px;
-          }
-          th {
-            background: #f8fafc;
-            text-align: left;
-            padding: 12px 8px;
-            border-bottom: 2px solid #e5e7eb;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #4b5563;
-          }
-          td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #f3f4f6;
-            font-size: 13px;
-          }
-          .type-badge {
-            padding: 2px 8px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: capitalize;
-          }
-          .type-pemasukan { background: #d1fae5; color: #065f46; }
-          .type-pengeluaran { background: #fee2e2; color: #991b1b; }
-          
-          .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #9ca3af;
-            margin-top: 60px;
-          }
-          .nominal { font-weight: 600; }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="logo">MyFinanceKu</div>
-          <div class="report-info">
-            <div class="report-title">Laporan Transaksi</div>
-            <div class="period">${formatDate(startDate)} - ${formatDate(endDate)}</div>
-          </div>
-        </div>
+    // Pre-format the data for the component
+    const formattedTransaksi = transaksi.map((t) => ({
+      ...t,
+      tanggal_transaksi: formatDate(t.tanggal_transaksi),
+      nominal_transaksi: `${t.type_transaksi === "pengeluaran" ? "-" : ""}${formatCurrency(Number(t.nominal_transaksi))}`,
+    }));
 
-        <div class="summary-grid">
-          <div class="summary-card">
-            <div class="summary-label">Total Pemasukan</div>
-            <div class="summary-value income">${formatCurrency(totalIncome)}</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Total Pengeluaran</div>
-            <div class="summary-value expense">${formatCurrency(totalExpense)}</div>
-          </div>
-          <div class="summary-card">
-            <div class="summary-label">Saldo Akhir</div>
-            <div class="summary-value">${formatCurrency(balance)}</div>
-          </div>
-        </div>
+    const formattedIncome = formatCurrency(totalIncome);
+    const formattedExpense = formatCurrency(totalExpense);
+    const formattedBalance = formatCurrency(balance);
+    const formattedPeriod = `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
-        <table>
-          <thead>
-            <tr>
-              <th>Tanggal</th>
-              <th>Tipe</th>
-              <th>Kategori</th>
-              <th>Keterangan</th>
-              <th style="text-align: right;">Nominal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${transaksi
-              .map(
-                (t) => `
-              <tr>
-                <td>${formatDate(t.tanggal_transaksi)}</td>
-                <td>
-                  <span class="type-badge type-${t.type_transaksi}">
-                    ${t.type_transaksi}
-                  </span>
-                </td>
-                <td>${t.kategori}</td>
-                <td>${t.description || "-"}</td>
-                <td style="text-align: right;" class="nominal ${t.type_transaksi === "pemasukan" ? "income" : "expense"}">
-                  ${t.type_transaksi === "pengeluaran" ? "-" : ""}${formatCurrency(Number(t.nominal_transaksi))}
-                </td>
-              </tr>
-            `,
-              )
-              .join("")}
-          </tbody>
-        </table>
+    // 6. Generate PDF using react-pdf
+    const pdfBuffer = await renderToBuffer(
+      LaporanPDF({
+        transaksi: formattedTransaksi,
+        formattedIncome,
+        formattedExpense,
+        formattedBalance,
+        formattedPeriod,
+      })
+    );
 
-        <div class="footer">
-          Dicetak pada ${new Date().toLocaleString("id-ID")} &bull; FinanceKu App
-        </div>
-      </body>
-      </html>
-    `;
-
-    // 7. Generate PDF with Puppeteer
-    let browser;
-    try {
-      browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: { width: 1280, height: 720 },
-        executablePath: await chromium.executablePath(),
-        headless: true,
-      });
-
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: "networkidle0" });
-
-      const pdf = await page.pdf({
-        format: "A4",
-        margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
-        printBackground: true,
-      });
-
-      // 8. Return PDF Response
-      return new NextResponse(Buffer.from(pdf), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="Laporan-Transaksi-${startDate}-ke-${endDate}.pdf"`,
-        },
-      });
-    } finally {
-      if (browser) {
-        await browser.close();
-      }
-    }
+    // 7. Return PDF Response
+    return new NextResponse(new Uint8Array(pdfBuffer), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="Laporan-Transaksi-${startDate}-ke-${endDate}.pdf"`,
+        "Content-Length": pdfBuffer.length.toString(),
+      },
+    });
   } catch (error: any) {
     console.error("Error generating PDF:", error);
     return NextResponse.json(
