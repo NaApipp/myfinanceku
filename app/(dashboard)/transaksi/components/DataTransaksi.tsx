@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash, Calendar, Wallet, Receipt, ArrowDownCircle, ArrowUpCircle, Filter, X } from "lucide-react";
+import { Trash, Calendar, Wallet, Receipt, ArrowDownCircle, ArrowUpCircle, Filter, X, FileDown, Loader2 } from "lucide-react";
 
 interface TransactionData {
   _id?: string;
@@ -30,6 +30,7 @@ export default function DataTransaksi() {
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   
   // Pagination state
   const [page, setPage] = useState(1);
@@ -142,6 +143,38 @@ export default function DataTransaksi() {
     setPage(1);
   };
 
+  const handleDownloadPdf = async () => {
+    setIsDownloadingPdf(true);
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append("startDate", startDate);
+      if (endDate) params.append("endDate", endDate);
+      
+      const url = `/api/transaksi/pdf${params.toString() ? `?${params.toString()}` : ""}`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Gagal mengunduh PDF");
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `Laporan-Transaksi-${startDate || "30-Hari-Terakhir"}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error: any) {
+      console.error("Error downloading PDF:", error);
+      alert(error.message || "Terjadi kesalahan saat mengunduh PDF.");
+    } finally {
+      setIsDownloadingPdf(false);
+    }
+  };
+
 
   const formatCurrency = (amount: string) => {
     return new Intl.NumberFormat("id-ID", {
@@ -182,6 +215,22 @@ export default function DataTransaksi() {
               <h3 className="text-sm font-bold text-gray-900 dark:text-white">Filter Transaksi</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">Cari berdasarkan rentang tanggal</p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+            title="Cetak Riwayat Transaksi 30 Hari Kebelakang"
+              onClick={handleDownloadPdf}
+              disabled={isDownloadingPdf || transaksi.length === 0}
+              className="cursor-pointer flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 dark:disabled:bg-white/10 text-white text-xs font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 active:scale-95"
+            >
+              {isDownloadingPdf ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <FileDown className="w-4 h-4" />
+              )}
+              {isDownloadingPdf ? "Memproses..." : "Cetak PDF"}
+            </button>
           </div>
           
           {/* Filter Transaksi bY Range Transaction Date*/}
