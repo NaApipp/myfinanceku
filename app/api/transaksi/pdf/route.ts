@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
+
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   try {
@@ -12,7 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET || "default_secret"
+      process.env.JWT_SECRET || "default_secret",
     );
     const { payload } = await jwtVerify(token, secret);
     const userId = payload.userId as string;
@@ -23,7 +26,8 @@ export async function GET(req: NextRequest) {
     const endDateParam = searchParams.get("endDate");
 
     let startDate: string;
-    let endDate: string = endDateParam || new Date().toISOString().split("T")[0];
+    let endDate: string =
+      endDateParam || new Date().toISOString().split("T")[0];
 
     if (startDateParam) {
       startDate = startDateParam;
@@ -39,9 +43,9 @@ export async function GET(req: NextRequest) {
     const db = client.db(process.env.MONGODB_DATABASE);
     const transaksiCollection = db.collection("transaksi");
 
-    const query: any = { 
+    const query: any = {
       userId,
-      tanggal_transaksi: { $gte: startDate, $lte: endDate }
+      tanggal_transaksi: { $gte: startDate, $lte: endDate },
     };
 
     const transaksi = await transaksiCollection
@@ -52,7 +56,7 @@ export async function GET(req: NextRequest) {
     if (transaksi.length === 0) {
       return NextResponse.json(
         { message: "Tidak ada data transaksi pada periode ini." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -60,7 +64,7 @@ export async function GET(req: NextRequest) {
     const totalIncome = transaksi
       .filter((t) => t.type_transaksi === "pemasukan")
       .reduce((sum, t) => sum + Number(t.nominal_transaksi), 0);
-    
+
     const totalExpense = transaksi
       .filter((t) => t.type_transaksi === "pengeluaran")
       .reduce((sum, t) => sum + Number(t.nominal_transaksi), 0);
@@ -223,7 +227,9 @@ export async function GET(req: NextRequest) {
             </tr>
           </thead>
           <tbody>
-            ${transaksi.map(t => `
+            ${transaksi
+              .map(
+                (t) => `
               <tr>
                 <td>${formatDate(t.tanggal_transaksi)}</td>
                 <td>
@@ -233,52 +239,60 @@ export async function GET(req: NextRequest) {
                 </td>
                 <td>${t.kategori}</td>
                 <td>${t.description || "-"}</td>
-                <td style="text-align: right;" class="nominal ${t.type_transaksi === 'pemasukan' ? 'income' : 'expense'}">
-                  ${t.type_transaksi === 'pengeluaran' ? '-' : ''}${formatCurrency(Number(t.nominal_transaksi))}
+                <td style="text-align: right;" class="nominal ${t.type_transaksi === "pemasukan" ? "income" : "expense"}">
+                  ${t.type_transaksi === "pengeluaran" ? "-" : ""}${formatCurrency(Number(t.nominal_transaksi))}
                 </td>
               </tr>
-            `).join('')}
+            `,
+              )
+              .join("")}
           </tbody>
         </table>
 
         <div class="footer">
-          Dicetak pada ${new Date().toLocaleString('id-ID')} &bull; FinanceKu App
+          Dicetak pada ${new Date().toLocaleString("id-ID")} &bull; FinanceKu App
         </div>
       </body>
       </html>
     `;
 
     // 7. Generate PDF with Puppeteer
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    
-    const pdf = await page.pdf({
-      format: "A4",
-      margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
-      printBackground: true,
-    });
+    let browser;
+    try {
+      browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: { width: 1280, height: 720 },
+        executablePath: await chromium.executablePath(),
+        headless: true,
+      });
 
-    await browser.close();
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: "networkidle0" });
 
-    // 8. Return PDF Response
-    return new NextResponse(Buffer.from(pdf), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="Laporan-Transaksi-${startDate}-ke-${endDate}.pdf"`,
-      },
-    });
+      const pdf = await page.pdf({
+        format: "A4",
+        margin: { top: "20px", right: "20px", bottom: "20px", left: "20px" },
+        printBackground: true,
+      });
 
+      // 8. Return PDF Response
+      return new NextResponse(Buffer.from(pdf), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="Laporan-Transaksi-${startDate}-ke-${endDate}.pdf"`,
+        },
+      });
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
   } catch (error: any) {
     console.error("Error generating PDF:", error);
     return NextResponse.json(
       { message: "Terjadi kesalahan saat membuat PDF: " + error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
