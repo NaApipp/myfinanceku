@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Lock,
@@ -97,6 +97,9 @@ export default function Page() {
         newPassword: "",
         confirmPassword: "",
       });
+      setTimeout(() => {
+        redirect("/pengaturan");
+      }, 3000);
     } catch (error: any) {
       setMessage({ type: "error", text: error.message });
     } finally {
