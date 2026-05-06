@@ -68,6 +68,8 @@ export default function FormAkunKartu() {
           nama_asset: "",
           nama_akun: "",
         });
+        setTimeout(() => setIsOpen(false), 2000);
+        setTimeout(() => window.location.reload(), 2500);
       } else {
         setMessage({
           type: "error",
@@ -96,6 +98,7 @@ export default function FormAkunKartu() {
       "Bank Lainnya",
     ],
     "e-wallet": ["GoPay", "OVO", "DANA", "ShopeePay", "LinkAja", "Flip"],
+    "cash": ["Tunai"],
   };
 
   return (
@@ -163,6 +166,7 @@ export default function FormAkunKartu() {
                     className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white font-reguler"
                   >
                     <option value="">Pilih Tipe Asset</option>
+                    <option value="cash">Cash</option>
                     <option value="bank">Bank</option>
                     <option value="e-wallet">E-Wallet</option>
                   </select>
@@ -213,6 +217,15 @@ export default function FormAkunKartu() {
                     onChange={handleChange}
                   >
                     <option value="">Pilih Nama Asset</option>
+                    {formData.type_asset === "cash" &&
+                      assetChoices.cash.map((name) => (
+                        <option
+                          key={name}
+                          value={name.toLowerCase().replace(/\s/g, "-")}
+                        >
+                          {name}
+                        </option>
+                      ))}
                     {formData.type_asset === "bank" &&
                       assetChoices.bank.map((name) => (
                         <option
