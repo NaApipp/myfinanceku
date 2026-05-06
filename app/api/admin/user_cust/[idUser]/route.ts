@@ -22,3 +22,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         ));
     }
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ idUser: string }> }) {
+    try {
+        const client = await clientPromise;
+        const db = client.db(process.env.MONGODB_DATABASE);
+        const usersCollection = db.collection("users");
+        const { idUser } = await params;
+        // console.log("delete");
+        const user = await usersCollection.deleteOne({ idUser: idUser });
+        return withCors(NextResponse.json(user, { status: 200 }));
+    } catch (error) {
+        console.error("Error deleting user:", error);
+        return withCors(NextResponse.json(
+            { message: "Internal server error" },
+            { status: 500 }
+        ));
+    }
+}

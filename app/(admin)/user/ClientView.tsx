@@ -12,7 +12,8 @@ import {
   Fingerprint,
   AtSign,
   Loader2,
-  Edit
+  Edit,
+  Trash
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -54,6 +55,21 @@ export default function UserPage() {
   
   const handleViewDetail = (idUser: string) => {
     router.push(`/user/${idUser}`);
+  };
+
+  const handleDelete = async (idUser: string) => {
+    if (confirm("Apakah anda yakin ingin menghapus user ini?")) {
+      const response = await fetch(`/api/admin/user_cust/${idUser}`, {
+        method: "DELETE",
+      });
+      const result = await response.json();
+      if (result.success) {
+        setUsers(users.filter((user) => user.idUser !== idUser));
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      }
+    }
   };
 
   const getLevelStyle = (level: string) => {
@@ -196,7 +212,14 @@ export default function UserPage() {
                         {user.level}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 flex gap-3">
+                      <button
+                        onClick={() => handleDelete(user.idUser)}
+                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        title="Delete user"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={() => handleViewDetail(user.idUser)}
                         className="text-gray-400 hover:text-blue-600 transition-colors"
