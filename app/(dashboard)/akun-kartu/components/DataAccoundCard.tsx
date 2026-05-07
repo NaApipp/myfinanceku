@@ -46,18 +46,35 @@ export default function DataAccoundCard() {
 
   const assetChoices: { [key: string]: string[] } = {
     bank: [
-      "BCA",
-      "BNI",
-      "BRI",
-      "Mandiri",
-      "BSI",
-      "Cimb",
-      "Permata",
-      "Maybank",
-      "Btn",
-      "Bank Lainnya",
-    ],
-    "e-wallet": ["GoPay", "OVO", "DANA", "ShopeePay", "LinkAja", "Flip"],
+          "BCA",
+          "BNI",
+          "BRI",
+          "MANDIRI",
+          "BSI",
+          "CIMB",
+          "PERMATA",
+          "MAYBANK",
+          "BTN",
+          "OCBC",
+          "DANAMON",
+          "JAGO",
+          "SEABANK",
+          "JENIUS",
+          "BLU",
+          "NEO",
+          "BSI",
+          "Bank Lainnya",
+        ],
+        "e-wallet": [
+          "GoPay",
+          "OVO",
+          "DANA",
+          "ShopeePay",
+          "LinkAja",
+          "Flip",
+          "AstraPay",
+        ],
+        cash: ["Tunai"],
   };
 
   useEffect(() => {
@@ -230,8 +247,10 @@ export default function DataAccoundCard() {
               >
                 {item.type_asset === "bank" ? (
                   <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                ) : (
+                ) : item.type_asset === "e-wallet" ? (
                   <Smartphone className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                ) : (
+                  <CreditCard className="w-6 h-6 text-green-600 dark:text-green-400" />
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -315,6 +334,7 @@ export default function DataAccoundCard() {
                     className="w-full p-3 rounded-xl border border-gray-200 dark:border-white/5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 dark:bg-black text-black dark:text-white"
                   >
                     <option value="">Pilih Tipe Asset</option>
+                    <option value="cash">Cash</option>
                     <option value="bank">Bank</option>
                     <option value="e-wallet">E-Wallet</option>
                   </select>
