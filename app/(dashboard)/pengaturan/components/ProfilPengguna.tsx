@@ -172,7 +172,7 @@ export default function ProfilPengguna() {
                         )}
                     </div>
                     {/* Button Upload Foto Profile */}
-                    {/* <label 
+                    <label 
                         htmlFor="photo-upload" 
                         className={`absolute bottom-0 right-0 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full cursor-pointer shadow-md transition-all duration-200 ${isUploading ? 'opacity-70 pointer-events-none' : 'opacity-100'}`}
                     >
@@ -189,7 +189,7 @@ export default function ProfilPengguna() {
                             onChange={handleFileChange}
                             disabled={isUploading}
                         />
-                    </label> */}
+                    </label>
                 </div>
 
                 {/* Preview Modal */}
