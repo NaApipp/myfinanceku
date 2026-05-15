@@ -89,6 +89,12 @@ export default function SidebarAdmin() {
               <span className="text-sm font-medium"> Transaksi </span>
             </Link>
           </li>
+          <li>
+            <Link href="/user-admin" className={getPathActive("/user-admin")}>
+              <User className="text-red-500" />
+              <span className="text-sm font-medium"> User Admin </span>
+            </Link>
+          </li>
 
         </ul>
       </div>
