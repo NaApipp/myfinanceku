@@ -100,6 +100,8 @@ export async function GET(req: NextRequest) {
     const formattedBalance = formatCurrency(balance);
     const formattedPeriod = `${formatDate(startDate)} - ${formatDate(endDate)}`;
 
+    const origin = req.nextUrl.origin;
+
     // 6. Generate PDF using react-pdf
     const pdfBuffer = await renderToBuffer(
       LaporanPDF({
@@ -108,6 +110,7 @@ export async function GET(req: NextRequest) {
         formattedExpense,
         formattedBalance,
         formattedPeriod,
+        logoUrl: `${origin}/icon/logo.png`,
       })
     );
 
