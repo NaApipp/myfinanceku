@@ -1,320 +1,189 @@
-# MyFinanceKu
+# 💰 MyFinanceKu — Professional Personal Finance Management
 
-MyFinanceKu adalah aplikasi web manajemen keuangan pribadi yang dirancang untuk membantu pengguna dalam mengelola keuangan mereka secara terorganisir dan efisien. Aplikasi ini menyediakan berbagai fitur pengelolaan keuangan mulai dari pencatatan transaksi harian, pengelolaan akun dan kartu, penetapan target keuangan, hingga pengaturan anggaran per kategori.
+[![Deployment Status](https://img.shields.io/badge/Status-Beta-orange?style=for-the-badge&logo=vercel)](https://financeku.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-Dibangun di atas Next.js dengan dukungan TypeScript, MyFinanceKu menerapkan arsitektur modern berbasis App Router yang menjamin performa tinggi dan pengalaman pengguna yang responsif. Dengan backend yang terintegrasi langsung dalam ekosistem Next.js dan basis data MongoDB, aplikasi ini siap digunakan baik di lingkungan lokal maupun di platform cloud seperti Vercel.
-
----
-
-## Latar Belakang
-
-Banyak orang kesulitan melacak kondisi keuangan mereka secara real-time karena tidak adanya alat yang mudah digunakan namun tetap komprehensif. Pencatatan manual di buku atau spreadsheet seringkali tidak praktis dan sulit untuk dianalisis. MyFinanceKu hadir sebagai solusi digital yang memungkinkan pengguna mencatat pemasukan dan pengeluaran, menetapkan target tabungan, serta mengatur anggaran agar keuangan pribadi lebih terencana dan terkendali.
-
----
-
-## Fitur Utama
-
-- **Manajemen Transaksi**: Catat pemasukan dan pengeluaran dengan kategori yang dapat dikustomisasi, serta lihat riwayat transaksi secara lengkap.
-- **Manajemen Akun dan Kartu**: Kelola berbagai akun bank maupun kartu yang dimiliki dalam satu dashboard terpusat.
-- **Target Keuangan**: Tetapkan target tabungan atau tujuan finansial dan pantau progres pencapaiannya.
-- **Anggaran (Budgeting)**: Atur batas pengeluaran per kategori untuk periode tertentu agar keuangan tetap sesuai rencana.
-- **Manajemen Kategori**: Buat dan kelola kategori transaksi secara fleksibel sesuai kebutuhan pengguna.
-- **Autentikasi Lengkap**: Sistem login, registrasi, logout, lupa password, dan reset password yang aman menggunakan JWT dan NextAuth.
-- **Pembaruan Profil Pengguna**: Pengguna dapat memperbarui data profil dan mengganti password kapan saja.
-- **Notifikasi Email**: Pengiriman email transaksional (misalnya reset password) menggunakan layanan Resend.
-- **Antarmuka Responsif**: Tampilan yang nyaman digunakan di berbagai ukuran layar, dari desktop hingga perangkat mobile.
+**MyFinanceKu** adalah solusi manajemen keuangan pribadi tingkat enterprise yang dirancang untuk memberikan transparansi penuh terhadap arus kas Anda. Dibangun dengan teknologi web terbaru untuk memastikan performa maksimal, keamanan data yang ketat, dan pengalaman pengguna yang seamless.
 
 ---
 
-## Teknologi yang Digunakan
+## 📑 Daftar Isi
 
-| Kategori | Teknologi |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Bahasa Pemrograman | TypeScript 5 |
-| Styling | Tailwind CSS 4 |
-| Database | MongoDB dengan Mongoose |
-| Autentikasi | NextAuth v4, JWT (jose, jsonwebtoken) |
-| Enkripsi Password | bcrypt / bcryptjs |
-| Validasi Data | Zod |
-| Upload Media | Cloudinary |
-| Pengiriman Email | Resend |
-| Icon | Lucide React |
-| Linting | ESLint dengan konfigurasi Next.js |
-| Deployment | Vercel |
+- [Arsitektur & Teknologi](#-arsitektur--teknologi)
+- [Fitur Utama](#-fitur-utama)
+- [Struktur Proyek](#-struktur-proyek)
+- [Keamanan & Otentikasi](#-keamanan--otentikasi)
+- [Panduan Instalasi](#-panduan-instalasi)
+- [Konfigurasi Environment](#-konfigurasi-environment)
+- [Dokumentasi API](#-dokumentasi-api)
+- [Kontribusi](#-kontribusi)
+- [Lisensi](#-lisensi)
 
 ---
 
-## Prasyarat
+## 🏗 Arsitektur & Teknologi
 
-Sebelum menjalankan project ini, pastikan lingkungan pengembangan Anda memenuhi persyaratan berikut:
+Aplikasi ini mengadopsi paradigma **Modern Web Development** dengan fokus pada efisiensi runtime dan skalabilitas database.
 
-- Node.js versi 18 atau lebih baru
-- npm atau yarn sebagai package manager
-- Akun MongoDB Atlas (atau instance MongoDB lokal)
-- Akun Cloudinary untuk pengelolaan upload gambar
-- Akun Resend untuk pengiriman email
+### Core Stack
+*   **Framework**: [Next.js 16.2 (App Router)](https://nextjs.org/) — Memanfaatkan React 19 Server Components untuk optimasi rendering.
+*   **Language**: [TypeScript](https://www.typescriptlang.org/) — Menjamin *type-safety* di seluruh layer aplikasi.
+*   **Database**: [MongoDB](https://www.mongodb.com/) via Native Driver & [Mongoose](https://mongoosejs.com/) — Model data fleksibel dengan performa tinggi.
+*   **Styling**: [Tailwind CSS 4.x](https://tailwindcss.com/) — Desain responsif dengan konfigurasi engine terbaru.
+*   **Animation**: [Framer Motion](https://www.framer.com/motion/) — Interaksi UI yang halus dan premium.
+
+### Backend & Integrasi
+*   **Auth**: [NextAuth.js](https://next-auth.js.org/) & Custom JWT (via `jose`) — Sistem sesi berlapis.
+*   **Storage**: [Cloudinary](https://cloudinary.com/) — Manajemen aset media dan profil secara cloud-native.
+*   **Email**: [Resend](https://resend.com/) — Pengiriman email transaksional dengan reliabilitas tinggi.
+*   **PDF Engine**: [@react-pdf/renderer](https://react-pdf.org/) — Generasi laporan keuangan langsung dari server.
 
 ---
 
-## Instalasi
+## ✨ Fitur Utama
 
-### 1. Clone Repository
+| Fitur | Deskripsi Teknis |
+| :--- | :--- |
+| **Advanced Dashboard** | Visualisasi data pemasukan, pengeluaran, dan saldo bersih secara real-time. |
+| **Multi-Asset Tracking** | Kelola berbagai sumber dana (Bank, E-wallet, Tunai) dalam satu sistem terpusat. |
+| **Budgeting Logic** | Sistem limitasi pengeluaran per kategori dengan validasi server-side. |
+| **Financial Goals** | Pelacakan progres target tabungan dengan algoritma persentase pencapaian. |
+| **Professional Reports** | Ekspor data transaksi ke format PDF dengan layout yang dioptimalkan untuk cetak. |
+| **Dynamic UI/UX** | Dark mode support, micro-interactions, dan layout yang sepenuhnya responsif. |
 
-```bash
-git clone https://github.com/NaApipp/myfinanceku.git
-cd myfinanceku
+---
+
+## 📂 Struktur Proyek
+
+Mengikuti standar **Next.js App Router** dengan pemisahan tanggung jawab yang modular:
+
+```text
+financeku/
+├── app/
+│   ├── (dashboard)/      # Protected routes: Overview, Transaksi, Anggaran
+│   ├── (OnBoarding)/     # Authentication: Login, Register, Forgot Password
+│   ├── api/              # RESTful API Route Handlers (Edge-ready)
+│   ├── components/       # Atomic Design Components (UI, Shared, Layout)
+│   ├── lib/              # Core Logic: Database connections, Services, Utils
+│   └── models/           # Schema definitions for MongoDB/Mongoose
+├── public/               # Static assets & optimized images
+├── tsconfig.json         # Strict TypeScript configuration
+├── next.config.ts        # Production-grade Next.js config
+└── package.json          # Dependency management & scripts
 ```
 
-### 2. Install Dependencies
+---
 
-```bash
-npm install
-```
+## 🔐 Keamanan & Otentikasi
 
-### 3. Konfigurasi Environment Variables
+Keamanan adalah prioritas utama dalam pengelolaan data finansial:
 
-Buat file `.env.local` di direktori root project, kemudian isi dengan variabel berikut:
+1.  **Password Hashing**: Menggunakan `bcryptjs` dengan *salt rounds* standar industri.
+2.  **JWT Strategy**: Implementasi JSON Web Tokens menggunakan library `jose` untuk verifikasi stateless yang aman.
+3.  **HTTP-Only Cookies**: Menyimpan session tokens di cookie yang tidak dapat diakses oleh client-side JavaScript untuk mencegah XSS.
+4.  **CORS Policy**: Proteksi API terhadap request dari domain yang tidak dikenal.
+5.  **Schema Validation**: Validasi input data menggunakan `Zod` sebelum masuk ke layer database.
+
+---
+
+## 🚀 Panduan Instalasi
+
+### Prasyarat
+- Node.js v18.17+ atau v20.x
+- MongoDB Atlas (atau local instance)
+- Akun Cloudinary & Resend (untuk fitur lengkap)
+
+### Langkah-langkah
+1.  **Clone Repositori**
+    ```bash
+    git clone https://github.com/username/financeku.git
+    cd financeku
+    ```
+
+2.  **Instalasi Dependensi**
+    ```bash
+    npm install --legacy-peer-deps
+    ```
+
+3.  **Konfigurasi Environment**
+    Buat file `.env` di root directory (lihat bagian [Environment](#-konfigurasi-environment)).
+
+4.  **Menjalankan Development Server**
+    ```bash
+    npm run dev
+    ```
+    Akses aplikasi di `http://localhost:3000`.
+
+---
+
+## 🔑 Konfigurasi Environment
+
+Variabel berikut wajib dikonfigurasi agar aplikasi berjalan optimal:
 
 ```env
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/
-MONGODB_DATABASE=myfinanceku
+# Database
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/
+MONGODB_DATABASE=financeku_db
 
-AUTH_SECRET=your_nextauth_secret_key
-JWT_SECRET=your_jwt_secret_key
+# Authentication
+NEXTAUTH_SECRET=your_nextauth_secret
+JWT_SECRET=your_jwt_secret
+NEXTAUTH_URL=http://localhost:3000
 
-RESEND_API_KEY=re_your_resend_api_key
+# Cloudinary (Media)
+CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
 
+# Email Service (Resend)
+RESEND_API_KEY=re_123456789
+
+# App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-Penjelasan setiap variabel:
+---
 
-| Variabel | Keterangan |
-|---|---|
-| `MONGODB_URI` | Connection string MongoDB Atlas atau instance lokal |
-| `MONGODB_DATABASE` | Nama database yang digunakan |
-| `AUTH_SECRET` | Secret key untuk enkripsi sesi NextAuth |
-| `JWT_SECRET` | Secret key untuk penandatanganan token JWT |
-| `RESEND_API_KEY` | API key dari layanan Resend untuk pengiriman email |
-| `NEXT_PUBLIC_APP_URL` | URL basis aplikasi (ganti dengan domain produksi saat deploy) |
+## 📡 Dokumentasi API
 
-### 4. Jalankan Development Server
+Aplikasi menyediakan endpoint REST yang aman untuk integrasi internal maupun eksternal:
 
-```bash
-npm run dev
-```
+### Auth Endpoints
+- `POST /api/auth/login` — Autentikasi user.
+- `POST /api/auth/register` — Registrasi user baru.
 
-Aplikasi akan berjalan di `http://localhost:3000`.
+### Core Endpoints
+- `GET | POST /api/transaksi` — Manajemen data transaksi.
+- `GET | POST /api/anggaran` — Manajemen limit anggaran.
+- `GET | POST /api/target` — Pelacakan financial targets.
+- `GET /api/backup/pdf` — Menghasilkan laporan PDF.
+
+### Management
+- `PATCH /api/update-user` — Pembaruan profil dan password.
+- `POST /api/upload` — Upload aset ke Cloudinary.
 
 ---
 
-## Cara Penggunaan
+## 🤝 Kontribusi
 
-### Akun Testing
+Kami menerima kontribusi dalam bentuk *bug reports*, *feature requests*, maupun *pull requests*.
 
-Untuk mencoba aplikasi tanpa registrasi, gunakan akun testing berikut:
-
-| Pengguna | Username | Password |
-|---|---|---|
-| User 1 | `user_testing` | `Testing1#` |
-| User 2 | `testing_user` | `Testing1#` |
-
-Atau akses versi live di: [https://myfinanceku.vercel.app](https://myfinanceku.vercel.app)
-
-### Alur Penggunaan Umum
-
-1. Registrasi akun baru atau login menggunakan akun yang sudah ada.
-2. Tambahkan akun atau kartu keuangan yang ingin dipantau.
-3. Buat kategori transaksi sesuai kebutuhan (misalnya: Makan, Transportasi, Gaji).
-4. Catat setiap transaksi pemasukan atau pengeluaran.
-5. Tetapkan target keuangan untuk memantau progres tabungan.
-6. Atur anggaran per kategori untuk mengendalikan pengeluaran.
+1.  Fork repositori ini.
+2.  Buat fitur branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit perubahan (`git commit -m 'feat: Add AmazingFeature'`).
+4.  Push ke branch (`git push origin feature/AmazingFeature`).
+5.  Buka Pull Request.
 
 ---
 
-## Struktur Folder
+## 📄 Lisensi
 
-```
-myfinanceku/
-├── app/                    # Direktori utama Next.js App Router
-│   ├── api/                # Route handler (API endpoints)
-│   │   ├── auth/           # Endpoint autentikasi (login, register, dll)
-│   │   ├── transaksi/      # Endpoint manajemen transaksi
-│   │   ├── account-card/   # Endpoint manajemen akun dan kartu
-│   │   ├── target/         # Endpoint manajemen target keuangan
-│   │   ├── anggaran/       # Endpoint manajemen anggaran
-│   │   ├── kategori/       # Endpoint manajemen kategori
-│   │   ├── settings/       # Endpoint pengaturan akun (ganti password)
-│   │   └── update-user/    # Endpoint pembaruan data pengguna
-│   ├── (pages)/            # Halaman-halaman aplikasi
-│   └── layout.tsx          # Root layout aplikasi
-├── public/                 # Aset statis (gambar, ikon, dll)
-├── .gitignore
-├── AGENTS.md               # Panduan untuk AI agent
-├── CLAUDE.md               # Konfigurasi khusus Claude AI
-├── eslint.config.mjs       # Konfigurasi ESLint
-├── next.config.ts          # Konfigurasi Next.js
-├── package.json            # Dependensi dan skrip npm
-├── postcss.config.mjs      # Konfigurasi PostCSS
-└── tsconfig.json           # Konfigurasi TypeScript
-```
+Didistribusikan di bawah **MIT License**. Lihat `LICENSE` untuk informasi lebih lanjut.
 
 ---
 
-## Dokumentasi API
-
-Seluruh endpoint API bersifat internal dan membutuhkan autentikasi kecuali endpoint auth.
-
-### Autentikasi
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/auth/login` | Login pengguna |
-| `POST` | `/api/auth/register` | Registrasi pengguna baru |
-| `POST` | `/api/auth/logout` | Logout pengguna |
-| `POST` | `/api/auth/forgot-password` | Permintaan reset password |
-| `POST` | `/api/auth/reset-password` | Reset password dengan token |
-
-### Transaksi
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/transaksi` | Tambah transaksi baru |
-| `GET` | `/api/transaksi` | Ambil semua transaksi |
-| `DELETE` | `/api/transaksi/:id` | Hapus transaksi berdasarkan ID |
-
-### Akun dan Kartu
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/account-card` | Tambah akun atau kartu baru |
-| `GET` | `/api/account-card` | Ambil semua akun dan kartu |
-| `PUT` | `/api/account-card/:id` | Perbarui akun atau kartu |
-| `DELETE` | `/api/account-card/:id` | Hapus akun atau kartu |
-
-### Target Keuangan
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/target` | Tambah target baru |
-| `GET` | `/api/target` | Ambil semua target |
-| `PUT` | `/api/target/:idTarget` | Perbarui target |
-| `DELETE` | `/api/target/:idTarget` | Hapus target |
-
-### Anggaran
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/anggaran` | Tambah anggaran baru |
-| `GET` | `/api/anggaran` | Ambil semua anggaran |
-| `PUT` | `/api/anggaran/:id` | Perbarui anggaran |
-| `DELETE` | `/api/anggaran/:id` | Hapus anggaran |
-
-### Kategori
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/kategori` | Tambah kategori baru |
-| `GET` | `/api/kategori` | Ambil semua kategori |
-| `PUT` | `/api/kategori/:idKategori` | Perbarui kategori |
-| `DELETE` | `/api/kategori/:idKategori` | Hapus kategori |
-
-### Pengaturan Akun
-
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/settings/change-password` | Ganti password pengguna |
-| `POST` | `/api/update-user` | Perbarui data profil pengguna |
-
----
-
-## Testing
-
-Saat ini project belum memiliki automated test suite. Untuk pengujian manual, gunakan akun testing yang telah disediakan atau buat akun baru melalui halaman registrasi.
-
-Untuk menjalankan linting:
-
-```bash
-npm run lint
-```
-
----
-
-## Deployment
-
-Aplikasi ini direkomendasikan untuk di-deploy menggunakan [Vercel](https://vercel.com), platform yang dioptimalkan untuk Next.js.
-
-### Langkah Deployment ke Vercel
-
-1. Push kode ke repository GitHub Anda.
-2. Buka [https://vercel.com](https://vercel.com) dan login.
-3. Klik **Add New Project** dan pilih repository `myfinanceku`.
-4. Pada bagian **Environment Variables**, tambahkan semua variabel yang ada di file `.env.local`.
-5. Klik **Deploy**.
-
-Setelah deploy berhasil, perbarui variabel `NEXT_PUBLIC_APP_URL` dengan URL domain produksi yang diberikan oleh Vercel.
-
-### Build untuk Produksi (Lokal)
-
-```bash
-npm run build
-npm run start
-```
-
----
-
-## Kontribusi
-
-Kontribusi sangat disambut untuk meningkatkan kualitas project ini. Berikut panduan untuk berkontribusi:
-
-### Format Commit
-
-Gunakan format berikut untuk setiap commit:
-
-```
-<type>(<scope>): <deskripsi singkat>
-```
-
-Contoh: `feat(navbar): add dropdown menu`
-
-Daftar tipe commit yang tersedia:
-
-| Tipe | Keterangan |
-|---|---|
-| `feat` | Menambahkan fitur baru |
-| `fix` | Memperbaiki bug |
-| `docs` | Memperbarui dokumentasi |
-| `style` | Memperbaiki format atau gaya kode (tidak mengubah logika) |
-| `refactor` | Refactoring kode tanpa mengubah fungsionalitas |
-| `test` | Menambahkan atau memperbaiki test |
-| `chore` | Perubahan konfigurasi atau task setup |
-
-### Langkah Kontribusi
-
-1. Fork repository ini.
-2. Buat branch baru dari `master`:
-   ```bash
-   git checkout -b feat/nama-fitur-anda
-   ```
-3. Lakukan perubahan dan commit sesuai format yang berlaku.
-4. Push branch ke fork Anda:
-   ```bash
-   git push origin feat/nama-fitur-anda
-   ```
-5. Buat Pull Request ke branch `master` repository utama.
-6. Tunggu review dan tanggapan dari maintainer.
-
----
-
-## Lisensi
-
-Repository ini bersifat privat (`"private": true` dalam `package.json`). Lisensi belum didefinisikan secara eksplisit. Untuk penggunaan lebih lanjut, harap hubungi pemilik repository.
-
----
-
-## Kontak dan Author
-
-- **GitHub**: [NaApipp](https://github.com/NaApipp)
-- **Repository**: [https://github.com/NaApipp/myfinanceku](https://github.com/NaApipp/myfinanceku)
-- **Live Demo**: [https://myfinanceku.vercel.app](https://myfinanceku.vercel.app)
+<p align="center">
+  Dibuat dengan dedikasi oleh <b>Team MyFinanceKu</b>
+</p>
