@@ -146,23 +146,74 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ---
 
-## 📡 Dokumentasi API
 
-Aplikasi menyediakan endpoint REST yang aman untuk integrasi internal maupun eksternal:
+## Dokumentasi API
 
-### Auth Endpoints
-- `POST /api/auth/login` — Autentikasi user.
-- `POST /api/auth/register` — Registrasi user baru.
+Seluruh endpoint API bersifat internal dan membutuhkan autentikasi kecuali endpoint auth.
 
-### Core Endpoints
-- `GET | POST /api/transaksi` — Manajemen data transaksi.
-- `GET | POST /api/anggaran` — Manajemen limit anggaran.
-- `GET | POST /api/target` — Pelacakan financial targets.
-- `GET /api/backup/pdf` — Menghasilkan laporan PDF.
+### Autentikasi
 
-### Management
-- `PATCH /api/update-user` — Pembaruan profil dan password.
-- `POST /api/upload` — Upload aset ke Cloudinary.
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/auth/login` | Login pengguna |
+| `POST` | `/api/auth/register` | Registrasi pengguna baru |
+| `POST` | `/api/auth/logout` | Logout pengguna |
+| `POST` | `/api/auth/forgot-password` | Permintaan reset password |
+| `POST` | `/api/auth/reset-password` | Reset password dengan token |
+
+### Transaksi
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/transaksi` | Tambah transaksi baru |
+| `GET` | `/api/transaksi` | Ambil semua transaksi |
+| `DELETE` | `/api/transaksi/:idTransaksi` | Hapus transaksi berdasarkan ID |
+| `GET` | `/api/transaksi/pdf` | Generate laporan transaksi |
+
+### Akun dan Kartu
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/account-card` | Tambah akun atau kartu baru |
+| `GET` | `/api/account-card` | Ambil semua akun dan kartu |
+| `PUT` | `/api/account-card/:idAccount` | Perbarui akun atau kartu |
+| `DELETE` | `/api/account-card/:idAccount` | Hapus akun atau kartu |
+
+### Target Keuangan
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/target` | Tambah target baru |
+| `GET` | `/api/target` | Ambil semua target |
+| `PUT` | `/api/target/:idTarget` | Perbarui target |
+| `DELETE` | `/api/target/:idTarget` | Hapus target |
+
+### Anggaran
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/anggaran` | Tambah anggaran baru |
+| `GET` | `/api/anggaran` | Ambil semua anggaran |
+| `PUT` | `/api/anggaran/:id` | Perbarui anggaran |
+| `DELETE` | `/api/anggaran/:id` | Hapus anggaran |
+
+### Kategori
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/kategori` | Tambah kategori baru |
+| `GET` | `/api/kategori` | Ambil semua kategori |
+| `PUT` | `/api/kategori/:idKategori` | Perbarui kategori |
+| `DELETE` | `/api/kategori/:idKategori` | Hapus kategori |
+
+### Pengaturan Akun
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| `POST` | `/api/settings/change-password` | Ganti password pengguna |
+| `POST` | `/api/update-user` | Perbarui data profil pengguna |
+| `POST` | `/api/upload` | Upload foto profil pengguna |
+| `GET` | `/api/backup` | Backup data pengguna |
 
 ---
 
