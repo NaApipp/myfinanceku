@@ -177,7 +177,7 @@ export const LaporanPDF = ({
         {/* Footer */}
         <View style={{ marginTop: 30 }}>
           <Text style={{ fontSize: 8, textAlign: "center" }}>
-            Dicetak pada {new Date().toLocaleString("id-ID")} • FinanceKu App
+            Dicetak pada {new Date().toLocaleString("id-ID")} • MyFinanceKu App
           </Text>
         </View>
       </Page>
