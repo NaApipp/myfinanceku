@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Info } from "lucide-react";
 
 import Link from "next/link";
 
@@ -72,10 +72,13 @@ export default function RegistrasiForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 md:p-8">
+    <div className="w-full max-w-md mx-auto p-6 md:p-8 relative">
+      <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="mb-8">
-        <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
           Buat Akun Baru
+          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse mt-2" />
         </h2>
         <p className="mt-2 text-sm text-slate-500">
           Sudah punya akun?{" "}
@@ -90,42 +93,46 @@ export default function RegistrasiForm() {
 
       {message && (
         <div
-          className={`mb-6 rounded-xl p-4 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300 ${
+          className={`mb-6 rounded-2xl p-4 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300 border shadow-sm ${
             message.type === "success"
-              ? "bg-emerald-50 border border-emerald-100 text-emerald-800"
-              : "bg-rose-50 border border-rose-100 text-rose-800"
+              ? "bg-emerald-50/50 border-emerald-100 text-emerald-800 shadow-emerald-100/20"
+              : "bg-rose-50/50 border-rose-100 text-rose-800 shadow-rose-100/20"
           }`}
         >
           <div className="flex items-center gap-3">
-            {message.type === "success" ? (
-              <svg
-                className="h-5 w-5 text-emerald-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="h-5 w-5 text-rose-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            )}
+            <div className={`p-1.5 rounded-lg ${
+              message.type === "success" ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"
+            }`}>
+              {message.type === "success" ? (
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              )}
+            </div>
             {message.text}
           </div>
         </div>
@@ -145,7 +152,7 @@ export default function RegistrasiForm() {
               placeholder="Andi"
               type="text"
               required
-              className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
             />
           </div>
           <div className="space-y-1.5">
@@ -160,7 +167,7 @@ export default function RegistrasiForm() {
               placeholder="Widodo"
               type="text"
               required
-              className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
             />
           </div>
         </div>
@@ -175,8 +182,19 @@ export default function RegistrasiForm() {
             placeholder="nama@email.com"
             type="email"
             required
-            className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+            className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
           />
+          {/* Alert */}
+          <div className="p-4 rounded-2xl border border-blue-100 bg-blue-50/40 relative overflow-hidden group transition-all duration-300 hover:border-blue-200 hover:bg-blue-50/60 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-150">
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-16 h-16 bg-blue-100/20 rounded-full blur-2xl group-hover:bg-blue-200/30 transition-all duration-500" />
+            <div className="flex items-start gap-3 relative z-10">
+              <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+              <p className="text-blue-800/80 font-medium text-sm leading-relaxed">
+                Gunakan email yang aktif untuk memastikan kelancaran ketika Lupa
+                Password.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -192,7 +210,7 @@ export default function RegistrasiForm() {
               placeholder="konohakorupsi"
               type="text"
               required
-              className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
             />
           </div>
           <div className="space-y-1.5">
@@ -207,7 +225,7 @@ export default function RegistrasiForm() {
               placeholder="08123456789"
               type="tel"
               required
-              className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
             />
           </div>
         </div>
@@ -225,7 +243,7 @@ export default function RegistrasiForm() {
               placeholder="••••••••"
               type={showPassword ? "text" : "password"}
               required
-              className="text-black w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
             />
             <button
               type="button"
@@ -257,7 +275,7 @@ export default function RegistrasiForm() {
               setFormData({ ...formData, term_on_service: e.target.checked })
             }
             type="checkbox"
-            className="text-black w-4 h-4 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+            className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500/20 transition-all cursor-pointer"
           />
           <label className="text-sm font-semibold text-slate-500 flex">
             Saya menyetujui <TermOnService />
@@ -272,7 +290,7 @@ export default function RegistrasiForm() {
               setFormData({ ...formData, privacy_policy: e.target.checked })
             }
             type="checkbox"
-            className="text-black w-4 h-4 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 placeholder:text-slate-400"
+            className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500/20 transition-all cursor-pointer"
           />
           <label className="text-sm font-semibold text-slate-500 flex items-center">
             Saya menyetujui <PrivacyPolicy />
@@ -281,9 +299,11 @@ export default function RegistrasiForm() {
 
         <button
           disabled={isLoading}
-          className="w-full h-12 mt-4 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full h-12 mt-6 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-slate-200 group relative overflow-hidden"
           type="submit"
         >
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           {isLoading ? (
             <>
               <svg
@@ -325,7 +345,7 @@ export default function RegistrasiForm() {
       </div>
 
       <button
-        className="hidden w-full h-12 mt-6 border border-slate-200 bg-white rounded-xl font-semibold text-slate-700 flex items-center justify-center gap-3 hover:bg-slate-50 active:scale-[0.98] transition-all"
+        className="hidden w-full h-12 mt-6 border border-slate-200 bg-white rounded-2xl font-semibold text-slate-700 flex items-center justify-center gap-3 hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98] transition-all shadow-sm"
         type="button"
       >
         <svg className="h-5 w-5" viewBox="0 0 24 24">
