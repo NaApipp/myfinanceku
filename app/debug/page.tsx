@@ -1,9 +1,9 @@
-import AverageIncome from "../(dashboard)/general/components/AverageIncome"
+import AverageIncome from "../(dashboard)/transaksi/components/AverageIncome";
 
 export default function page() {
   return (
     <div>
-        <AverageIncome />
+      <AverageIncome />
     </div>
-  )
+  );
 }

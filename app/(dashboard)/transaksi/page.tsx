@@ -1,6 +1,8 @@
 "use client";
 
 import DataTransaksi from "./components/DataTransaksi";
+import AverageExpense from "./components/AverageExpense";
+import AverageIncome from "./components/AverageIncome";
 
 export default function Page() {
   return (
@@ -10,6 +12,10 @@ export default function Page() {
         <p className="text-[#777777] dark:text-gray-400 text-sm">
           Daftar semua pemasukan dan pengeluaran Anda.
         </p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+        <AverageIncome />
+        <AverageExpense />
       </div>
       <div className="mt-8">
         <DataTransaksi />
