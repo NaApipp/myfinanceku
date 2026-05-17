@@ -5,9 +5,14 @@ import RecentTransactions from "./components/RecentTransactions";
 import AccountsOverview from "./components/AccountsOverview";
 import BudgetsOverview from "./components/BudgetsOverview";
 import TargetProgress from "./components/TargetProgress";
+import AverageIncome from "../transaksi/components/AverageIncome";
+import AverageExpanse from "../transaksi/components/AverageExpense";
+import TotalIncome from "./components/TotalIncome";
+import TotalExpense from "./components/TotalExpense";
 import { Plus, LayoutDashboard, Calendar, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import TambahTransaksi from "@/app/components/TambahTransaksi";
+
 
 export default function GeneralPage() {
   const [greeting, setGreeting] = useState("");
@@ -82,20 +87,22 @@ export default function GeneralPage() {
         <div className="lg:col-span-2">
           <SummaryCard />
         </div>
-        <div className="lg:col-span-1">
-          <TargetProgress />
+        <div className="lg:col-span-1 grid gap-4">
+          <TotalIncome />
+          <TotalExpense />
         </div>
       </section>
 
       {/* Middle Section - Accounts and Budgets */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <AccountsOverview />
-        <BudgetsOverview />
+      <section className="w-full">
+        <RecentTransactions />
       </section>
 
-      {/* Bottom Section - Transactions */}
-      <section>
-        <RecentTransactions />
+      {/* Bottom Section - Transactions & Averages */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <AccountsOverview />
+        <TargetProgress />
+        <BudgetsOverview />
       </section>
 
       {/* Quick Stats Banner */}
