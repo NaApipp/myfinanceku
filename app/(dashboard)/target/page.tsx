@@ -9,7 +9,7 @@ export default function TargetPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <p className="uppercase text-gray-900 dark:text-gray-400 font-bold text-sm">
-              Perencanaan Keuanan
+              Perencanaan Keuangan
             </p>
             <div className="flex items-center gap-3">
               <h1 className="text-4xl font-black text-black dark:text-white tracking-tight">
