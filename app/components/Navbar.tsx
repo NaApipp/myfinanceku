@@ -11,7 +11,8 @@ import {
   Target, 
   House, 
   Settings, 
-  SquareArrowRightExit 
+  SquareArrowRightExit, 
+  ChartArea
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import TambahTransaksi from "./TambahTransaksi";
@@ -117,6 +118,12 @@ export default function Navbar() {
               <Link href="/general" onClick={close} className={getPathActive("/general")}>
                 <House size={20} />
                 <span>General Dashboard</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/statistic" onClick={close} className={getPathActive("/statistic")}>
+                <ChartArea size={20} />
+                <span>Statistic Keuangan</span>
               </Link>
             </li>
             <li>
