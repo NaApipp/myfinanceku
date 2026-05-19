@@ -1,0 +1,21 @@
+jika memiliki level basic, maka hanya bisa catat transaksi 
+
+jika memiliki level medium, maka bisa catat transaksi dan buat target 
+
+jika memiliki level advace, maka bisa melakukan semua fitur
+
+
+
+
+Summary
+1.income bulan ini
+2.expense
+3.total kepemilikan dana (balance)
+
+Main Chart
+1. Expense by Category (Donut Chart)
+
+Insight Ringkas:
+1. Pengeluaran terbesar berdasarkan kategori
+2. Hari yang paling boros selama 1 Minggu
+3. Transaksi terbesar berdasarkan nominal selama 1 bulan 

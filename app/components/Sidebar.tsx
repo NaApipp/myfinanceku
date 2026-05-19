@@ -9,6 +9,7 @@ import {
   House,
   Plus,
   SquareArrowRightExit,
+  ChartArea,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -77,6 +78,14 @@ export default function Sidebar() {
               <House />
 
               <span className="text-sm font-medium"> General </span>
+            </Link>
+          </li>
+
+          <li>
+            <Link href="/statistic" className={getPathActive("/statistic")}>
+              <ChartArea />
+
+              <span className="text-sm font-medium">Statistic </span>
             </Link>
           </li>
 
