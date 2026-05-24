@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import HelpButton from "../components/HelpButton";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -34,6 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <footer>
           <Footer />
         </footer>
+        <HelpButton />
       </main>
     </div>
   );
