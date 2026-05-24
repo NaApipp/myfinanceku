@@ -1,6 +1,6 @@
 "use client";
 
-import { DatabaseBackup, Headset, Loader2, Save } from "lucide-react";
+import { DatabaseBackup, Headset, Loader2, Save, ChevronRight, CircleQuestionMark } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -89,6 +89,33 @@ export default function SupportCenter() {
             )}
           </button>
         </div>
+
+        {/* Panduan Penggunaan */}
+        <div className="text-black dark:text-white flex flex-row justify-between items-center bg-white dark:bg-neutral-900 rounded-[32px] shadow-md p-8 border border-gray-100 dark:border-white/5 transition-colors duration-300">
+          {/* icon & text */}
+          <div className="flex flex-row items-center gap-4">
+            <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-2xl">
+              <CircleQuestionMark
+                className="text-black dark:text-white"
+                width={24}
+                height={24}
+              />
+            </div>
+            <div className="">
+              <h2 className="text-lg font-semibold">Panduan Penggunaan.</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Pilih topik yang ingin kamu pelajari
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/pengaturan/panduan-penggunaan"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-3xl transition-colors"
+          >
+            <ChevronRight className="text-black dark:text-white" width={24} height={24} />
+          </Link>
+        </div>
+
 
         {/* Discord */}
         <div className="text-black dark:text-white flex flex-row justify-between items-center bg-white dark:bg-neutral-900 rounded-[32px] shadow-md p-8 border border-gray-100 dark:border-white/5 transition-colors duration-300">
