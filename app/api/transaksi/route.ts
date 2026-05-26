@@ -15,85 +15,6 @@ const transaksiSchema = z.object({
   description: z.string().optional().or(z.literal("")),
 });
 
-// export async function POST(req: NextRequest) {
-//   try {
-//     const token = req.cookies.get("token")?.value;
-//     if (!token) {
-//       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-//     }
-
-//     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
-//     const { payload } = await jwtVerify(token, secret);
-//     const userId = payload.userId ? String(payload.userId) : null;
-
-//     if (!userId) {
-//       return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
-//     }
-
-//     const body = await req.json();
-//     const {
-//       type_transaksi,
-//       nominal_transaksi,
-//       tanggal_transaksi,
-//       kategori,
-//       sumberdana,
-//       description,
-//     } = body;
-
-//     if (!type_transaksi || !nominal_transaksi || !tanggal_transaksi || !kategori || !sumberdana || !description) {
-//         return NextResponse.json(
-//             { message: "Semua field wajib diisi" },
-//             { status: 400 },
-//         );
-//     }
-
-//     // Mengambil instance client dari shared koneksi MongoDB (reusable connection)
-//     const client = await clientPromise;
-//     // Menghubungkan ke database sesuai konfigurasi di environment variable (.env)
-//     const db = client.db(process.env.MONGODB_DATABASE);
-//     // Menentukan koleksi "transaksi" yang akan digunakan untuk operasi data
-//     const transaksiCollection = db.collection("transaksi");
-//     // Generate ID based on current document count for THIS user
-//     const count = await transaksiCollection.countDocuments({ userId });
-//     const idTransaksi = `TRX-${userId.slice(-4)}-${String(count + 1).padStart(6, "0")}`;
-    
-//     // Insert data transaksi
-//     const transaksi = await transaksiCollection.insertOne({
-//         userId,
-//         idTransaksi,
-//         type_transaksi,
-//         nominal_transaksi,
-//         tanggal_transaksi,
-//         kategori,
-//         sumberdana,
-//         description,
-//     });
-
-//     return NextResponse.json(
-//       {
-//         success: true,
-//         message: "Transaksi berhasil ditambahkan",
-//         data: {
-//           idTransaksi,
-//           type_transaksi,
-//           nominal_transaksi,
-//           tanggal_transaksi,
-//           kategori,
-//           sumberdana,
-//           description,
-//         },
-//       },
-//       { status: 201 },
-//     );
-//   } catch (error) {
-//     console.error("Error processing transaksi:", error);
-//     return NextResponse.json(
-//       { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
-//       { status: 500 },
-//     );
-//   }
-// }
-
 function formatDateWIB(date: Date) {
   const fmt = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Jakarta",
@@ -202,6 +123,10 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
+    const typeTransaksi = searchParams.get("typeTransaksi");
+    const sumberDana = searchParams.get("sumberDana");
+    const minNominal = searchParams.get("minNominal");
+    const maxNominal = searchParams.get("maxNominal");
     const skip = (page - 1) * limit;
 
     const client = await clientPromise;
@@ -218,6 +143,28 @@ export async function GET(req: NextRequest) {
       }
       if (endDate) {
         query.tanggal_transaksi.$lte = endDate;
+      }
+    }
+
+    if (typeTransaksi) {
+      query.type_transaksi = typeTransaksi;
+    }
+
+    if (sumberDana) {
+      query.idAccount = sumberDana;
+    }
+
+    if (minNominal || maxNominal) {
+      query.$expr = { $and: [] };
+      if (minNominal) {
+        query.$expr.$and.push({
+          $gte: [{ $toDouble: "$nominal_transaksi" }, Number(minNominal)]
+        });
+      }
+      if (maxNominal) {
+        query.$expr.$and.push({
+          $lte: [{ $toDouble: "$nominal_transaksi" }, Number(maxNominal)]
+        });
       }
     }
 

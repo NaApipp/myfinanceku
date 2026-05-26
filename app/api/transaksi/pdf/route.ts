@@ -20,10 +20,14 @@ export async function GET(req: NextRequest) {
     const { payload } = await jwtVerify(token, secret);
     const userId = payload.userId as string;
 
-    // 2. Handle Date Range Filtering
+    // 2. Handle Date Range and Advanced Filtering
     const { searchParams } = new URL(req.url);
     const startDateParam = searchParams.get("startDate");
     const endDateParam = searchParams.get("endDate");
+    const typeTransaksi = searchParams.get("typeTransaksi");
+    const sumberDana = searchParams.get("sumberDana");
+    const minNominal = searchParams.get("minNominal");
+    const maxNominal = searchParams.get("maxNominal");
 
     let startDate: string;
     let endDate: string =
@@ -47,6 +51,28 @@ export async function GET(req: NextRequest) {
       userId,
       tanggal_transaksi: { $gte: startDate, $lte: endDate },
     };
+
+    if (typeTransaksi) {
+      query.type_transaksi = typeTransaksi;
+    }
+
+    if (sumberDana) {
+      query.idAccount = sumberDana;
+    }
+
+    if (minNominal || maxNominal) {
+      query.$expr = { $and: [] };
+      if (minNominal) {
+        query.$expr.$and.push({
+          $gte: [{ $toDouble: "$nominal_transaksi" }, Number(minNominal)]
+        });
+      }
+      if (maxNominal) {
+        query.$expr.$and.push({
+          $lte: [{ $toDouble: "$nominal_transaksi" }, Number(maxNominal)]
+        });
+      }
+    }
 
     const transaksi = await transaksiCollection
       .find(query)

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash, Calendar, Wallet, Receipt, ArrowDownCircle, ArrowUpCircle, Filter, X, FileDown, Loader2 } from "lucide-react";
+import { Trash, Calendar, Wallet, Receipt, ArrowDownCircle, ArrowUpCircle, Filter, X, FileDown, Loader2, ChevronDown, DollarSign, Tag } from "lucide-react";
 
 interface TransactionData {
   _id?: string;
@@ -41,6 +41,12 @@ export default function DataTransaksi() {
   // Filter state
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [filterSumberDana, setFilterSumberDana] = useState("");
+  const [filterMinNominal, setFilterMinNominal] = useState("");
+  const [filterMaxNominal, setFilterMaxNominal] = useState("");
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
+  const [accountList, setAccountList] = useState<{ idAccount: string; nama_asset: string; nama_akun: string }[]>([]);
 
   // handleDelete
   const handleDelete = async () => {
@@ -89,6 +95,7 @@ export default function DataTransaksi() {
             accMap[acc.idAccount] = `${acc.nama_asset} - ${acc.nama_akun}`;
           });
           setAccounts(accMap);
+          setAccountList(accData.data);
         }
 
         if (catData.success) {
@@ -115,6 +122,10 @@ export default function DataTransaksi() {
       let url = `/api/transaksi?page=${currentPage}&limit=${limit}`;
       if (startDate) url += `&startDate=${startDate}`;
       if (endDate) url += `&endDate=${endDate}`;
+      if (filterType) url += `&typeTransaksi=${filterType}`;
+      if (filterSumberDana) url += `&sumberDana=${filterSumberDana}`;
+      if (filterMinNominal) url += `&minNominal=${filterMinNominal}`;
+      if (filterMaxNominal) url += `&maxNominal=${filterMaxNominal}`;
 
       const response = await fetch(url);
       if (!response.ok) throw new Error("Gagal mengambil data Transaksi");
@@ -135,13 +146,19 @@ export default function DataTransaksi() {
     if (!isInitialLoading) {
       fetchTransactions(page);
     }
-  }, [page, startDate, endDate, isInitialLoading]);
+  }, [page, startDate, endDate, filterType, filterSumberDana, filterMinNominal, filterMaxNominal, isInitialLoading]);
 
   const handleResetFilter = () => {
     setStartDate("");
     setEndDate("");
+    setFilterType("");
+    setFilterSumberDana("");
+    setFilterMinNominal("");
+    setFilterMaxNominal("");
     setPage(1);
   };
+
+  const hasActiveFilter = startDate || endDate || filterType || filterSumberDana || filterMinNominal || filterMaxNominal;
 
   const handleDownloadPdf = async () => {
     setIsDownloadingPdf(true);
@@ -149,6 +166,10 @@ export default function DataTransaksi() {
       const params = new URLSearchParams();
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
+      if (filterType) params.append("typeTransaksi", filterType);
+      if (filterSumberDana) params.append("sumberDana", filterSumberDana);
+      if (filterMinNominal) params.append("minNominal", filterMinNominal);
+      if (filterMaxNominal) params.append("maxNominal", filterMaxNominal);
       
       const url = `/api/transaksi/pdf${params.toString() ? `?${params.toString()}` : ""}`;
 
@@ -213,7 +234,7 @@ export default function DataTransaksi() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-gray-900 dark:text-white">Filter Transaksi</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Cari berdasarkan rentang tanggal</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Filter data transaksi</p>
             </div>
           </div>
 
@@ -233,43 +254,204 @@ export default function DataTransaksi() {
             </button>
           </div>
           
-          {/* Filter Transaksi bY Range Transaction Date*/}
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto mt-3 md:mt-0">
-            <div className="relative flex-1 md:flex-initial">
-              <label htmlFor="startDate" className="block text-xs font-bold text-gray-900 dark:text-white mb-2">Dari Tanggal</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => {
-                  setStartDate(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
-                placeholder="Dari Tanggal"
-              />
+          {/* Toggle Advanced Filter */}
+          <button
+            onClick={() => setShowAdvancedFilter(!showAdvancedFilter)}
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-2xl transition-all border ${
+              showAdvancedFilter || hasActiveFilter
+                ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20'
+                : 'bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-100 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-500/20'
+            }`}
+          >
+            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showAdvancedFilter ? 'rotate-180' : ''}`} />
+            {hasActiveFilter ? 'Filter Aktif' : 'Filter Lanjutan'}
+            {hasActiveFilter && (
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            )}
+          </button>
+
+          {hasActiveFilter && (
+            <button
+              onClick={handleResetFilter}
+              className="p-2.5 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all group"
+              title="Reset Semua Filter"
+            >
+              <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+            </button>
+          )}
+        </div>
+
+        {/* Advanced Filter Panel */}
+        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showAdvancedFilter ? 'max-h-[500px] opacity-100 mt-5' : 'max-h-0 opacity-0'}`}>
+          <div className="p-5 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-gray-100 dark:border-white/5 space-y-4">
+            {/* Row 1: Date Range */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="relative">
+                <label htmlFor="startDate" className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  <Calendar className="w-3.5 h-3.5 text-blue-500" />
+                  Dari Tanggal
+                </label>
+                <input
+                  id="startDate"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
+                />
+              </div>
+              <div className="relative">
+                <label htmlFor="endDate" className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  <Calendar className="w-3.5 h-3.5 text-blue-500" />
+                  Sampai Tanggal
+                </label>
+                <input
+                  id="endDate"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
+                />
+              </div>
+
+              {/* Tipe Transaksi */}
+              <div className="relative">
+                <label htmlFor="filterType" className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  <Tag className="w-3.5 h-3.5 text-violet-500" />
+                  Tipe Transaksi
+                </label>
+                <div className="relative">
+                  <select
+                    id="filterType"
+                    value={filterType}
+                    onChange={(e) => {
+                      setFilterType(e.target.value);
+                      setPage(1);
+                    }}
+                    className="w-full appearance-none bg-white dark:bg-neutral-800 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 dark:text-white pr-10 cursor-pointer"
+                  >
+                    <option value="" className="bg-white text-slate-900 dark:bg-neutral-800 dark:text-white">Semua Tipe</option>
+                    <option value="pemasukan" className="bg-white text-slate-900 dark:bg-neutral-800 dark:text-white">Pemasukan</option>
+                    <option value="pengeluaran" className="bg-white text-slate-900 dark:bg-neutral-800 dark:text-white">Pengeluaran</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Sumber Dana */}
+              <div className="relative">
+                <label htmlFor="filterSumberDana" className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  <Wallet className="w-3.5 h-3.5 text-amber-500" />
+                  Sumber Dana
+                </label>
+                <div className="relative">
+                  <select
+                    id="filterSumberDana"
+                    value={filterSumberDana}
+                    onChange={(e) => {
+                      setFilterSumberDana(e.target.value);
+                      setPage(1);
+                    }}
+                    className="w-full appearance-none bg-white dark:bg-neutral-800 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 dark:text-white pr-10 cursor-pointer"
+                  >
+                    <option value="" className="bg-white text-slate-900 dark:bg-neutral-800 dark:text-white">Semua Sumber</option>
+                    {accountList.map((acc) => (
+                      <option key={acc.idAccount} value={acc.idAccount} className="bg-white text-slate-900 dark:bg-neutral-800 dark:text-white">
+                        {acc.nama_asset} - {acc.nama_akun}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
             </div>
-            <div className="relative flex-1 md:flex-initial">
-              <label htmlFor="endDate" className="block mb-2 text-xs font-bold text-gray-900 dark:text-white">Sampai Tanggal</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => {
-                  setEndDate(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
-                placeholder="Sampai Tanggal"
-              />
+
+            {/* Row 2: Nominal Range */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="relative">
+                <label htmlFor="filterMinNominal" className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
+                  Nominal Minimum
+                </label>
+                <input
+                  id="filterMinNominal"
+                  type="number"
+                  value={filterMinNominal}
+                  onChange={(e) => {
+                    setFilterMinNominal(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
+                  placeholder="Min. nominal"
+                  min="0"
+                />
+              </div>
+              <div className="relative">
+                <label htmlFor="filterMaxNominal" className="flex items-center gap-1.5 text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  <DollarSign className="w-3.5 h-3.5 text-rose-500" />
+                  Nominal Maksimum
+                </label>
+                <input
+                  id="filterMaxNominal"
+                  type="number"
+                  value={filterMaxNominal}
+                  onChange={(e) => {
+                    setFilterMaxNominal(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all dark:text-white"
+                  placeholder="Max. nominal"
+                  min="0"
+                />
+              </div>
             </div>
-            
-            {(startDate || endDate) && (
-              <button
-                onClick={handleResetFilter}
-                className="p-2.5 mt-4 md:mt-0 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-2xl hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all group"
-                title="Reset Filter"
-              >
-                <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-              </button>
+
+            {/* Active Filters Summary */}
+            {hasActiveFilter && (
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100 dark:border-white/5">
+                <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Aktif:</span>
+                {startDate && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-bold">
+                    <Calendar className="w-3 h-3" /> Dari: {startDate}
+                    <button onClick={() => { setStartDate(''); setPage(1); }} className="ml-0.5 hover:text-blue-800 dark:hover:text-blue-200"><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {endDate && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-bold">
+                    <Calendar className="w-3 h-3" /> Sampai: {endDate}
+                    <button onClick={() => { setEndDate(''); setPage(1); }} className="ml-0.5 hover:text-blue-800 dark:hover:text-blue-200"><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {filterType && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-violet-50 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 rounded-lg text-[10px] font-bold capitalize">
+                    <Tag className="w-3 h-3" /> {filterType}
+                    <button onClick={() => { setFilterType(''); setPage(1); }} className="ml-0.5 hover:text-violet-800 dark:hover:text-violet-200"><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {filterSumberDana && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-bold">
+                    <Wallet className="w-3 h-3" /> {accounts[filterSumberDana] || filterSumberDana}
+                    <button onClick={() => { setFilterSumberDana(''); setPage(1); }} className="ml-0.5 hover:text-amber-800 dark:hover:text-amber-200"><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {filterMinNominal && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg text-[10px] font-bold">
+                    <DollarSign className="w-3 h-3" /> Min: {Number(filterMinNominal).toLocaleString('id-ID')}
+                    <button onClick={() => { setFilterMinNominal(''); setPage(1); }} className="ml-0.5 hover:text-emerald-800 dark:hover:text-emerald-200"><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+                {filterMaxNominal && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 rounded-lg text-[10px] font-bold">
+                    <DollarSign className="w-3 h-3" /> Max: {Number(filterMaxNominal).toLocaleString('id-ID')}
+                    <button onClick={() => { setFilterMaxNominal(''); setPage(1); }} className="ml-0.5 hover:text-rose-800 dark:hover:text-rose-200"><X className="w-3 h-3" /></button>
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -285,12 +467,12 @@ export default function DataTransaksi() {
             <Receipt className="w-10 h-10 text-gray-300 dark:text-gray-500" />
           </div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-            {startDate || endDate ? "Tidak ada transaksi dalam rentang ini" : "Belum ada transaksi"}
+            {hasActiveFilter ? "Tidak ada transaksi yang cocok" : "Belum ada transaksi"}
           </h3>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-            {startDate || endDate ? "Coba sesuaikan filter tanggal Anda." : "Mulai catat transaksi harian Anda di sini."}
+            {hasActiveFilter ? "Coba sesuaikan filter Anda." : "Mulai catat transaksi harian Anda di sini."}
           </p>
-          {(startDate || endDate) && (
+          {hasActiveFilter && (
             <button 
               onClick={handleResetFilter}
               className="mt-6 px-6 py-2.5 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 active:scale-95 transition-all text-sm"
