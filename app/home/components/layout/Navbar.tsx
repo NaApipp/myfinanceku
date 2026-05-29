@@ -29,7 +29,7 @@ export default function Navbar() {
             </a>
             <a
               className="text-slate-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
-              href="/coming-soon"
+              href="/pricing"
             >
               Harga
             </a>

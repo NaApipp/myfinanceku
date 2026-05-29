@@ -59,7 +59,7 @@ export default function Footer() {
             <li>
               <a
                 className="text-slate-500 hover:text-slate-200 transition-colors"
-                href="/coming-soon"
+                href="/pricing"
               >
                 Harga   
               </a>
