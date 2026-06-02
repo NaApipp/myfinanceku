@@ -1,0 +1,135 @@
+[{
+  "_id": {
+    "$oid": "69fc79e96cf28cad938edeb5"
+  },
+  "idUser": "000001",
+  "first_name": "Nabil",
+  "last_name": "Arif",
+  "full_name": "Nabil Arif",
+  "email": "nabilapipp@gmail.com",
+  "password": "$2b$10$igVtf0kKExzEuA0zE8eZmOgbKVhxzXQxGHpejmjpSPWmlu.jAeDyC",
+  "username": "n_apipppp",
+  "no_hp": "089531310903",
+  "level": "basic",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "07/05/2026 18:39:21"
+},
+{
+  "_id": {
+    "$oid": "69fc7b202ff79549c4ff4abd"
+  },
+  "idUser": "000002",
+  "first_name": "User",
+  "last_name": "Testing",
+  "full_name": "User Testing",
+  "email": "testing@gmail.com",
+  "password": "$2b$10$h9EEvOUKFNIWt3IpAUXZMeumzODef17F6jvahB8CS9SOC1eRuGGBq",
+  "username": "user_testing",
+  "no_hp": "089531310903",
+  "level": "Medium",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "07/05/2026 18:44:32",
+  "image_url": "https://res.cloudinary.com/djrnriwsu/image/upload/v1778154324/finance_ku/ziye6yybnqocfwwjzaxr.jpg"
+},
+{
+  "_id": {
+    "$oid": "6a01fc98daba9ea3568e28c6"
+  },
+  "idUser": "000003",
+  "first_name": "Restu",
+  "last_name": "Ananda",
+  "full_name": "Restu Ananda",
+  "email": "anandarestu920@gmail.com",
+  "password": "$2b$10$j24RNTwT8vqt5MZbZlDukuF.XtCM6vygDUzftEM9RB0amCXH70yfy",
+  "username": "Restu",
+  "no_hp": "081903825194",
+  "level": "Advanced",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "11/05/2026 22:58:16",
+  "image_url": "https://res.cloudinary.com/djrnriwsu/image/upload/v1779035288/finance_ku/ivhk1eojxbqf8eqryj4u.jpg"
+},
+{
+  "_id": {
+    "$oid": "6a096a56a5b4a16d3ec0e498"
+  },
+  "idUser": "000004",
+  "first_name": "Test",
+  "last_name": "User",
+  "full_name": "Test User",
+  "email": "supertest@gmail.com",
+  "password": "$2b$10$ffls4bJ.MJhorJsiuWYXMOI7tJKsKC11YI0LPqkTP90A8WSD2lXdW",
+  "username": "supertest",
+  "no_hp": "081234567899",
+  "level": "basic",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "17/05/2026 14:12:22"
+},
+{
+  "_id": {
+    "$oid": "6a097e9ba5b4a16d3ec0e499"
+  },
+  "idUser": "000005",
+  "first_name": "Test",
+  "last_name": "Flow",
+  "full_name": "Test Flow",
+  "email": "testflow1706@gmail.com",
+  "password": "$2b$10$iNbKf2CIvXOy9.WasSyUceVQeH/af2yZsehmpE.mLEuNz3.IA4c4e",
+  "username": "testflow1706",
+  "no_hp": "081234567890",
+  "level": "basic",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "17/05/2026 15:38:51"
+},
+{
+  "_id": {
+    "$oid": "6a0ef76dd1dd81f4ee9a962e"
+  },
+  "idUser": "000006",
+  "first_name": "Revin",
+  "last_name": "Test",
+  "full_name": "Revin Test",
+  "email": "testa@gmail.com",
+  "password": "$2b$10$xxlkARwNCqugkFipJyrLZ.L1Cj7Vs/vsXbpfjMzuWbO.Ic.Lvid0G",
+  "username": "Revin",
+  "no_hp": "085632154613",
+  "level": "basic",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "21/05/2026 19:15:41"
+},
+{
+  "_id": {
+    "$oid": "6a0ef7e0d1dd81f4ee9a962f"
+  },
+  "idUser": "000007",
+  "first_name": "Adi",
+  "last_name": "Santoso",
+  "full_name": "Adi Santoso",
+  "email": "tester@gmail.com",
+  "password": "$2b$10$VSNu6S7jROJ9PtVMK3tlgeeLNR.UufX8sBUY7ru2UlxpUy4RJwwQa",
+  "username": "Tester",
+  "no_hp": "089653642156",
+  "level": "basic",
+  "agreements": {
+    "term_on_service": true,
+    "privacy_policy": true
+  },
+  "createdAt": "21/05/2026 19:17:36"
+}]
