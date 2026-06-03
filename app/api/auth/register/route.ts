@@ -71,7 +71,8 @@ export async function POST(req: NextRequest) {
         .min(5, "Username minimal 5 karakter")
         .max(30, "Username maksimal 30 karakter")
         .regex(/^[a-zA-Z0-9_]+$/, {
-          message: "Username hanya boleh mengandung huruf, angka, dan underscore",
+          message:
+            "Username hanya boleh mengandung huruf, angka, dan underscore",
         })
         .refine((val) => !val.includes(" "), {
           message: "Username tidak boleh berisi spasi",
@@ -176,6 +177,13 @@ export async function POST(req: NextRequest) {
       agreements: {
         term_on_service: validation.data.term_on_service,
         privacy_policy: validation.data.privacy_policy,
+      },
+      subscription: {
+        status: "inactive",
+        plan: "basic",
+        startDate: new Date(),
+        expiredAt: null,
+        midtransOrderId: null,
       },
       createdAt: formattedDate,
     });
