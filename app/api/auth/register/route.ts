@@ -177,6 +177,13 @@ export async function POST(req: NextRequest) {
         term_on_service: validation.data.term_on_service,
         privacy_policy: validation.data.privacy_policy,
       },
+      subscription: {
+        status: "inactive",
+        plan: "basic",
+        startDate: new Date(),
+        expiredAt: null,
+        midtransOrderId: null,
+      },
       createdAt: formattedDate,
     });
 
