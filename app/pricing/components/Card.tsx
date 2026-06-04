@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Card() {
   return (
-    <div className="grid grid-cols-3 gap-6 p-5">
+    <div className="grid md:grid-cols-3 grid-cols-1 gap-6 p-5">
       {/* BASIC Plan */}
       <div className="flex flex-col p-8 border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-950 shadow-sm hover:shadow-md transition-all duration-300 group">
         <div className="mb-8">
