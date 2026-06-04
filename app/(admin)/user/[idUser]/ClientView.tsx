@@ -28,6 +28,14 @@ interface DetailUser {
   no_hp: string;
   level: string;
   createdAt: string;
+  plan?: string;
+  subscription?: {
+    status?: string;
+    plan?: string;
+    startDate?: any;
+    expiredAt?: any;
+    midtransOrderId?: any;
+  };
 }
 
 export default function UserDetailPage({ idUser }: { idUser: string }) {
@@ -39,6 +47,7 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
   const [error, setError] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [newLevel, setNewLevel] = useState("");
+  const [newPlan, setNewPlan] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const fetchUser = async () => {
@@ -52,6 +61,7 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
         if (user) {
           setData(user);
           setNewLevel(user.level);
+          setNewPlan(user.subscription?.plan || user.plan || "basic");
         } else {
           setError("Pengguna tidak ditemukan.");
         }
@@ -71,7 +81,7 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
   }, [idUser]);
 
   const handleChangeLevel = async () => {
-    if (!data || isUpdating || !newLevel) return;
+    if (!data || isUpdating || !newLevel || !newPlan) return;
 
     try {
       setIsUpdating(true);
@@ -82,27 +92,39 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           level: newLevel,
+          plan: newPlan,
         }),
       });
 
       if (response.ok) {
         setUpdateSuccess(true);
         // Update local state
-        setData(prev => prev ? { ...prev, level: newLevel } : null);
+        setData(prev => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            level: newLevel,
+            plan: newPlan,
+            subscription: {
+              ...(prev.subscription || {}),
+              plan: newPlan
+            }
+          };
+        });
         setTimeout(() => setUpdateSuccess(false), 3000);
       } else {
         const json = await response.json();
-        alert(json.message || "Gagal memperbarui level");
+        alert(json.message || "Gagal memperbarui data");
       }
     } catch (err) {
-      console.error("Error updating level:", err);
-      alert("Terjadi kesalahan koneksi saat memperbarui level");
+      console.error("Error updating user:", err);
+      alert("Terjadi kesalahan koneksi saat memperbarui data");
     } finally {
       setIsUpdating(false);
     }
   };
 
-  const levels = ["Basic", "Medium", "Advanced", "Super Admin"];
+  const levels = ["basic", "medium", "advanced"];
 
   const getLevelStyle = (level: string) => {
     switch (level?.toLowerCase()) {
@@ -161,9 +183,15 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
           <span className="font-medium">Kembali ke Daftar</span>
         </Link>
         
-        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider ${getLevelStyle(data.level)}`}>
-          <Shield className="w-3 h-3" />
-          {data.level}
+        <div className="flex gap-2">
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider ${getLevelStyle(data.level)}`}>
+            <Shield className="w-3 h-3" />
+            {data.level}
+          </div>
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider ${getLevelStyle(data.subscription?.plan || data.plan || "basic")}`}>
+            <User className="w-3 h-3" />
+            {data.subscription?.plan || data.plan || "basic"}
+          </div>
         </div>
       </div>
 
@@ -226,7 +254,7 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
           <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-3xl p-6 shadow-sm">
             <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              Update User Level
+              Update Level & Plan
             </h3>
             
             <div className="space-y-4">
@@ -250,11 +278,31 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
                 </div>
               </div>
 
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Plan</label>
+                <div className="relative group">
+                  <select 
+                    value={newPlan}
+                    onChange={(e) => setNewPlan(e.target.value)}
+                    className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-gray-900 dark:text-white appearance-none cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10"
+                  >
+                    {["basic", "medium", "advanced"].map(plan => (
+                      <option key={plan} value={plan} className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white font-medium py-2">
+                        {plan}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-blue-500 transition-colors">
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+
               <button
                 onClick={handleChangeLevel}
-                disabled={isUpdating || newLevel === data.level}
+                disabled={isUpdating || (newLevel === data.level && newPlan === (data.subscription?.plan || data.plan || "basic"))}
                 className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/10 ${
-                  newLevel === data.level 
+                  (newLevel === data.level && newPlan === (data.subscription?.plan || data.plan || "basic"))
                   ? 'bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed shadow-none' 
                   : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-[0.98]'
                 }`}
@@ -271,7 +319,7 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
               
               {updateSuccess && (
                 <p className="text-center text-xs text-green-600 dark:text-green-400 font-medium animate-in fade-in slide-in-from-top-1 duration-300">
-                  Level pengguna berhasil diperbarui!
+                  Data pengguna berhasil diperbarui!
                 </p>
               )}
             </div>
@@ -280,7 +328,7 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
           <div className="bg-blue-600/5 border border-blue-600/10 rounded-2xl p-4">
             <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
               <span className="font-bold block mb-1">Informasi:</span>
-              Perubahan level pengguna akan langsung berdampak pada hak akses dan fitur yang tersedia bagi pengguna tersebut di aplikasi.
+              Perubahan level dan plan pengguna akan langsung berdampak pada hak akses dan fitur yang tersedia bagi pengguna tersebut di aplikasi.
             </p>
           </div>
         </div>

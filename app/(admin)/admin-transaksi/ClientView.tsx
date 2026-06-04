@@ -26,6 +26,31 @@ interface TransaksiData {
   kategori: string;
 }
 
+function parseCustomDate(dateStr: string) {
+  if (!dateStr) return 0;
+  // Format: "DD/MM/YYYY HH:mm:ss" atau "DD/MM/YYYY" atau standar ISO
+  const parts = dateStr.trim().split(" ");
+  const dateParts = parts[0].split("/");
+  
+  if (dateParts.length === 3) {
+    const day = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1; // 0-indexed month
+    const year = parseInt(dateParts[2], 10);
+    
+    let hour = 0, minute = 0, second = 0;
+    if (parts[1]) {
+      const timeParts = parts[1].split(":");
+      hour = parseInt(timeParts[0] || "0", 10);
+      minute = parseInt(timeParts[1] || "0", 10);
+      second = parseInt(timeParts[2] || "0", 10);
+    }
+    return new Date(year, month, day, hour, minute, second).getTime();
+  }
+  
+  const parsed = Date.parse(dateStr);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 export default function ClientView() {
   const [data, setData] = useState<TransaksiData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +92,7 @@ export default function ClientView() {
         item.userId?.toLowerCase().includes(search)
       );
     })
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    .sort((a, b) => parseCustomDate(b.createdAt) - parseCustomDate(a.createdAt));
 
   return (
     <div className="overflow-x-auto p-5">
@@ -164,12 +189,17 @@ export default function ClientView() {
                         <Mail className="w-3.5 h-3.5 text-indigo-400" />
                         {item.idTransaksi || "-"}
                       </div>
-                      {item.createdAt && (
+                      {item.createdAt ? (
                         <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
                           <Calendar className="w-3.5 h-3.5" />
-                          {new Date(item.createdAt).toLocaleString()}
+                          {item.createdAt}
                         </div>
-                      )}
+                      ) : item.tanggal_transaksi ? (
+                        <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {item.tanggal_transaksi}
+                        </div>
+                      ) : null}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
