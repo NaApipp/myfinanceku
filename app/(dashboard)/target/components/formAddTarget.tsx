@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { AlertCircle, CheckCircle2, Plus, X, Target, Calendar, DollarSign, ArrowUpCircle, ArrowDownCircle, Type } from "lucide-react";
+import UpgradePlanModal from "@/app/components/UpgradePlanModal";
 
 interface Account {
   idAccount: string;
@@ -11,7 +12,32 @@ interface Account {
 
 export default function FormAddTarget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  const [userLevel, setUserLevel] = useState<string>("Basic");
   const [accounts, setAccounts] = useState<Account[]>([]);
+
+  useEffect(() => {
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        if (parsed.level) {
+          setUserLevel(parsed.level);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const handleOpenModal = () => {
+    const lvl = userLevel.toLowerCase();
+    if (lvl !== "medium" && lvl !== "advanced") {
+      setIsUpgradeOpen(true);
+    } else {
+      setIsOpen(true);
+    }
+  };
   const [formData, setFormData] = useState({
     nama_target: "",
     tanggal_target: "",
@@ -122,7 +148,7 @@ export default function FormAddTarget() {
     <>
       {/* Trigger Button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpenModal}
         className="flex items-center gap-3 bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black px-8 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl group border border-white/5 dark:border-black/5"
       >
         <div className="relative">
@@ -309,6 +335,11 @@ export default function FormAddTarget() {
           </div>
         </div>
       )}
+
+      <UpgradePlanModal 
+        isOpen={isUpgradeOpen} 
+        onClose={() => setIsUpgradeOpen(false)} 
+      />
     </>
   );
 }

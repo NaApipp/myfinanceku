@@ -36,13 +36,13 @@ export default function ProfilPengguna() {
   const getLevelStyle = (level: string) => {
     switch (level?.toLowerCase()) {
       case "basic":
-        return "bg-green-100 text-green-600 border-green-200";
-      case "pro":
-        return "bg-blue-100 text-blue-600 border-blue-200";
-      case "premium":
-        return "bg-amber-100 text-amber-600 border-amber-200";
+        return "bg-green-100 text-green-600 border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/20";
+      case "medium":
+        return "bg-blue-100 text-blue-600 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20";
+      case "advanced":
+        return "bg-amber-100 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20";
       default:
-        return "bg-gray-100 text-gray-600 border-gray-200";
+        return "bg-gray-100 text-gray-600 border-gray-200 dark:bg-neutral-800 dark:text-neutral-400 dark:border-white/5";
     }
   }
 

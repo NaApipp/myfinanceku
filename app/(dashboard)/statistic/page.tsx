@@ -1,10 +1,56 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import TotalExpense from "./components/TotalExpense";
 import TotalIncome from "./components/TotalIncome";
 import TotalBalance from "./components/totalBalance";
 import ExpanseCategory from "./components/ExpanseCategory";
 import StatisticWidgets from "./components/StatisticWidgets";
+import LockedFeature from "@/app/components/LockedFeature";
 
-export default function page() {
+export default function Page() {
+  const [userLevel, setUserLevel] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        if (parsed.level) {
+          setUserLevel(parsed.level);
+        } else {
+          setUserLevel("basic");
+        }
+      } catch (e) {
+        setUserLevel("basic");
+      }
+    } else {
+      setUserLevel("basic");
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50/50 dark:bg-black">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  // Basic cannot see statistics. Medium and Advanced can.
+  if (userLevel?.toLowerCase() === "basic") {
+    return (
+      <LockedFeature 
+        requiredLevel="Medium" 
+        featureName="Statistik" 
+        description="Analisis mendalam pengeluaran, pendapatan, dan pertumbuhan tabungan bulanan Anda."
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFDFF] dark:bg-black p-6 lg:p-10 space-y-10 transition-colors duration-300">
       {/* Header Section */}

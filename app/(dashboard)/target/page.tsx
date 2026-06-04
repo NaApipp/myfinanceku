@@ -1,7 +1,53 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import FormAddTarget from "./components/formAddTarget";
 import DataTarget from "./components/DataTarget";
+import LockedFeature from "@/app/components/LockedFeature";
 
 export default function TargetPage() {
+  const [userLevel, setUserLevel] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        if (parsed.level) {
+          setUserLevel(parsed.level);
+        } else {
+          setUserLevel("Basic");
+        }
+      } catch (e) {
+        setUserLevel("Basic");
+      }
+    } else {
+      setUserLevel("Basic");
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50/50 dark:bg-black">
+        <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  // Only Medium & Advanced users can access Target Menabung (Basic cannot)
+  if (userLevel?.toLowerCase() === "basic") {
+    return (
+      <LockedFeature 
+        requiredLevel="Medium" 
+        featureName="Target Menabung" 
+        description="Wujudkan impian finansial Anda dengan alokasi tabungan disiplin terarah per target keinginan."
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-black transition-colors duration-300 p-6 md:p-12">
       <div className="max-w-7xl mx-auto space-y-12">

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { AlertCircle, CheckCircle2, Plus, X, Target, Calendar, Type, ChartPie } from "lucide-react";
+import UpgradePlanModal from "@/app/components/UpgradePlanModal";
 
 interface Kategori {
     idKategori: string,
@@ -9,6 +10,8 @@ interface Kategori {
 
 export default function FormAddAnggaran() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  const [userLevel, setUserLevel] = useState<string>("Basic");
   const [category, setCategory] = useState<Kategori[]>([]);
   const [formData, setFormData] = useState({
     nama_anggaran: "",
@@ -18,6 +21,28 @@ export default function FormAddAnggaran() {
   });
   const [message, setMessage] = useState({ type: "", text: "" });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const userData = sessionStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        if (parsed.level) {
+          setUserLevel(parsed.level);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const handleOpenModal = () => {
+    if (userLevel.toLowerCase() !== "advanced") {
+      setIsUpgradeOpen(true);
+    } else {
+      setIsOpen(true);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -117,7 +142,7 @@ export default function FormAddAnggaran() {
     <>
       {/* Trigger Button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpenModal}
         className="flex items-center gap-3 bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black px-8 py-4 rounded-full font-bold transition-all transform active:scale-95 shadow-2xl group border border-white/5 dark:border-black/5"
       >
         <div className="relative">
@@ -278,6 +303,11 @@ export default function FormAddAnggaran() {
           </div>
         </div>
       )}
+
+      <UpgradePlanModal 
+        isOpen={isUpgradeOpen} 
+        onClose={() => setIsUpgradeOpen(false)} 
+      />
     </>
   );
 }
