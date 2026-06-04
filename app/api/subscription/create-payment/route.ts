@@ -16,7 +16,7 @@ import clientPromise                 from "@/app/lib/mongodb";
 const PLANS = {
   medium: {
     label   : "Medium Plan",
-    amount  : 20000,   // Rp 20.000 / bulan
+    amount  : 30000,   // Rp 30.000 / bulan
     duration: 30,      // hari
   },
   advanced: {
