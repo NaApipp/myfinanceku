@@ -26,31 +26,6 @@ interface TransaksiData {
   kategori: string;
 }
 
-function parseCustomDate(dateStr: string) {
-  if (!dateStr) return 0;
-  // Format: "DD/MM/YYYY HH:mm:ss" atau "DD/MM/YYYY" atau standar ISO
-  const parts = dateStr.trim().split(" ");
-  const dateParts = parts[0].split("/");
-  
-  if (dateParts.length === 3) {
-    const day = parseInt(dateParts[0], 10);
-    const month = parseInt(dateParts[1], 10) - 1; // 0-indexed month
-    const year = parseInt(dateParts[2], 10);
-    
-    let hour = 0, minute = 0, second = 0;
-    if (parts[1]) {
-      const timeParts = parts[1].split(":");
-      hour = parseInt(timeParts[0] || "0", 10);
-      minute = parseInt(timeParts[1] || "0", 10);
-      second = parseInt(timeParts[2] || "0", 10);
-    }
-    return new Date(year, month, day, hour, minute, second).getTime();
-  }
-  
-  const parsed = Date.parse(dateStr);
-  return isNaN(parsed) ? 0 : parsed;
-}
-
 export default function ClientView() {
   const [data, setData] = useState<TransaksiData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,7 +67,10 @@ export default function ClientView() {
         item.userId?.toLowerCase().includes(search)
       );
     })
-    .sort((a, b) => parseCustomDate(b.createdAt) - parseCustomDate(a.createdAt));
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
   return (
     <div className="overflow-x-auto p-5">
@@ -160,73 +138,68 @@ export default function ClientView() {
             ))
           ) : filteredData.length > 0 ? (
             filteredData.map((item) => (
-                <tr
-                  key={item.createdAt}
-                  className="group hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-all duration-200"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-                        {item.idAccount?.charAt(0) || "A"}
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
-                          <Mail className="w-3.5 h-3.5 text-indigo-400" />
-                          {item.idAccount || "-"}
-                        </div>
-                        {item.userId && (
-                          <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
-                            <User className="w-3.5 h-3.5" />
-                            {item.userId}
-                          </div>
-                        )}
-                      </div>
+              <tr
+                key={item.createdAt}
+                className="group hover:bg-gray-50/80 dark:hover:bg-gray-700/30 transition-all duration-200"
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                      {item.idAccount?.charAt(0) || "A"}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                         <Mail className="w-3.5 h-3.5 text-indigo-400" />
-                        {item.idTransaksi || "-"}
+                        {item.idAccount || "-"}
                       </div>
-                      {item.createdAt ? (
+                      {item.userId && (
                         <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {item.createdAt}
+                          <User className="w-3.5 h-3.5" />
+                          {item.userId}
                         </div>
-                      ) : item.tanggal_transaksi ? (
-                        <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {item.tanggal_transaksi}
-                        </div>
-                      ) : null}
+                      )}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium tracking-tight">
-                      <Wallet className="w-4 h-4 text-gray-400" />
-                      Rp.{item.nominal_transaksi}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                      <Mail className="w-3.5 h-3.5 text-indigo-400" />
+                      {item.idTransaksi || "-"}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={
-                        `inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ` +
-                        getStyleType(item.type_transaksi)
-                      }
-                    >
-                      {item.type_transaksi}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border`}
-                    >
-                      {item.kategori || "-"}
-                    </span>
-                  </td>
-                </tr>
-              ))
+                    {item.createdAt && (
+                      <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {new Date(item.createdAt).toLocaleString()}
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium tracking-tight">
+                    <Wallet className="w-4 h-4 text-gray-400" />
+                    Rp.{item.nominal_transaksi}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={
+                      `inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border ` +
+                      getStyleType(item.type_transaksi)
+                    }
+                  >
+                    {item.type_transaksi}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border`}
+                  >
+                    {item.kategori || "-"}
+                  </span>
+                </td>
+              </tr>
+            ))
           ) : (
             <tr>
               <td colSpan={5} className="px-6 py-16 text-center">
