@@ -86,7 +86,7 @@ export default function Card() {
           </div>
         </div>
         <button className="w-full py-3 border border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 font-semibold text-sm rounded-xl hover:bg-slate-900 dark:hover:bg-slate-100 hover:text-white dark:hover:text-slate-900 transition-all duration-300 cursor-pointer">
-          Pilih Level
+          <Link href="/register">Pilih Level</Link>
         </button>
       </div>
 
@@ -141,7 +141,7 @@ export default function Card() {
           </div>
         </div>
         <button className="w-full py-3 bg-blue-600 dark:bg-blue-500 text-white font-semibold text-sm rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-all duration-300 cursor-pointer shadow-sm shadow-blue-500/25">
-          Pilih Level
+          <Link href="/register">Pilih Level</Link>
         </button>
       </div>
     </div>
