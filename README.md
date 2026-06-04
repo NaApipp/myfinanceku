@@ -1,12 +1,5 @@
 # 💰 MyFinanceKu — Professional Personal Finance Management
 
-[![Deployment Status](https://img.shields.io/badge/Status-Beta-orange?style=for-the-badge&logo=vercel)](https://financeku.vercel.app)
-[![Next.js](https://img.shields.io/badge/Next.js-16.2.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
-[![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-
 **MyFinanceKu** adalah solusi manajemen keuangan pribadi tingkat enterprise yang dirancang untuk memberikan transparansi penuh terhadap arus kas Anda. Dibangun dengan teknologi web terbaru untuk memastikan performa maksimal, keamanan data yang ketat, dan pengalaman pengguna yang seamless.
 
 ---
