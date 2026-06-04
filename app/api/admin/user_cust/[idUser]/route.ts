@@ -10,9 +10,14 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         const db = client.db(process.env.MONGODB_DATABASE);
         const usersCollection = db.collection("users");
         const { idUser } = await params;
-        const { level } = await req.json();
+        const { level, plan } = await req.json();
         // console.log("update");
-        const user = await usersCollection.updateOne({ idUser: idUser }, { $set: { level } });
+        const updateFields: any = {};
+        if (level !== undefined) updateFields.level = level;
+        if (plan !== undefined) {
+            updateFields["subscription.plan"] = plan;
+        }
+        const user = await usersCollection.updateOne({ idUser: idUser }, { $set: updateFields });
         return withCors(NextResponse.json(user, { status: 200 }));
     } catch (error) {
         console.error("Error updating user:", error);
