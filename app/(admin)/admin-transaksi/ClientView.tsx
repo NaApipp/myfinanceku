@@ -57,6 +57,27 @@ export default function ClientView() {
     return "bg-gray-100 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-800";
   };
 
+  const parseDateStr = (dateStr: string) => {
+    if (!dateStr) return 0;
+    const parts = dateStr.split(" ");
+    if (parts.length === 2) {
+      const [datePart, timePart] = parts;
+      const [day, month, year] = datePart.split("/");
+      const [hour, minute, second] = timePart.split(":");
+      if (day && month && year && hour && minute && second) {
+        return new Date(
+          Number(year),
+          Number(month) - 1,
+          Number(day),
+          Number(hour),
+          Number(minute),
+          Number(second)
+        ).getTime();
+      }
+    }
+    return new Date(dateStr).getTime();
+  };
+
   const filteredData = data
     .filter((item) => {
       const search = searchTerm.toLowerCase();
@@ -68,8 +89,7 @@ export default function ClientView() {
       );
     })
     .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      (a, b) => parseDateStr(b.createdAt) - parseDateStr(a.createdAt),
     );
 
   return (
@@ -170,7 +190,7 @@ export default function ClientView() {
                     {item.createdAt && (
                       <div className="flex items-center gap-2 text-[11px] text-gray-400 font-medium">
                         <Calendar className="w-3.5 h-3.5" />
-                        {new Date(item.createdAt).toLocaleString()}
+                        {item.createdAt}
                       </div>
                     )}
                   </div>
