@@ -103,48 +103,6 @@ export default function page() {
                 Silahkan login untuk melanjutkan
               </p>
             </div>
-            {message && (
-              <div
-                className={`mb-6 rounded-xl p-4 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300 ${
-                  message.type === "success"
-                    ? "bg-emerald-50 border border-emerald-100 text-emerald-800"
-                    : "bg-rose-50 border border-rose-100 text-rose-800"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  {message.type === "success" ? (
-                    <svg
-                      className="h-5 w-5 text-emerald-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="h-5 w-5 text-rose-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  )}
-                  {message.text}
-                </div>
-              </div>
-            )}
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
@@ -198,6 +156,49 @@ export default function page() {
                   </button>
                 </div>
               </div>
+
+              {message && (
+                <div
+                  className={`mb-6 rounded-xl p-4 text-sm font-medium animate-in fade-in slide-in-from-top-2 duration-300 ${
+                    message.type === "success"
+                      ? "bg-emerald-50 border border-emerald-100 text-emerald-800"
+                      : "bg-rose-50 border border-rose-100 text-rose-800"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {message.type === "success" ? (
+                      <svg
+                        className="h-5 w-5 text-emerald-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-5 w-5 text-rose-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    )}
+                    {message.text}
+                  </div>
+                </div>
+              )}
 
               {isLoading ? (
                 <button
