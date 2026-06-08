@@ -14,6 +14,8 @@ interface TransactionData {
   idAccount: string;
   nama_asset?: string; // New field for permanent record
   description: string;
+  transferId?: string;
+  transferDirection?: string;
 }
 
 interface Account {
@@ -29,6 +31,7 @@ export default function DataTransaksi() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetchingTransactions, setIsFetchingTransactions] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [transferId, setTransferId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   
@@ -74,6 +77,33 @@ export default function DataTransaksi() {
       setIsDeleting(false);
     }
   };
+
+  // handleDelete transfer
+  const handleDeleteTF =  async () => {
+    if (!transferId) return;
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`/api/transfer/${transferId}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setDeleteId(null);
+        window.location.reload();
+      } else {
+        alert(data.message || "Gagal menghapus transaksi.");
+        setDeleteId(null);
+      }
+    } catch (error) {
+      console.error("Error deleting transfer:", error);
+      alert("Terjadi kesalahan koneksi saat menghapus transfer.");
+      setDeleteId(null);
+    } finally {
+      setIsDeleting(false);
+    }
+  }
 
   // Fetch Accounts and Categories once on mount
   useEffect(() => {
@@ -218,8 +248,10 @@ export default function DataTransaksi() {
   const getStyleKategori = (type_transaksi: string) => {
     if (type_transaksi === "pemasukan") {
       return "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-100 dark:border-emerald-500/20";
-    } else {
+    } else if (type_transaksi === "pengeluaran") {
       return "bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-100 dark:border-rose-500/20";
+    } else if (type_transaksi === "transfer") {
+      return "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-100 dark:border-blue-500/20";
     }
   };
 
@@ -509,14 +541,18 @@ export default function DataTransaksi() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col text-left">
                         <span className="text-sm text-black dark:text-white font-medium capitalize">
-                          {categories[item.kategori] || (
-                            <div className="flex flex-col gap-1">
-                               <div className="flex items-center gap-2">
-                                 <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
-                                   Kategori Telah Terhapus
-                                 </span>
-                               </div>
-                            </div>
+                          {item.type_transaksi === "transfer" ? (
+                            "Transfer"
+                          ) : (
+                            categories[item.kategori] || (
+                              <div className="flex flex-col gap-1">
+                                 <div className="flex items-center gap-2">
+                                   <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
+                                     Kategori Telah Terhapus
+                                   </span>
+                                 </div>
+                              </div>
+                            )
                           )}
                         </span>
                         <span className="text-xs text-gray-400 dark:text-gray-500">{item.description}</span>
@@ -561,7 +597,14 @@ export default function DataTransaksi() {
                     <td className="px-6 py-4">
                       <div className="flex justify-center">
                         <button 
-                          onClick={() => setDeleteId(item.idTransaksi || item._id || null)}
+                          onClick={() => {
+                            setDeleteId(item.idTransaksi || item._id || null);
+                            if (item.type_transaksi === "transfer") {
+                              setTransferId(item.transferId || null);
+                            } else {
+                              setTransferId(null);
+                            }
+                          }}
                           className="p-2 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-all"
                         >
                           <Trash className="w-4 h-4" />
@@ -645,15 +688,28 @@ export default function DataTransaksi() {
                 Apakah anda yakin, ingin menghapus riwayat ini?
               </p>
               <div className="flex flex-col gap-3 w-full">
+                {transferId ? (
+                  <button
+                    onClick={handleDeleteTF}
+                    disabled={isDeleting}
+                    className="w-full py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-[0.98] transition-all disabled:opacity-50"
+                  >
+                    {isDeleting ? "Menghapus..." : "Ya, Hapus Data"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="w-full py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-[0.98] transition-all disabled:opacity-50"
+                  >
+                    {isDeleting ? "Menghapus..." : "Ya, Hapus Data"}
+                  </button>
+                )}
                 <button
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  className="w-full py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-[0.98] transition-all disabled:opacity-50"
-                >
-                  {isDeleting ? "Menghapus..." : "Ya, Hapus Data"}
-                </button>
-                <button
-                  onClick={() => setDeleteId(null)}
+                  onClick={() => {
+                    setDeleteId(null);
+                    setTransferId(null);
+                  }}
                   disabled={isDeleting}
                   className="w-full py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
                 >
