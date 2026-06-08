@@ -1,6 +1,7 @@
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Kategori from "../(dashboard)/pengaturan/panduan-penggunaan/panduan/Kategori";
 
 interface AccountData {
   idAccount: string;
@@ -23,6 +24,7 @@ export default function TambahTransaksi() {
     tanggal_transaksi: new Date().toISOString().split("T")[0],
     kategori: "",
     sumberdana: "",
+    tujuan_dana: "",
     description: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,10 +91,20 @@ export default function TambahTransaksi() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validasi sederhana sebelum konfirmasi
-    if (!formData.type_transaksi || !formData.nominal_transaksi || !formData.kategori || !formData.sumberdana) {
-      setMessage({ type: "error", text: "Mohon isi semua field yang wajib." });
-      return;
+    if (formData.type_transaksi === "transfer") {
+      if (!formData.sumberdana || !formData.tujuan_dana || !formData.nominal_transaksi) {
+        setMessage({ type: "error", text: "Mohon isi sumber dana, tujuan dana, dan nominal." });
+        return;
+      }
+      if (formData.sumberdana === formData.tujuan_dana) {
+        setMessage({ type: "error", text: "Sumber dan tujuan dana tidak boleh sama." });
+        return;
+      }
+    } else {
+      if (!formData.type_transaksi || !formData.nominal_transaksi || !formData.kategori || !formData.sumberdana) {
+        setMessage({ type: "error", text: "Mohon isi semua field yang wajib." });
+        return;
+      }
     }
 
     setIsConfirming(true);
@@ -104,33 +116,62 @@ export default function TambahTransaksi() {
     setIsSubmitting(true);
 
     try {
-      // Hilangkan titik dan konversi ke Number sebelum dikirim ke API
+      const isTransfer = formData.type_transaksi === "transfer";
       const cleanData = {
         ...formData,
         nominal_transaksi: Number(formData.nominal_transaksi.replace(/\./g, "")) || 0,
       };
 
-      const response = await fetch("/api/transaksi", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(cleanData),
-      });
+      let response;
 
-      const data = await response.json();
+      if (isTransfer) {
+        const fromAccountObj = data.find(item => item.idAccount === formData.sumberdana);
+        const toAccountObj = data.find(item => item.idAccount === formData.tujuan_dana);
+        
+        const transferPayload = {
+          fromAccountId: formData.sumberdana,
+          fromAccountName: fromAccountObj?.nama_asset || "",
+          toAccountId: formData.tujuan_dana,
+          toAccountName: toAccountObj?.nama_asset || "",
+          nominal: cleanData.nominal_transaksi,
+          description: formData.description,
+          tanggal: formData.tanggal_transaksi,
+          kategori: "Transfer",
+          nama_kategori: "Transfer",
+          
+        };
+        
+        response = await fetch("/api/transfer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(transferPayload),
+        });
+      } else {
+        response = await fetch("/api/transaksi", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(cleanData),
+        });
+      }
 
-      if (data.success) {
+      const responseData = await response.json();
+
+      if (response.ok && (responseData.success || responseData.message === "Berhasil")) {
         setMessage({
           type: "success",
-          text: data.message || "Transaksi berhasil disimpan!",
+          text: responseData.message || "Transaksi berhasil disimpan!",
         });
         setFormData({
           type_transaksi: "",
           nominal_transaksi: "",
-          tanggal_transaksi: "",
+          tanggal_transaksi: new Date().toISOString().split("T")[0],
           kategori: "",
           sumberdana: "",
+          tujuan_dana: "",
           description: "",
         });
         // Close modal after a short delay to show success message
@@ -142,7 +183,7 @@ export default function TambahTransaksi() {
       } else {
         setMessage({
           type: "error",
-          text: data.message || "Gagal menyimpan transaksi.",
+          text: responseData.message || responseData.error || "Gagal menyimpan transaksi.",
         });
       }
     } catch (error: any) {
@@ -235,6 +276,7 @@ export default function TambahTransaksi() {
                       <option value="">Pilih Tipe Transaksi</option>
                       <option value="pemasukan">Pemasukan</option>
                       <option value="pengeluaran">Pengeluaran</option>
+                      <option value="transfer">Pindah Dana / Transfer</option>
                     </select>
                   </div>
                   {/* Input Jumlah Transaksi */}
@@ -283,39 +325,41 @@ export default function TambahTransaksi() {
                     </div>
 
                     {/* Input Kategori */}
-                    <div className="space-y-2 flex-1">
-                      <label
-                        htmlFor="kategori"
-                        className="text-sm font-semibold text-gray-700 uppercase"
-                      >
-                        Kategori
-                      </label>
+                    {formData.type_transaksi !== "transfer" && (
+                      <div className="space-y-2 flex-1">
+                        <label
+                          htmlFor="kategori"
+                          className="text-sm font-semibold text-gray-700 uppercase"
+                        >
+                          Kategori
+                        </label>
 
-                      <select
-                        id="kategori"
-                        name="kategori"
-                        value={formData.kategori}
-                        onChange={handleChange}
-                        className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
-                        required
-                      >
-                        <option value="">Pilih Kategori</option>
-                        {dataCategory.map((item) => (
-                          <option
-                            key={item.idKategori}
-                            value={item.idKategori}
-                            className="uppercase"
-                          >
-                            {item.nama_kategori}
-                          </option>
-                        ))}
-                      </select>
-                      {dataCategory.length === 0 && (
-                        <p className="text-[10px] text-red-500 font-medium mt-1">
-                          ⚠️ Kategori belum tersedia. Tambah di Pengaturan.
-                        </p>
-                      )}
-                    </div>
+                        <select
+                          id="kategori"
+                          name="kategori"
+                          value={formData.kategori}
+                          onChange={handleChange}
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                          required={formData.type_transaksi !== "transfer"}
+                        >
+                          <option value="">Pilih Kategori</option>
+                          {dataCategory.map((item) => (
+                            <option
+                              key={item.idKategori}
+                              value={item.idKategori}
+                              className="uppercase"
+                            >
+                              {item.nama_kategori}
+                            </option>
+                          ))}
+                        </select>
+                        {dataCategory.length === 0 && (
+                          <p className="text-[10px] text-red-500 font-medium mt-1">
+                            ⚠️ Kategori belum tersedia. Tambah di Pengaturan.
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Input Sumber Dana */}
@@ -348,6 +392,39 @@ export default function TambahTransaksi() {
                       </p>
                     )}
                   </div>
+
+                  {/* Input Tujuan Dana untuk Transfer */}
+                  {formData.type_transaksi === "transfer" && (
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Tujuan Dana
+                      </label>
+                      <select
+                        name="tujuan_dana"
+                        id="tujuan_dana"
+                        value={formData.tujuan_dana}
+                        onChange={handleChange}
+                        className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler"
+                        required={formData.type_transaksi === "transfer"}
+                      >
+                        <option value="">Pilih Tujuan Dana</option>
+                        {data.map((item) => (
+                          <option
+                            key={item.idAccount}
+                            value={item.idAccount}
+                            className="uppercase"
+                          >
+                            {item.nama_asset}
+                          </option>
+                        ))}
+                      </select>
+                      {data.length === 0 && (
+                        <p className="text-[10px] text-red-500 font-medium mt-1">
+                          ⚠️ Tujuan dana belum tersedia. Tambah di Akun & Kartu.
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   {/* Input Keterangan Transaksi */}
                   <div className="space-y-2">
