@@ -64,52 +64,53 @@ Mengikuti standar **Next.js App Router** dengan pemisahan tanggung jawab yang mo
 ## 📂 Struktur Proyek
 
 ```text
-app
-├── (admin)
-│   ├── admin-transaksi
-│   ├── components
-│   ├── dashboard
-│   │   └── components
-│   ├── user
-│   │   └── [idUser]
-│   └── user-admin
-│       └── components
-│
-├── (dashboard)
-│   ├── akun-kartu
-│   │   └── components
-│   ├── anggaran
-│   │   └── components
-│   ├── general
-│   │   └── components
-│   ├── pengaturan
-│   │   ├── components
-│   │   ├── kategori
-│   │   │   └── components
-│   │   ├── panduan-penggunaan
-│   │   │   ├── panduan
-│   │   │   └── tabs
-│   │   ├── ubah-password
-│   │   └── upload-image
-│   ├── statistic
-│   │   └── components
-│   ├── target
-│   │   └── components
-│   └── transaksi
-│       └── components
-│
-├── (OnBoarding)
-│   ├── login
-│   │   └── components
-│   ├── lupa-password
-│   │   └── components
-│   ├── registrasi
-│   │   └── components
-│   └── reset-password
-│       └── components
-│
-├── (OnBoardingAdmin)
-│   └── login-admin
+financeku/
+├── app/
+│   ├── (admin)/
+│   │   ├── admin-transaksi/
+│   │   ├── components/
+│   │   ├── dashboard/
+│   │   │   └── components/
+│   │   ├── user/
+│   │   │   └── [idUser]/
+│   │   └── user-admin/
+│   │       └── components/
+│   │
+│   ├── (dashboard)/
+│   │   ├── akun-kartu/
+│   │   │   └── components/
+│   │   ├── anggaran/
+│   │   │   └── components/
+│   │   ├── general/
+│   │   │   └── components/
+│   │   ├── pengaturan/
+│   │   │   ├── components/
+│   │   │   ├── kategori/
+│   │   │   │   └── components/
+│   │   │   ├── panduan-penggunaan/
+│   │   │   │   ├── panduan/
+│   │   │   │   └── tabs/
+│   │   │   ├── ubah-password/
+│   │   │   └── upload-image/
+│   │   ├── statistic/
+│   │   │   └── components/
+│   │   ├── target/
+│   │   │   └── components/
+│   │   └── transaksi/
+│   │       └── components/
+│   │
+│   ├── (OnBoarding)/
+│   │   ├── login/
+│   │   │   └── components/
+│   │   ├── lupa-password/
+│   │   │   └── components/
+│   │   ├── registrasi/
+│   │   │   └── components/
+│   │   └── reset-password/
+│   │       └── components/
+│   │
+│   └── (OnBoardingAdmin)/
+│       └── login-admin/
 ```
 
 ---
