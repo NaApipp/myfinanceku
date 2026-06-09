@@ -10,6 +10,7 @@ import {
   Plus,
   SquareArrowRightExit,
   User,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -39,8 +40,8 @@ export default function SidebarAdmin() {
       await fetch("/api/admin/auth/logout", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
     } catch (error) {
       console.error("Logout error:", error);
@@ -63,10 +64,14 @@ export default function SidebarAdmin() {
   return (
     <div className="hidden lg:flex h-screen w-64 flex-col justify-between border-e bg-[#FAFAFA] dark:bg-neutral-950 border-gray-200 dark:border-white/5 transition-colors duration-300">
       <div className="px-4 py-6">
-        <Link href="/dashboard" className="flex items-center gap-2 ml-4 text-gray-700 dark:text-gray-200">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 ml-4 text-gray-700 dark:text-gray-200"
+        >
           <Image src="/icon/logo.png" alt="Logo" width={30} height={30} />
           <p className="font-semibold text-black dark:text-white text-[13px]">
-            MyFinanceKu <span className="text-blue-600 dark:text-blue-400">Admin</span>
+            MyFinanceKu{" "}
+            <span className="text-blue-600 dark:text-blue-400">Admin</span>
           </p>
         </Link>
 
@@ -84,9 +89,18 @@ export default function SidebarAdmin() {
             </Link>
           </li>
           <li>
-            <Link href="/admin-transaksi" className={getPathActive("/admin-transaksi")}>
+            <Link
+              href="/admin-transaksi"
+              className={getPathActive("/admin-transaksi")}
+            >
               <Wallet />
               <span className="text-sm font-medium"> Transaksi </span>
+            </Link>
+          </li>
+          <li>
+            <Link href="/information" className={getPathActive("/information")}>
+              <Mail />
+              <span className="text-sm font-medium"> Information </span>
             </Link>
           </li>
           <li>
@@ -95,7 +109,6 @@ export default function SidebarAdmin() {
               <span className="text-sm font-medium"> User Admin </span>
             </Link>
           </li>
-
         </ul>
       </div>
 
