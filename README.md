@@ -61,19 +61,55 @@ Aplikasi ini mengadopsi paradigma **Modern Web Development** dengan fokus pada e
 
 Mengikuti standar **Next.js App Router** dengan pemisahan tanggung jawab yang modular:
 
+## 📂 Struktur Proyek
+
 ```text
-financeku/
-├── app/
-│   ├── (dashboard)/      # Protected routes: Overview, Transaksi, Anggaran
-│   ├── (OnBoarding)/     # Authentication: Login, Register, Forgot Password
-│   ├── api/              # RESTful API Route Handlers (Edge-ready)
-│   ├── components/       # Atomic Design Components (UI, Shared, Layout)
-│   ├── lib/              # Core Logic: Database connections, Services, Utils
-│   └── models/           # Schema definitions for MongoDB/Mongoose
-├── public/               # Static assets & optimized images
-├── tsconfig.json         # Strict TypeScript configuration
-├── next.config.ts        # Production-grade Next.js config
-└── package.json          # Dependency management & scripts
+app
+├── (admin)
+│   ├── admin-transaksi
+│   ├── components
+│   ├── dashboard
+│   │   └── components
+│   ├── user
+│   │   └── [idUser]
+│   └── user-admin
+│       └── components
+│
+├── (dashboard)
+│   ├── akun-kartu
+│   │   └── components
+│   ├── anggaran
+│   │   └── components
+│   ├── general
+│   │   └── components
+│   ├── pengaturan
+│   │   ├── components
+│   │   ├── kategori
+│   │   │   └── components
+│   │   ├── panduan-penggunaan
+│   │   │   ├── panduan
+│   │   │   └── tabs
+│   │   ├── ubah-password
+│   │   └── upload-image
+│   ├── statistic
+│   │   └── components
+│   ├── target
+│   │   └── components
+│   └── transaksi
+│       └── components
+│
+├── (OnBoarding)
+│   ├── login
+│   │   └── components
+│   ├── lupa-password
+│   │   └── components
+│   ├── registrasi
+│   │   └── components
+│   └── reset-password
+│       └── components
+│
+├── (OnBoardingAdmin)
+│   └── login-admin
 ```
 
 ---
