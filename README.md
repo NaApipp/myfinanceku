@@ -30,30 +30,32 @@
 Aplikasi ini mengadopsi paradigma **Modern Web Development** dengan fokus pada efisiensi runtime dan skalabilitas database.
 
 ### Core Stack
-*   **Framework**: [Next.js 16.2 (App Router)](https://nextjs.org/) — Memanfaatkan React 19 Server Components untuk optimasi rendering.
-*   **Language**: [TypeScript](https://www.typescriptlang.org/) — Menjamin *type-safety* di seluruh layer aplikasi.
-*   **Database**: [MongoDB](https://www.mongodb.com/) via Native Driver & [Mongoose](https://mongoosejs.com/) — Model data fleksibel dengan performa tinggi.
-*   **Styling**: [Tailwind CSS 4.x](https://tailwindcss.com/) — Desain responsif dengan konfigurasi engine terbaru.
-*   **Animation**: [Framer Motion](https://www.framer.com/motion/) — Interaksi UI yang halus dan premium.
+
+- **Framework**: [Next.js 16.2 (App Router)](https://nextjs.org/) — Memanfaatkan React 19 Server Components untuk optimasi rendering.
+- **Language**: [TypeScript](https://www.typescriptlang.org/) — Menjamin _type-safety_ di seluruh layer aplikasi.
+- **Database**: [MongoDB](https://www.mongodb.com/) via Native Driver & [Mongoose](https://mongoosejs.com/) — Model data fleksibel dengan performa tinggi.
+- **Styling**: [Tailwind CSS 4.x](https://tailwindcss.com/) — Desain responsif dengan konfigurasi engine terbaru.
+- **Animation**: [Framer Motion](https://www.framer.com/motion/) — Interaksi UI yang halus dan premium.
 
 ### Backend & Integrasi
-*   **Auth**: [NextAuth.js](https://next-auth.js.org/) & Custom JWT (via `jose`) — Sistem sesi berlapis.
-*   **Storage**: [Cloudinary](https://cloudinary.com/) — Manajemen aset media dan profil secara cloud-native.
-*   **Email**: [Resend](https://resend.com/) — Pengiriman email transaksional dengan reliabilitas tinggi.
-*   **PDF Engine**: [@react-pdf/renderer](https://react-pdf.org/) — Generasi laporan keuangan langsung dari server.
+
+- **Auth**: [NextAuth.js](https://next-auth.js.org/) & Custom JWT (via `jose`) — Sistem sesi berlapis.
+- **Storage**: [Cloudinary](https://cloudinary.com/) — Manajemen aset media dan profil secara cloud-native.
+- **Email**: [Resend](https://resend.com/) — Pengiriman email transaksional dengan reliabilitas tinggi.
+- **PDF Engine**: [@react-pdf/renderer](https://react-pdf.org/) — Generasi laporan keuangan langsung dari server.
 
 ---
 
 ## ✨ Fitur Utama
 
-| Fitur | Deskripsi Teknis |
-| :--- | :--- |
-| **Advanced Dashboard** | Visualisasi data pemasukan, pengeluaran, dan saldo bersih secara real-time. |
-| **Multi-Asset Tracking** | Kelola berbagai sumber dana (Bank, E-wallet, Tunai) dalam satu sistem terpusat. |
-| **Budgeting Logic** | Sistem limitasi pengeluaran per kategori dengan validasi server-side. |
-| **Financial Goals** | Pelacakan progres target tabungan dengan algoritma persentase pencapaian. |
+| Fitur                    | Deskripsi Teknis                                                                 |
+| :----------------------- | :------------------------------------------------------------------------------- |
+| **Advanced Dashboard**   | Visualisasi data pemasukan, pengeluaran, dan saldo bersih secara real-time.      |
+| **Multi-Asset Tracking** | Kelola berbagai sumber dana (Bank, E-wallet, Tunai) dalam satu sistem terpusat.  |
+| **Budgeting Logic**      | Sistem limitasi pengeluaran per kategori dengan validasi server-side.            |
+| **Financial Goals**      | Pelacakan progres target tabungan dengan algoritma persentase pencapaian.        |
 | **Professional Reports** | Ekspor data transaksi ke format PDF dengan layout yang dioptimalkan untuk cetak. |
-| **Dynamic UI/UX** | Dark mode support, micro-interactions, dan layout yang sepenuhnya responsif. |
+| **Dynamic UI/UX**        | Dark mode support, micro-interactions, dan layout yang sepenuhnya responsif.     |
 
 ---
 
@@ -70,6 +72,8 @@ financeku/
 │   │   ├── admin-transaksi/
 │   │   ├── components/
 │   │   ├── dashboard/
+│   │   │   └── components/
+│   │   ├── information/
 │   │   │   └── components/
 │   │   ├── user/
 │   │   │   └── [idUser]/
@@ -88,6 +92,7 @@ financeku/
 │   │   │   ├── kategori/
 │   │   │   │   └── components/
 │   │   │   ├── panduan-penggunaan/
+│   │   │   │   ├── faq/
 │   │   │   │   ├── panduan/
 │   │   │   │   └── tabs/
 │   │   │   ├── ubah-password/
@@ -109,8 +114,31 @@ financeku/
 │   │   └── reset-password/
 │   │       └── components/
 │   │
-│   └── (OnBoardingAdmin)/
-│       └── login-admin/
+│   ├── (OnBoardingAdmin)/
+│   │   └── login-admin/
+│   │
+│   ├── api/              # RESTful API Route Handlers (Edge-ready)
+│   │   ├── account-card/
+│   │   ├── admin/
+│   │   ├── anggaran/
+│   │   ├── auth/
+│   │   ├── backup/
+│   │   ├── kategori/
+│   │   ├── settings/
+│   │   ├── target/
+│   │   ├── transaksi/
+│   │   ├── transfer/
+│   │   ├── update-user/
+│   │   └── upload/
+│   │
+│   ├── coming-soon/      # Coming Soon Page
+│   ├── components/       # Global Shared Components
+│   ├── home/             # Landing Page
+│   ├── maintenance/      # Maintenance Page
+│   ├── offline/          # Offile Page
+│   ├── lib/              # Utility & Services
+│   ├── models/           # Database Models
+│   └── pricing/          # Pricing Page
 ```
 
 ---
@@ -119,7 +147,7 @@ financeku/
 
 Keamanan adalah prioritas utama dalam pengelolaan data finansial:
 
-1.  **Password Hashing**: Menggunakan `bcryptjs` dengan *salt rounds* standar industri.
+1.  **Password Hashing**: Menggunakan `bcryptjs` dengan _salt rounds_ standar industri.
 2.  **JWT Strategy**: Implementasi JSON Web Tokens menggunakan library `jose` untuk verifikasi stateless yang aman.
 3.  **HTTP-Only Cookies**: Menyimpan session tokens di cookie yang tidak dapat diakses oleh client-side JavaScript untuk mencegah XSS.
 4.  **CORS Policy**: Proteksi API terhadap request dari domain yang tidak dikenal.
@@ -130,18 +158,22 @@ Keamanan adalah prioritas utama dalam pengelolaan data finansial:
 ## 🚀 Panduan Instalasi
 
 ### Prasyarat
+
 - Node.js v18.17+ atau v20.x
 - MongoDB Atlas (atau local instance)
 - Akun Cloudinary & Resend (untuk fitur lengkap)
 
 ### Langkah-langkah
+
 1.  **Clone Repositori**
+
     ```bash
     git clone https://github.com/username/financeku.git
     cd financeku
     ```
 
 2.  **Instalasi Dependensi**
+
     ```bash
     npm install --legacy-peer-deps
     ```
@@ -183,80 +215,79 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ---
 
-
 ## Dokumentasi API
 
 Seluruh endpoint API bersifat internal dan membutuhkan autentikasi kecuali endpoint auth.
 
 ### Autentikasi
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/auth/login` | Login pengguna |
-| `POST` | `/api/auth/register` | Registrasi pengguna baru |
-| `POST` | `/api/auth/logout` | Logout pengguna |
-| `POST` | `/api/auth/forgot-password` | Permintaan reset password |
-| `POST` | `/api/auth/reset-password` | Reset password dengan token |
+| Method | Endpoint                    | Deskripsi                   |
+| ------ | --------------------------- | --------------------------- |
+| `POST` | `/api/auth/login`           | Login pengguna              |
+| `POST` | `/api/auth/register`        | Registrasi pengguna baru    |
+| `POST` | `/api/auth/logout`          | Logout pengguna             |
+| `POST` | `/api/auth/forgot-password` | Permintaan reset password   |
+| `POST` | `/api/auth/reset-password`  | Reset password dengan token |
 
 ### Transaksi
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/transaksi` | Tambah transaksi baru |
-| `GET` | `/api/transaksi` | Ambil semua transaksi |
+| Method   | Endpoint                      | Deskripsi                      |
+| -------- | ----------------------------- | ------------------------------ |
+| `POST`   | `/api/transaksi`              | Tambah transaksi baru          |
+| `GET`    | `/api/transaksi`              | Ambil semua transaksi          |
 | `DELETE` | `/api/transaksi/:idTransaksi` | Hapus transaksi berdasarkan ID |
-| `GET` | `/api/transaksi/pdf` | Generate laporan transaksi |
+| `GET`    | `/api/transaksi/pdf`          | Generate laporan transaksi     |
 
 ### Akun dan Kartu
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/account-card` | Tambah akun atau kartu baru |
-| `GET` | `/api/account-card` | Ambil semua akun dan kartu |
-| `PUT` | `/api/account-card/:idAccount` | Perbarui akun atau kartu |
-| `DELETE` | `/api/account-card/:idAccount` | Hapus akun atau kartu |
+| Method   | Endpoint                       | Deskripsi                   |
+| -------- | ------------------------------ | --------------------------- |
+| `POST`   | `/api/account-card`            | Tambah akun atau kartu baru |
+| `GET`    | `/api/account-card`            | Ambil semua akun dan kartu  |
+| `PUT`    | `/api/account-card/:idAccount` | Perbarui akun atau kartu    |
+| `DELETE` | `/api/account-card/:idAccount` | Hapus akun atau kartu       |
 
 ### Target Keuangan
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/target` | Tambah target baru |
-| `GET` | `/api/target` | Ambil semua target |
-| `PUT` | `/api/target/:idTarget` | Perbarui target |
-| `DELETE` | `/api/target/:idTarget` | Hapus target |
+| Method   | Endpoint                | Deskripsi          |
+| -------- | ----------------------- | ------------------ |
+| `POST`   | `/api/target`           | Tambah target baru |
+| `GET`    | `/api/target`           | Ambil semua target |
+| `PUT`    | `/api/target/:idTarget` | Perbarui target    |
+| `DELETE` | `/api/target/:idTarget` | Hapus target       |
 
 ### Anggaran
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/anggaran` | Tambah anggaran baru |
-| `GET` | `/api/anggaran` | Ambil semua anggaran |
-| `PUT` | `/api/anggaran/:id` | Perbarui anggaran |
-| `DELETE` | `/api/anggaran/:id` | Hapus anggaran |
+| Method   | Endpoint            | Deskripsi            |
+| -------- | ------------------- | -------------------- |
+| `POST`   | `/api/anggaran`     | Tambah anggaran baru |
+| `GET`    | `/api/anggaran`     | Ambil semua anggaran |
+| `PUT`    | `/api/anggaran/:id` | Perbarui anggaran    |
+| `DELETE` | `/api/anggaran/:id` | Hapus anggaran       |
 
 ### Kategori
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/kategori` | Tambah kategori baru |
-| `GET` | `/api/kategori` | Ambil semua kategori |
-| `PUT` | `/api/kategori/:idKategori` | Perbarui kategori |
-| `DELETE` | `/api/kategori/:idKategori` | Hapus kategori |
+| Method   | Endpoint                    | Deskripsi            |
+| -------- | --------------------------- | -------------------- |
+| `POST`   | `/api/kategori`             | Tambah kategori baru |
+| `GET`    | `/api/kategori`             | Ambil semua kategori |
+| `PUT`    | `/api/kategori/:idKategori` | Perbarui kategori    |
+| `DELETE` | `/api/kategori/:idKategori` | Hapus kategori       |
 
 ### Pengaturan Akun
 
-| Method | Endpoint | Deskripsi |
-|---|---|---|
-| `POST` | `/api/settings/change-password` | Ganti password pengguna |
-| `POST` | `/api/update-user` | Perbarui data profil pengguna |
-| `POST` | `/api/upload` | Upload foto profil pengguna |
-| `GET` | `/api/backup` | Backup data pengguna |
+| Method | Endpoint                        | Deskripsi                     |
+| ------ | ------------------------------- | ----------------------------- |
+| `POST` | `/api/settings/change-password` | Ganti password pengguna       |
+| `POST` | `/api/update-user`              | Perbarui data profil pengguna |
+| `POST` | `/api/upload`                   | Upload foto profil pengguna   |
+| `GET`  | `/api/backup`                   | Backup data pengguna          |
 
 ---
 
 ## 🤝 Kontribusi
 
-Kami menerima kontribusi dalam bentuk *bug reports*, *feature requests*, maupun *pull requests*.
+Kami menerima kontribusi dalam bentuk _bug reports_, _feature requests_, maupun _pull requests_.
 
 1.  Fork repositori ini.
 2.  Buat fitur branch (`git checkout -b feature/AmazingFeature`).
