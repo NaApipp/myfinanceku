@@ -141,6 +141,17 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "active":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20";
+      case "inactive":
+        return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20";
+      default:
+        return "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-500/10 dark:text-gray-400 dark:border-gray-500/20";
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6 flex flex-col items-center justify-center min-h-[400px] space-y-4">
@@ -243,6 +254,18 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
                 <p className="text-gray-700 dark:text-gray-300 font-medium">
                   {/* {data.createdAt ? new Date(data.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : "-"} */}
                   {data.createdAt}
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <Calendar className="w-3 h-3" /> Status
+                </p>
+                <p className="text-gray-700 dark:text-gray-300 font-medium">
+                  {/* {data.createdAt ? new Date(data.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : "-"} */}
+                  <span className={`flex items-center gap-2 p-2 w-fit rounded-full border text-[11px] font-bold uppercase tracking-wider ${getStatusColor(data.subscription?.status || "")}`}>
+                    {data?.subscription?.status}
+                  </span>
                 </p>
               </div>
             </div>
