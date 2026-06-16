@@ -26,6 +26,8 @@ interface user {
   level: string;
 }
 
+import ButtonCopy from "@/app/components/ButtonCopy";
+
 export default function UserPage() {
   const [users, setUsers] = useState<user[]>([]);
   const [loading, setLoading] = useState(true);
@@ -202,7 +204,12 @@ export default function UserPage() {
                         <span className="text-gray-700 dark:text-gray-300 font-medium">{user.full_name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.email}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        {user.email}
+                        <ButtonCopy text={user.email} />
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400 font-mono text-xs">@{user.username}</td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.no_hp}</td>
                     <td className="px-6 py-4">
