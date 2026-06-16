@@ -26,6 +26,10 @@ interface user {
   level: string;
 }
 
+import ButtonCopy from "@/app/components/ButtonCopy";
+
+import ExportUsersButton from "./components/ExportUsersButton";
+
 export default function UserPage() {
   const [users, setUsers] = useState<user[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,9 +121,15 @@ export default function UserPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-xl text-sm font-semibold border border-blue-100 dark:border-blue-500/20 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-            {users.length} Total
+
+          {/* Tombol Export Baru */}
+          <div className="flex items-center gap-2">
+            <ExportUsersButton />
+
+            <div className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-xl text-sm font-semibold border border-blue-100 dark:border-blue-500/20 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              {users.length} Total
+            </div>
           </div>
         </div>
       </div>
@@ -202,7 +212,12 @@ export default function UserPage() {
                         <span className="text-gray-700 dark:text-gray-300 font-medium">{user.full_name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.email}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        {user.email}
+                        <ButtonCopy text={user.email} />
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400 font-mono text-xs">@{user.username}</td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.no_hp}</td>
                     <td className="px-6 py-4">
