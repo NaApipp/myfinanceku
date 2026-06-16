@@ -590,8 +590,8 @@ export default function DataTransaksi() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <span className={`text-sm font-bold tracking-tight ${item.type_transaksi === 'pemasukan' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                        {item.type_transaksi === 'pemasukan' ? '+' : '-'} {formatCurrency(item.nominal_transaksi)}
+                      <span className={`text-sm font-bold tracking-tight ${item.type_transaksi === 'pemasukan' ? 'text-emerald-600 dark:text-emerald-400' : item.type_transaksi === 'transfer' ? 'text-blue-600 dark:text-blue-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                        {item.type_transaksi === 'pemasukan' ? '+' : item.type_transaksi === 'transfer' ? '' : '-'} {formatCurrency(item.nominal_transaksi)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
