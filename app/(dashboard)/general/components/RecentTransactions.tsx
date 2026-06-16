@@ -13,6 +13,7 @@ interface TransactionData {
   nama_kategori?: string;
   idAccount: string;
   description: string;
+  nama_asset: string;
 }
 
 export default function RecentTransactions() {
@@ -138,7 +139,7 @@ export default function RecentTransactions() {
                             )
                           )}
                         </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{formatDate(item.tanggal_transaksi)} • {item.description || 'Tanpa keterangan'}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{formatDate(item.tanggal_transaksi)} • {item.nama_asset || 'Tanpa keterangan'}</span>
                   </div>
                 </div>
                 <div className="text-right">
