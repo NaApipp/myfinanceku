@@ -28,6 +28,8 @@ interface user {
 
 import ButtonCopy from "@/app/components/ButtonCopy";
 
+import ExportUsersButton from "./components/ExportUsersButton";
+
 export default function UserPage() {
   const [users, setUsers] = useState<user[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,9 +121,15 @@ export default function UserPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-xl text-sm font-semibold border border-blue-100 dark:border-blue-500/20 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-            {users.length} Total
+
+          {/* Tombol Export Baru */}
+          <div className="flex items-center gap-2">
+            <ExportUsersButton />
+
+            <div className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-xl text-sm font-semibold border border-blue-100 dark:border-blue-500/20 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              {users.length} Total
+            </div>
           </div>
         </div>
       </div>
