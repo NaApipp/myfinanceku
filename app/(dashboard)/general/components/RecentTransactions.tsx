@@ -123,13 +123,21 @@ export default function RecentTransactions() {
                     )}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-gray-900 dark:text-white capitalize flex items-center gap-2">
-                      {categories[item.kategori] || (
-                        <>
-                          <span className="text-rose-500 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-tight">Terhapus</span>
-                        </>
-                      )}
-                    </span>
+                    <span className="text-sm text-black dark:text-white font-medium capitalize">
+                          {item.type_transaksi === "transfer" ? (
+                            "Transfer"
+                          ) : (
+                            categories[item.kategori] || (
+                              <div className="flex flex-col gap-1">
+                                 <div className="flex items-center gap-2">
+                                   <span className="text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 px-2 py-0.5 rounded-md text-[10px] whitespace-nowrap">
+                                     Kategori Telah Terhapus
+                                   </span>
+                                 </div>
+                              </div>
+                            )
+                          )}
+                        </span>
                     <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{formatDate(item.tanggal_transaksi)} • {item.description || 'Tanpa keterangan'}</span>
                   </div>
                 </div>
