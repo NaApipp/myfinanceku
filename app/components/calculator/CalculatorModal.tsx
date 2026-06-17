@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { calculate, Operator } from '@/app/lib/calculator/basicCalc';
 import { calculateEMI } from '@/app/lib/calculator/emiCalc';
 import { calculateCompoundInterest } from '@/app/lib/calculator/compoundInterest';
@@ -67,6 +67,7 @@ function BasicCalculator() {
   const [prevVal, setPrevVal] = useState<number | null>(null);
   const [operator, setOperator] = useState<Operator | null>(null);
   const [waitingForNewVal, setWaitingForNewVal] = useState(false);
+  const [equation, setEquation] = useState('');
 
   const formatDisplay = (val: string) => {
     if (val === 'Error' || val === 'NaN' || val === 'Infinity' || val === '-Infinity') return val;
@@ -95,11 +96,18 @@ function BasicCalculator() {
     }
   };
 
+  const getOpSymbol = (op: string) => {
+    if (op === '*') return '×';
+    if (op === '/') return '÷';
+    return op;
+  };
+
   const clear = () => {
     setDisplay('0');
     setPrevVal(null);
     setOperator(null);
     setWaitingForNewVal(false);
+    setEquation('');
   };
 
   const performOperation = (nextOp: Operator | '=') => {
@@ -107,20 +115,64 @@ function BasicCalculator() {
 
     if (prevVal == null) {
       setPrevVal(inputValue);
+      setEquation(`${formatDisplay(String(inputValue))} ${nextOp !== '=' ? getOpSymbol(nextOp) : '='}`);
     } else if (operator) {
+      if (waitingForNewVal) {
+        setOperator(nextOp === '=' ? null : nextOp as Operator);
+        setEquation(`${formatDisplay(String(prevVal))} ${nextOp !== '=' ? getOpSymbol(nextOp) : '='}`);
+        return;
+      }
+
       const result = calculate(prevVal, inputValue, operator);
       setDisplay(String(result));
       setPrevVal(result);
+      if (nextOp === '=') {
+        setEquation(`${formatDisplay(String(prevVal))} ${getOpSymbol(operator)} ${formatDisplay(String(inputValue))} =`);
+      } else {
+        setEquation(`${formatDisplay(String(result))} ${getOpSymbol(nextOp)}`);
+      }
+    } else {
+      setPrevVal(inputValue);
+      setEquation(`${formatDisplay(String(inputValue))} ${nextOp !== '=' ? getOpSymbol(nextOp) : '='}`);
     }
 
     setWaitingForNewVal(true);
     setOperator(nextOp === '=' ? null : nextOp as Operator);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const { key } = event;
+      if (/\d/.test(key)) {
+        event.preventDefault();
+        inputDigit(key);
+      } else if (key === '.' || key === ',') {
+        event.preventDefault();
+        inputDot();
+      } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+        event.preventDefault();
+        performOperation(key as Operator);
+      } else if (key === 'Enter' || key === '=') {
+        event.preventDefault();
+        performOperation('=');
+      } else if (key === 'Escape' || key.toLowerCase() === 'c') {
+        event.preventDefault();
+        clear();
+      } else if (key === 'Backspace') {
+        // Optional: you can implement backspace if you want, but for basic calc often people just use clear.
+        // I will not implement backspace here as it's not requested specifically and the UI doesn't have it.
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [display, prevVal, operator, waitingForNewVal, equation]);
+
   return (
     <div className="flex flex-col gap-3 max-w-[280px] mx-auto">
-      <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-xl text-right text-3xl font-mono overflow-x-auto dark:text-white">
-        {formatDisplay(display)}
+      <div className="bg-gray-100 dark:bg-gray-900 p-4 rounded-xl text-right flex flex-col justify-end min-h-[88px] overflow-x-auto dark:text-white">
+        <div className="text-sm text-gray-500 dark:text-gray-400 font-mono mb-1 h-5 whitespace-nowrap">{equation}</div>
+        <div className="text-3xl font-mono">{formatDisplay(display)}</div>
       </div>
       <div className="grid grid-cols-4 gap-2">
         <button onClick={clear} className="col-span-2 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 p-3 rounded-lg font-bold">C</button>
