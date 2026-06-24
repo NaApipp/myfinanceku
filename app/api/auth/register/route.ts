@@ -158,9 +158,18 @@ export async function POST(req: NextRequest) {
     // Time Format create Account
     const formattedDate = formatDateWIB(new Date());
 
-    // Generate ID based on current document count
-    const count = await usersCollection.countDocuments();
-    const idUser = `${String(count + 1).padStart(6, "0")}`;
+    // Generate ID based on the highest existing idUser in the database
+    const lastUser = await usersCollection.findOne({}, { sort: { idUser: -1 } });
+    let nextIdNumber = 1;
+
+    if (lastUser && lastUser.idUser) {
+      const lastId = parseInt(lastUser.idUser, 10);
+      if (!isNaN(lastId)) {
+        nextIdNumber = lastId + 1;
+      }
+    }
+
+    const idUser = `${String(nextIdNumber).padStart(6, "0")}`;
 
     // Saving New User
     const result = await usersCollection.insertOne({
