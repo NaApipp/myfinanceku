@@ -17,6 +17,7 @@ export default function AddUser() {
     username: "",
     email: "",
     password: "",
+    platform_role: "",
   });
 
   const handleAddUser = async (e: React.FormEvent) => {
@@ -47,6 +48,7 @@ export default function AddUser() {
         username: "",
         email: "",
         password: "",
+        platform_role: "",
       });
       setTimeout(() => {
         window.location.reload();
@@ -111,6 +113,24 @@ export default function AddUser() {
                 placeholder="Email"
                 className="border rounded-lg px-3 py-2 text-sm w-full outline-none dark:border-gray-500 dark:bg-gray-900"
               />
+            </div>
+            
+            {/* platform role */}
+            <div className="w-full flex flex-col gap-2 mb-5">
+              <label className="font-semibold text-xs text-gray-400">
+                Platform Role
+              </label>
+              <select
+                value={formData.platform_role}
+                onChange={(e) =>
+                  setFormData({ ...formData, platform_role: e.target.value })
+                }
+                className="border rounded-lg px-3 py-2 text-sm w-full outline-none dark:border-gray-500 dark:bg-gray-900"
+              >
+                <option value="">Select Platform Role</option>
+                <option value="admin_cms">Admin CMS</option>
+                <option value="admin_finpay">Admin Finpay</option>
+              </select>
             </div>
 
             {/* Password */}

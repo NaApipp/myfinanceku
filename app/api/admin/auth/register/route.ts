@@ -28,10 +28,10 @@ function formatDateWIB(date: Date) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, password, email } = await req.json();
+    const { username, password, email, platform_role } = await req.json();
 
     // Validasi input sederhana
-    if (!username || !password || !email) {
+    if (!username || !password || !email || !platform_role) {
       return withCors(NextResponse.json(
         { message: "Semua field harus diisi" },
         { status: 400 },
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
       username,
       password: hashedPassword,
       email,
+      platform_role,
       created_at: formatDateWIB(new Date()),
       updated_at: formatDateWIB(new Date()),
     });
