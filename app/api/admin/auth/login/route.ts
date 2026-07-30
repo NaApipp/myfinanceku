@@ -27,8 +27,15 @@ export async function POST(req: NextRequest) {
     const user = await usersCollection.findOne({ email });
     if (!user) {
       return withCors(NextResponse.json(
-        { message: "Email atau Passwordd salah" },
+        { message: "Email atau Password salah" },
         { status: 404 },
+      ));
+    }
+
+    if (user.platform_role !== "admin_finpay") {
+      return withCors(NextResponse.json(
+        { message: "Akses ditolak. Anda tidak memiliki izin." },
+        { status: 403 },
       ));
     }
 
