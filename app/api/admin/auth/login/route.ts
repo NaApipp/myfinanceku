@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
           username: user.username,
           no_hp: user.no_hp,
           level: user.level,
+          platform_role: user.platform_role,
           full_name: user.full_name,
           image_url: user.image_url || null,
           token: token,
