@@ -77,37 +77,23 @@ export default function page() {
   };
   return (
     <>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-[#0B1326] flex items-center justify-center px-4 py-12">
         <div className="max-w-md w-full">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+          <div className="bg-[#131B2E] rounded-2xl shadow-lg p-8">
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-lime-100 dark:bg-lime-900/40 rounded-xl mb-4">
-                <svg
-                  className="w-6 h-6 text-lime-600 dark:text-lime-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Selamat Datang
+              <h2 className="text-2xl font-bold text-white">
+                MyFinanceKu 
+                <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> FINPAY</span>
               </h2>
               <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Silahkan login untuk melanjutkan
+                Silahkan login untuk MyFinanceKu Finpay
               </p>
             </div>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  className="block text-sm font-medium text-white mb-2"
                 >
                   Email
                 </label>
@@ -127,7 +113,7 @@ export default function page() {
                 <div className="flex items-center justify-between mb-2">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                    className="block text-sm font-medium text-white"
                   >
                     Password
                   </label>
@@ -204,15 +190,15 @@ export default function page() {
                 <button
                   type="button"
                   disabled
-                  className="w-full bg-gray-300 dark:bg-gray-700 text-white py-3 px-4 rounded-lg cursor-not-allowed flex items-center justify-center"
+                  className="w-full bg-[#38BDF8] text-gray-700 py-3 px-4 rounded-lg font-medium opacity-70 cursor-not-allowed flex items-center justify-center"
                 >
-                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-400 mr-3"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-700 mr-3"></div>
                   Memproses...
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="w-full bg-lime-600 dark:bg-lime-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-lime-700 dark:hover:bg-lime-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 dark:focus:ring-offset-gray-800 transition-colors"
+                  className="w-full bg-[#38BDF8] text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-white/90 hover:text-gray-700 transition-colors"
                 >
                   Masuk
                 </button>
@@ -220,8 +206,8 @@ export default function page() {
             </form>
 
             <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-              Belum punya akun?
-              <span className="font-medium text-lime-600 dark:text-lime-400">
+              Belum punya akun? 
+              <span className="ml-1 font-medium text-[#38BDF8]">
                 Hubungi Admin
               </span>
             </p>
