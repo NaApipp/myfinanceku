@@ -21,7 +21,7 @@ export default function FeaturedCard({ post }: { post: BlogPost }) {
         {post.title}
       </h1>
       <p className="text-gray-600 mb-6">{post.summary}</p>
-      <Link href={`/blog/${post.slug}`}>
+      <Link href={`/berita/${post.slug}`}>
         <button className="inline-flex items-center gap-1 text-sm font-bold bg-white p-2 rounded-xl text-black hover:bg-white/60 transition-colors">
           Baca Selengkapnya
           <ArrowRight size={20} />
