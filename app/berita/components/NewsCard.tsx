@@ -45,7 +45,7 @@ export default function NewsCard({ post }: { post: BlogPost }) {
         </div>
         <div className="flex justify-between items-center mt-4">
             <span className="bg-white/10 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10 p-1.5 rounded-2xl text-xs text-gray-500 dark:text-gray-400">{formatDate(post.times.createdAt)}</span>
-            <Link href={`/blog/${post.slug}`}>
+            <Link href={`/berita/${post.slug}`}>
             <button className="cursor-pointer px-4 py-2 bg-white text-black  hover:bg-blue-500 hover:text-white text-sm font-medium rounded-lg transition-colors border border-gray-200/50 dark:border-gray-700/50">
               Read
             </button>
