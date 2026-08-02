@@ -1,4 +1,4 @@
-import { BlogResponse } from "@/app/types/blog";
+import { BlogResponse, BlogPost } from "@/app/types/blog";
 
 const BASE_URL = "https://cms-myfinance.vercel.app/api/berita";
 
@@ -16,4 +16,17 @@ export async function getBerita(
   }
 
   return res.json();
+}
+
+export async function getBeritaBySlug(slug: string): Promise<BlogPost | null> {
+  const res = await fetch(`${BASE_URL}?slug=${encodeURIComponent(slug)}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Gagal fetch detail berita: ${res.status}`);
+  }
+
+  const json: BlogResponse = await res.json();
+  return json.data[0] ?? null;
 }
