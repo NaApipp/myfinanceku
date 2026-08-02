@@ -21,7 +21,7 @@ export default function NewsList({ initialPosts, initialPagination }: Props) {
     startTransition(async () => {
       const nextPage = pagination.page + 1;
       const res = await fetch(
-        `/api/berita-proxy?page=${nextPage}&limit=${pagination.limit}`
+        `/api/berita?page=${nextPage}&limit=${pagination.limit}`
       );
       const json = await res.json();
       setPosts((prev) => {
