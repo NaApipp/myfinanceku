@@ -19,7 +19,7 @@ export async function getBerita(
 }
 
 export async function getBeritaBySlug(slug: string): Promise<BlogPost | null> {
-  const res = await fetch(`${BASE_URL}?slug=${encodeURIComponent(slug)}`, {
+  const res = await fetch(`${BASE_URL}?limit=100`, {
     next: { revalidate: 60 },
   });
 
@@ -28,5 +28,5 @@ export async function getBeritaBySlug(slug: string): Promise<BlogPost | null> {
   }
 
   const json: BlogResponse = await res.json();
-  return json.data[0] ?? null;
+  return json.data.find((post) => post.slug === slug) ?? null;
 }
