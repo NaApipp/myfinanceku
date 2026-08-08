@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 /**
  * API Route — Webhook Midtrans
  * Nama file : app/api/subscription/webhook/route.ts
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
     const isValid = verifySignature({ orderId, statusCode, grossAmount, signatureKey });
     if (!isValid) {
       console.warn("[webhook] ⚠️  Signature tidak valid, order:", orderId);
-      return NextResponse.json({ message: "Invalid signature" }, { status: 403 });
+      return withCors(NextResponse.json({ message: "Invalid signature" }, { status: 403 }), req);
     }
 
     const client = await clientPromise;
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
     if (!transaksi) {
       console.warn("[webhook] Transaksi tidak ditemukan:", orderId);
       // Tetap return 200 agar Midtrans tidak retry
-      return NextResponse.json({ ok: true }, { status: 200 });
+      return withCors(NextResponse.json({ ok: true }, { status: 200 }), req);
     }
 
     // 3. Tentukan status berdasarkan respons Midtrans
@@ -136,11 +137,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Selalu balas 200 ke Midtrans agar tidak retry terus
-    return NextResponse.json({ ok: true }, { status: 200 });
+    return withCors(NextResponse.json({ ok: true }, { status: 200 }), req);
 
   } catch (error) {
     console.error("[webhook] Error:", error);
     // Tetap 200 agar Midtrans tidak spam retry
-    return NextResponse.json({ ok: true }, { status: 200 });
+    return withCors(NextResponse.json({ ok: true }, { status: 200 }), req);
   }
 }
+export const OPTIONS = handleOptions;

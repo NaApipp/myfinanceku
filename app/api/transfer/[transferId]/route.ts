@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
@@ -11,7 +12,7 @@ export async function DELETE(
 
         const token = req.cookies.get("token")?.value;
         if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
         }
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -19,7 +20,7 @@ export async function DELETE(
         const userId = payload.userId ? String(payload.userId) : null;
 
         if (!userId) {
-            return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
         }
 
         const client = await clientPromise;
@@ -75,7 +76,7 @@ export async function DELETE(
                 );
             });
 
-            return NextResponse.json({ success: true, message: "Transaksi transfer berhasil dihapus" });
+            return withCors(NextResponse.json({ success: true, message: "Transaksi transfer berhasil dihapus" }), req);
         } catch (err: any) {
             throw err; // Lempar ke blok catch utama untuk direturn sebagai respon 500/400
         } finally {
@@ -84,9 +85,10 @@ export async function DELETE(
 
     } catch (err: any) {
         console.error("Error processing transfer delete:", err);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { success: false, message: err.message || "Internal Server Error" },
             { status: 500 }
-        );
+        ), req);
     }
 }
+export const OPTIONS = handleOptions;

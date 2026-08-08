@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextResponse } from "next/server";
 import { getBerita } from "@/app/lib/berita";
 
@@ -8,8 +9,9 @@ export async function GET(request: Request) {
 
   try {
     const data = await getBerita(page, limit);
-    return NextResponse.json(data);
+    return withCors(NextResponse.json(data), request);
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return withCors(NextResponse.json({ error: error.message }, { status: 500 }), request);
   }
 }
+export const OPTIONS = handleOptions;

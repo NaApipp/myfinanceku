@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import bcrypt from "bcryptjs";
@@ -10,10 +11,10 @@ export async function POST(req: NextRequest) {
 
     // Validasi input sederhana
     if (!username || !password) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Username dan password harus diisi" },
         { status: 400 },
-      );
+      ), req);
     }
 
     const client = await clientPromise;
@@ -23,16 +24,16 @@ export async function POST(req: NextRequest) {
     // Cari user berdasarkan email
     const user = await usersCollection.findOne({ username });
     if (!user) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Username atau Passwordd salah" },
         { status: 404 },
-      );
+      ), req);
     }
 
     // Verifikasi password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return NextResponse.json({ message: "Username atau Password salah" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Username atau Password salah" }, { status: 401 }), req);
     }
 
     // Generate JWT
@@ -93,12 +94,13 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 14, // 14 hari
     });
 
-    return response;
+    return withCors(response, req);
   } catch (error) {
     console.error("Login error:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan server" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

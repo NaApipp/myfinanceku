@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
@@ -15,25 +16,26 @@ export async function DELETE(
     const result = await usersCollection.deleteOne({ idUser });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Data tidak ditemukan" },
         { status: 404 },
-      );
+      ), req);
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data User Admin berhasil dihapus",
         data: result,
       },
       { status: 200 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing account deletion:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Terjadi kesalahan saat memproses penghapusan" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

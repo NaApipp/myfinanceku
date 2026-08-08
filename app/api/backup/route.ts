@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
     // 1. Authenticate User
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -35,7 +36,7 @@ export async function GET(req: NextRequest) {
     ]);
 
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+      return withCors(NextResponse.json({ message: "User not found" }, { status: 404 }), req);
     }
 
     // 3. Prepare Data for PDF
@@ -59,19 +60,21 @@ export async function GET(req: NextRequest) {
     );
 
     // 5. Return PDF Response
-    return new NextResponse(new Uint8Array(pdfBuffer), {
+    return withCors(new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="Backup-Data-${userData.username}-${new Date().toISOString().split('T')[0]}.pdf"`,
         "Content-Length": pdfBuffer.length.toString(),
       },
-    });
+    }), req);
   } catch (error: any) {
     console.error("Error generating backup PDF:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan saat membuat backup: " + error.message },
       { status: 500 },
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;

@@ -2,15 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import z from "zod";
+import { withCors, handleOptions, getCorsHeaders } from "@/app/lib/cors";
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ idAccount: string }> },
 ) {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -18,7 +21,7 @@ export async function DELETE(
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
     }
 
     const { idAccount } = await params;
@@ -29,26 +32,27 @@ export async function DELETE(
     const result = await transaksiCollection.deleteOne({ idAccount, userId });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Data tidak ditemukan atau Anda tidak memiliki akses" },
         { status: 404 },
-      );
+      ), req);
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data Akun/Kartu berhasil dihapus",
         data: result,
+        headers: corsHeaders
       },
       { status: 200 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing account deletion:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Terjadi kesalahan saat memproses penghapusan" },
       { status: 500 },
-    );
+    ), req);
   }
 }
 
@@ -59,7 +63,7 @@ export async function PUT(
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -67,7 +71,7 @@ export async function PUT(
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
     }
 
     const { idAccount } = await params;
@@ -90,10 +94,10 @@ export async function PUT(
     const validation = registerSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: validation.error.issues[0].message },
         { status: 400 },
-      );
+      ), req);
     }
 
     const { type_asset, nama_asset, saldo_awal, nama_akun } = validation.data;
@@ -114,25 +118,26 @@ export async function PUT(
     }
 
     if (result.matchedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Data tidak ditemukan atau Anda tidak memiliki akses" },
         { status: 404 },
-      );
+      ), req);
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data Akun/Kartu berhasil diupdate",
         data: result,
       },
       { status: 200 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing account update:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Terjadi kesalahan saat memproses update" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

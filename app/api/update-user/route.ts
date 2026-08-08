@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
@@ -52,19 +53,19 @@ export async function PUT(request: NextRequest) {
     // Ambil token dari body atau cookie
     const token = body.token || request.cookies.get("token")?.value;
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         {
           message: validation.error.issues[0].message,
           errors: validation.error.issues,
         },
         { status: 400 },
-      );
+      ), request);
     }
     if (!token) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Token tidak ditemukan, silakan login kembali" },
         { status: 401 }
-      );
+      ), request);
     }
 
     const secret = new TextEncoder().encode(
@@ -76,17 +77,17 @@ export async function PUT(request: NextRequest) {
       const { payload } = await jwtVerify(token, secret);
       userId = payload.userId as string;
     } catch (err) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Sesi telah berakhir atau token tidak valid" },
         { status: 401 }
-      );
+      ), request);
     }
 
     if (!userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Payload token tidak valid" },
         { status: 401 }
-      );
+      ), request);
     }
 
     const client = await clientPromise;
@@ -96,10 +97,10 @@ export async function PUT(request: NextRequest) {
     // Cari user terlebih dahulu untuk mendapatkan data saat ini
     const existingUser = await usersCollection.findOne({ idUser: userId });
     if (!existingUser) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "User tidak ditemukan" },
         { status: 404 }
-      );
+      ), request);
     }
 
     // Siapkan data yang akan diupdate
@@ -118,10 +119,10 @@ export async function PUT(request: NextRequest) {
     }
 
     if (Object.keys(updateData).length === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Tidak ada data yang diubah" },
         { status: 400 }
-      );
+      ), request);
     }
 
     const result = await usersCollection.updateOne(
@@ -130,13 +131,13 @@ export async function PUT(request: NextRequest) {
     );
 
     if (result.matchedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Gagal memperbarui data user" },
         { status: 500 }
-      );
+      ), request);
     }
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       success: true,
       message: "Profil berhasil diperbarui",
       user: {
@@ -144,13 +145,13 @@ export async function PUT(request: NextRequest) {
         ...updateData,
         password: undefined, // Jangan kirim password kembali
       },
-    });
+    }), request);
   } catch (error) {
     console.error("Error updating user:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan server saat memperbarui profil" },
       { status: 500 }
-    );
+    ), request);
   }
 }
 
@@ -162,10 +163,10 @@ export async function GET(request: NextRequest) {
       request.headers.get("Authorization")?.split(" ")[1];
 
     if (!token) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Token tidak ditemukan, silakan login kembali" },
         { status: 401 }
-      );
+      ), request);
     }
 
     const secret = new TextEncoder().encode(
@@ -177,17 +178,17 @@ export async function GET(request: NextRequest) {
       const { payload } = await jwtVerify(token, secret);
       userId = payload.userId as string;
     } catch (err) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Sesi telah berakhir atau token tidak valid" },
         { status: 401 }
-      );
+      ), request);
     }
 
     if (!userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Payload token tidak valid" },
         { status: 401 }
-      );
+      ), request);
     }
 
     const client = await clientPromise;
@@ -200,22 +201,24 @@ export async function GET(request: NextRequest) {
     );
 
     if (!user) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "User tidak ditemukan" },
         { status: 404 }
-      );
+      ), request);
     }
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       success: true,
       user,
-    });
+    }), request);
   } catch (error) {
     console.error("Error fetching user:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan server saat mengambil data profil" },
       { status: 500 }
-    );
+    ), request);
   }
 }
 
+
+export const OPTIONS = handleOptions;

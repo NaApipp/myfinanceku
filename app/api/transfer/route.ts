@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
     }
 
     const {
@@ -35,15 +36,15 @@ export async function POST(req: NextRequest) {
 
     // --- Validasi ---
     if (fromAccountId === toAccountId)
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { error: "Akun asal dan tujuan tidak boleh sama" },
         { status: 400 },
-      );
+      ), req);
     if (!nominal || nominal <= 0)
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { error: "Nominal harus lebih dari 0" },
         { status: 400 },
-      );
+      ), req);
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DATABASE);
@@ -140,14 +141,16 @@ export async function POST(req: NextRequest) {
         );
       });
 
-      return NextResponse.json({ success: true, message: "Transaksi berhasil disimpan!" });
+      return withCors(NextResponse.json({ success: true, message: "Transaksi berhasil disimpan!" }), req);
     } catch (err: any) {
-      return NextResponse.json({ error: err.message }, { status: 500 });
+      return withCors(NextResponse.json({ error: err.message }, { status: 500 }), req);
     } finally {
       await session.endSession();
     }
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    return withCors(NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 }), req);
   }
 }
 
+
+export const OPTIONS = handleOptions;

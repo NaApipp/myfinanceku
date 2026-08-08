@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 /**
  * API Route — Create Payment
  * Nama file : app/api/subscription/create-payment/route.ts
@@ -35,13 +36,13 @@ export async function POST(req: NextRequest) {
     // 1. Verifikasi JWT dari cookie — pengganti getServerSession
     const jwtUser = await getJWTUser();
     if (!jwtUser) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     // 2. Validasi plan dari request body
     const { plan } = await req.json();
     if (!plan || !(plan in PLANS)) {
-      return NextResponse.json({ message: "Plan tidak valid" }, { status: 400 });
+      return withCors(NextResponse.json({ message: "Plan tidak valid" }, { status: 400 }), req);
     }
 
     const selectedPlan = PLANS[plan as PlanKey];
@@ -52,15 +53,15 @@ export async function POST(req: NextRequest) {
     const user   = await db.collection("users").findOne({ username: jwtUser.username });
 
     if (!user) {
-      return NextResponse.json({ message: "User tidak ditemukan" }, { status: 404 });
+      return withCors(NextResponse.json({ message: "User tidak ditemukan" }, { status: 404 }), req);
     }
 
     // 4. Cek apakah sudah berlangganan plan yang sama
     if (user.level === plan && user.subscription?.status === "active") {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Kamu sudah berlangganan plan ini" },
         { status: 400 }
-      );
+      ), req);
     }
 
     // 5. Generate order ID unik
@@ -89,10 +90,11 @@ export async function POST(req: NextRequest) {
     });
 
     // 8. Kembalikan Snap token ke frontend
-    return NextResponse.json({ snapToken: snapData.token }, { status: 200 });
+    return withCors(NextResponse.json({ snapToken: snapData.token }, { status: 200 }), req);
 
   } catch (error) {
     console.error("[create-payment] Error:", error);
-    return NextResponse.json({ message: "Terjadi kesalahan server" }, { status: 500 });
+    return withCors(NextResponse.json({ message: "Terjadi kesalahan server" }, { status: 500 }), req);
   }
 }
+export const OPTIONS = handleOptions;
