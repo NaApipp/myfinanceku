@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+// lib/cors.ts
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") ?? [];
 
 export function getCorsHeaders(requestOrOrigin?: Request | string | null) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") ?? [];
@@ -38,7 +39,7 @@ export function withCors<T extends Response>(response: T, requestOrOrigin?: Requ
  */
 export function handleOptions(request?: Request) {
   const origin = request ? request.headers.get("origin") : null;
-  return new NextResponse(null, {
+  return new Response(null, {
     status: 204,
     headers: getCorsHeaders(origin),
   });
