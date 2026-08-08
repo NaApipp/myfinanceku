@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { jwtVerify } from "jose"
+import { withCors } from "@/app/lib/cors"
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value
@@ -20,10 +21,10 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith("/api/")) {
       // Kecuali API auth (untuk login itu sendiri)
       if (!pathname.startsWith("/api/auth/")) {
-        return NextResponse.json(
+        return withCors(NextResponse.json(
           { message: "Unauthorized: Silakan login" },
           { status: 401 }
-        )
+        ), request)
       }
       return NextResponse.next()
     }
@@ -55,10 +56,10 @@ export async function middleware(request: NextRequest) {
 
     // Jika di API, return 401
     if (pathname.startsWith("/api/")) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Token tidak valid, silakan login ulang" },
         { status: 401 }
-      )
+      ), request)
     }
 
     // Jika di halaman biasa, hapus cookie dan redirect ke login
