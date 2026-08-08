@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import clientPromise from "@/app/lib/mongodb";
@@ -12,7 +13,7 @@ export async function DELETE(
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -29,22 +30,22 @@ export async function DELETE(
     });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Anggaran tidak ditemukan" },
         { status: 404 }
-      );
+      ), req);
     }
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       success: true,
       message: "Anggaran berhasil dihapus",
-    });
+    }), req);
   } catch (error) {
     console.error("Error deleting anggaran:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }
-    );
+    ), req);
   }
 }
 
@@ -57,7 +58,7 @@ export async function PUT(
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -79,10 +80,10 @@ export async function PUT(
     const validation = anggaranSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: validation.error.issues[0].message },
         { status: 400 },
-      );
+      ), req);
     }
 
     const client = await clientPromise;
@@ -95,21 +96,23 @@ export async function PUT(
     );
 
     if (result.matchedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Anggaran tidak ditemukan" },
         { status: 404 }
-      );
+      ), req);
     }
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       success: true,
       message: "Anggaran berhasil diupdate",
-    });
+    }), req);
   } catch (error) {
     console.error("Error updating anggaran:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;

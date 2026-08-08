@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import z from "zod";
+import { withCors, handleOptions, getCorsHeaders } from "@/app/lib/cors";
 
 export async function POST(req: NextRequest) {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -17,10 +20,10 @@ export async function POST(req: NextRequest) {
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Invalid user session" },
         { status: 401 },
-      );
+      ), req);
     }
 
     const body = await req.json();
@@ -39,10 +42,10 @@ export async function POST(req: NextRequest) {
     const validation = registerSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: validation.error.issues[0].message },
         { status: 400 },
-      );
+      ), req);
     }
 
     const { type_asset, nama_asset, saldo_awal, nama_akun } = validation.data;
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
       nama_akun,
     });
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Account dan Card berhasil ditambahkan",
@@ -78,18 +81,19 @@ export async function POST(req: NextRequest) {
           saldo_awal,
           nama_akun,
         },
+        headers: corsHeaders
       },
       { status: 201 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing account card:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: false,
         message: "Terjadi kesalahan saat memproses account card",
       },
       { status: 500 },
-    );
+    ), req);
   }
 }
 
@@ -97,7 +101,7 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -113,19 +117,21 @@ export async function GET(req: NextRequest) {
     // Mengakses koleksi "transaksi"
     const transaksiCollection = db.collection("account-card");
     const transaksi = await transaksiCollection.find({ userId }).toArray();
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data Transaksi berhasil diambil",
         data: transaksi,
       },
       { status: 200 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing transaksi:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;

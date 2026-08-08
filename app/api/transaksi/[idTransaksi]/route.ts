@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { deleteTransaction } from "@/app/lib/transactionService";
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
@@ -11,7 +12,7 @@ export async function DELETE(
 
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -19,7 +20,7 @@ export async function DELETE(
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
     }
 
     const result = await deleteTransaction({
@@ -28,18 +29,19 @@ export async function DELETE(
     });
 
     if (!result.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: result.message },
         { status: 400 }
-      );
+      ), req);
     }
 
-    return NextResponse.json({ success: true, message: "Berhasil dihapus" });
+    return withCors(NextResponse.json({ success: true, message: "Berhasil dihapus" }), req);
   } catch (err: any) {
     console.error("Error processing transaksi delete:", err);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: err.message || "Internal Server Error" },
       { status: 500 }
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

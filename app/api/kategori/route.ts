@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import clientPromise from "@/app/lib/mongodb";
@@ -15,14 +16,14 @@ export async function POST(req: NextRequest) {
     try {
         const token = req.cookies.get("token")?.value;
         if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
         }
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
 
         if (!payload || !payload.userId) {
-            return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
         }
 
         const userId = String(payload.userId);
@@ -33,13 +34,13 @@ export async function POST(req: NextRequest) {
         const result = kategoriSchema.safeParse(body);
 
         if (!result.success) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 {
                     success: false,
                     message: result.error.issues[0].message,
                 },
                 { status: 400 }
-            );
+            ), req);
         }
 
         const { nama_kategori } = result.data;
@@ -55,10 +56,10 @@ export async function POST(req: NextRequest) {
         });
 
         if (existing) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { success: false, message: "Kategori sudah ada" },
                 { status: 409 }
-            );
+            ), req);
         }
 
         const uniqueId = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -70,7 +71,7 @@ export async function POST(req: NextRequest) {
             nama_kategori,
         });
 
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             {
                 success: true,
                 message: "Category berhasil ditambahkan",
@@ -80,13 +81,13 @@ export async function POST(req: NextRequest) {
                 },
             },
             { status: 201 }
-        );
+        ), req);
     } catch (error) {
         console.error("Error processing category:", error);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { success: false, message: "Terjadi kesalahan saat memproses category" },
             { status: 500 }
-        );
+        ), req);
     }
 }
 
@@ -94,14 +95,14 @@ export async function GET(req: NextRequest) {
     try {
         const token = req.cookies.get("token")?.value;
         if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
         }
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
         const { payload } = await jwtVerify(token, secret);
 
         if (!payload || !payload.userId) {
-            return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
         }
 
         const userId = String(payload.userId);
@@ -112,19 +113,20 @@ export async function GET(req: NextRequest) {
 
         const categories = await categoryCollection.find({ userId }).toArray();
 
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             {
                 success: true,
                 message: "Data Category berhasil diambil",
                 data: categories,
             },
             { status: 200 }
-        );
+        ), req);
     } catch (error) {
         console.error("Error processing category:", error);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { success: false, message: "Terjadi kesalahan saat memproses category" },
             { status: 500 }
-        );
+        ), req);
     }
 }
+export const OPTIONS = handleOptions;

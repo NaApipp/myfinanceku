@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
     // 1. Authenticate User
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -80,10 +81,10 @@ export async function GET(req: NextRequest) {
       .toArray();
 
     if (transaksi.length === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Tidak ada data transaksi pada periode ini." },
         { status: 404 },
-      );
+      ), req);
     }
 
     // 4. Calculate Summary
@@ -141,19 +142,21 @@ export async function GET(req: NextRequest) {
     );
 
     // 7. Return PDF Response
-    return new NextResponse(new Uint8Array(pdfBuffer), {
+    return withCors(new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename="Laporan-Transaksi-${startDate}-ke-${endDate}.pdf"`,
         "Content-Length": pdfBuffer.length.toString(),
       },
-    });
+    }), req);
   } catch (error: any) {
     console.error("Error generating PDF:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan saat membuat PDF: " + error.message },
       { status: 500 },
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;

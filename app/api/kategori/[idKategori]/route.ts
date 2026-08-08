@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
@@ -11,7 +12,7 @@ export async function DELETE(
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -19,7 +20,7 @@ export async function DELETE(
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
     }
 
     const { idKategori } = await params;
@@ -30,26 +31,26 @@ export async function DELETE(
     const result = await transaksiCollection.deleteOne({ idKategori, userId });
 
     if (result.deletedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Data tidak ditemukan atau Anda tidak memiliki akses" },
         { status: 404 },
-      );
+      ), req);
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data Kategori berhasil dihapus",
         data: result,
       },
       { status: 200 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing account deletion:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Terjadi kesalahan saat memproses penghapusan" },
       { status: 500 },
-    );
+    ), req);
   }
 }
 
@@ -75,7 +76,7 @@ export async function PUT(
     // 🔐 AUTH
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -85,10 +86,10 @@ export async function PUT(
     const { payload } = await jwtVerify(token, secret);
 
     if (!payload || !payload.userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Invalid user session" },
         { status: 401 }
-      );
+      ), req);
     }
 
     const userId = String(payload.userId);
@@ -96,13 +97,13 @@ export async function PUT(
     // ✅ VALIDASI PARAMS
     const parsedParams = paramsSchema.safeParse(await params);
     if (!parsedParams.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         {
           success: false,
           message: parsedParams.error.issues[0].message,
         },
         { status: 400 }
-      );
+      ), req);
     }
 
     const { idKategori } = parsedParams.data;
@@ -112,13 +113,13 @@ export async function PUT(
     const parsedBody = kategoriSchema.safeParse(body);
 
     if (!parsedBody.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         {
           success: false,
           message: parsedBody.error.issues[0].message,
         },
         { status: 400 }
-      );
+      ), req);
     }
 
     const { nama_kategori } = parsedBody.data;
@@ -135,10 +136,10 @@ export async function PUT(
     });
 
     if (existing) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: "Kategori sudah digunakan" },
         { status: 409 }
-      );
+      ), req);
     }
 
     // 🔄 UPDATE
@@ -148,30 +149,31 @@ export async function PUT(
     );
 
     if (result.matchedCount === 0) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         {
           success: false,
           message: "Data tidak ditemukan atau Anda tidak memiliki akses",
         },
         { status: 404 }
-      );
+      ), req);
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data Kategori berhasil diperbarui",
       },
       { status: 200 }
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing category update:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: false,
         message: "Terjadi kesalahan saat memproses pembaruan",
       },
       { status: 500 }
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

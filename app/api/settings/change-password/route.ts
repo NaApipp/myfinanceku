@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/app/lib/mongodb";
@@ -41,19 +42,19 @@ export async function POST(req: NextRequest) {
     const validation = changePasswordSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: validation.error.issues[0].message },
         { status: 400 },
-      );
+      ), req);
     }
 
     const { email, currentPassword, newPassword } = validation.data;
 
     if (!email || !currentPassword || !newPassword) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Email dan password wajib diisi" },
         { status: 400 },
-      );
+      ), req);
     }
 
     const client = await clientPromise;
@@ -64,20 +65,20 @@ export async function POST(req: NextRequest) {
     const user = await usersCollection.findOne({ email });
 
     if (!user) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "User tidak ditemukan" },
         { status: 404 },
-      );
+      ), req);
     }
 
     // Verifikasi password lama
     const isValid = await bcrypt.compare(currentPassword, user.password);
 
     if (!isValid) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Password lama salah" },
         { status: 400 },
-      );
+      ), req);
     }
 
     // Hash password baru
@@ -95,12 +96,14 @@ export async function POST(req: NextRequest) {
       },
     );
 
-    return NextResponse.json({ message: "Password berhasil diubah" });
+    return withCors(NextResponse.json({ message: "Password berhasil diubah" }), req);
   } catch (error) {
     console.error("Change password error:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan server" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;

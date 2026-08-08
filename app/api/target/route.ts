@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import { createTarget } from "@/app/lib/targetService";
 import { jwtVerify } from "jose";
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     // 🔐 AUTH
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -51,10 +52,10 @@ export async function POST(req: NextRequest) {
     const { payload } = await jwtVerify(token, secret);
 
     if (!payload || !payload.userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Invalid user session" },
         { status: 401 }
-      );
+      ), req);
     }
 
     const userId = String(payload.userId);
@@ -64,13 +65,13 @@ export async function POST(req: NextRequest) {
     const result = targetSchema.safeParse(body);
 
     if (!result.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         {
           success: false,
           message: result.error.issues[0].message,
         },
         { status: 400 }
-      );
+      ), req);
     }
 
     const {
@@ -99,22 +100,22 @@ export async function POST(req: NextRequest) {
     });
 
     if (!createResult.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { success: false, message: createResult.message },
         { status: 400 }
-      );
+      ), req);
     }
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: true, message: "Berhasil" },
       { status: 201 }
-    );
+    ), req);
   } catch (err: any) {
     console.error("Error processing target:", err);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: err.message || "Internal Server Error" },
       { status: 500 }
-    );
+    ), req);
   }
 }
 
@@ -123,7 +124,7 @@ export async function GET(req: NextRequest) {
     // 🔐 AUTH
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -133,10 +134,10 @@ export async function GET(req: NextRequest) {
     const { payload } = await jwtVerify(token, secret);
 
     if (!payload || !payload.userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Invalid user session" },
         { status: 401 }
-      );
+      ), req);
     }
 
     const userId = String(payload.userId);
@@ -146,18 +147,19 @@ export async function GET(req: NextRequest) {
 
     const targets = await db.collection("target").find({ userId }).toArray();
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         data: targets,
       },
       { status: 200 }
-    );
+    ), req);
   } catch (err: any) {
     console.error("Error processing target:", err);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: err.message || "Internal Server Error" },
       { status: 500 }
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

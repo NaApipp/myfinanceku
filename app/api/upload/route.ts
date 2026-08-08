@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import clientPromise from "@/app/lib/mongodb";
@@ -34,11 +35,11 @@ export async function POST(req: NextRequest) {
 
     // validasi
     if (!file || !file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "File harus image" }, { status: 400 });
+      return withCors(NextResponse.json({ error: "File harus image" }, { status: 400 }), req);
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      return NextResponse.json({ error: "Max 2MB" }, { status: 400 });
+      return withCors(NextResponse.json({ error: "Max 2MB" }, { status: 400 }), req);
     }
 
     // convert ke buffer
@@ -78,15 +79,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       success: true,
       data: {
         _id: result.insertedId,
         url: upload.secure_url,
       },
-    });
+    }), req);
   } catch (error) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload gagal" }, { status: 500 });
+    return withCors(NextResponse.json({ error: "Upload gagal" }, { status: 500 }), req);
   }
 }
+export const OPTIONS = handleOptions;

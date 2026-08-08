@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 // app/api/reset-password/route.js
 import bcrypt from 'bcryptjs'
 import clientPromise from '@/app/lib/mongodb'
@@ -22,10 +23,10 @@ export async function POST(req: Request) {
   if (!validation.success) {
     // Ambil pesan error pertama dari Zod
     const errorMessage = validation.error.issues[0].message;
-    return Response.json(
+    return withCors(Response.json(
       { message: errorMessage },
       { status: 400 }
-    )
+    ), req)
   }
 
   const { token, password } = validation.data;
@@ -39,10 +40,10 @@ export async function POST(req: Request) {
   })
 
   if (!user) {
-    return Response.json(
+    return withCors(Response.json(
       { message: 'Token Telah Expired' },
       { status: 400 }
-    )
+    ), req)
   }
 
   const hashedPassword = await bcrypt.hash(password, 10)
@@ -58,5 +59,6 @@ export async function POST(req: Request) {
     }
   )
 
-  return Response.json({ message: 'Password Berhail diubah' })
+  return withCors(Response.json({ message: 'Password Berhail diubah' }), req)
 }
+export const OPTIONS = handleOptions;

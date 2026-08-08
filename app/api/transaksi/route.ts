@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json({ message: "Invalid user session" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Invalid user session" }, { status: 401 }), req);
     }
 
     // Generate unique ID using random string to avoid collisions if transactions are deleted
@@ -61,10 +62,10 @@ export async function POST(req: NextRequest) {
     const validation = transaksiSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: validation.error.issues[0].message },
         { status: 400 }
-      );
+      ), req);
     }
 
     const {
@@ -88,19 +89,19 @@ export async function POST(req: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: result.message },
         { status: 400 }
-      );
+      ), req);
     }
 
-    return NextResponse.json({ success: true, message: "Berhasil" });
+    return withCors(NextResponse.json({ success: true, message: "Berhasil" }), req);
   } catch (err: any) {
     console.error("Error processing transaksi:", err);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: err.message || "Internal Server Error" },
       { status: 500 }
-    );
+    ), req);
   }
 }
 
@@ -108,7 +109,7 @@ export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -180,7 +181,7 @@ export async function GET(req: NextRequest) {
       .limit(limit)
       .toArray();
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       {
         success: true,
         message: "Data Transaksi berhasil diambil",
@@ -193,12 +194,13 @@ export async function GET(req: NextRequest) {
         },
       },
       { status: 200 },
-    );
+    ), req);
   } catch (error) {
     console.error("Error processing transaksi:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: "Terjadi kesalahan saat memproses transaksi" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+export const OPTIONS = handleOptions;

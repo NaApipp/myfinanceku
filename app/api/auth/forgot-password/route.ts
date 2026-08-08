@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 // app/api/forgot-password/route.js
 import crypto from 'crypto'
 import clientPromise from '@/app/lib/mongodb'
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
   const user = await db.collection('users').findOne({ email })
   // SECURITY: jangan kasih tahu apakah email ada
   if (!user) {
-    return Response.json({ message: 'Link Reset Password Telah Dikirim' })
+    return withCors(Response.json({ message: 'Link Reset Password Telah Dikirim' }), req)
   }
 
   const token = crypto.randomBytes(32).toString('hex')
@@ -106,5 +107,6 @@ export async function POST(req: Request) {
   `,
 });
 
-  return Response.json({ message: 'Link Reset Password Telah Dikirim' })
+  return withCors(Response.json({ message: 'Link Reset Password Telah Dikirim' }), req)
 }
+export const OPTIONS = handleOptions;

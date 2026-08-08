@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import clientPromise from "@/app/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
@@ -9,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     const token = req.cookies.get("token")?.value;
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
     }
 
     const secret = new TextEncoder().encode(
@@ -19,10 +20,10 @@ export async function GET(req: NextRequest) {
     const userId = payload.userId ? String(payload.userId) : null;
 
     if (!userId) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Invalid user session" },
         { status: 401 },
-      );
+      ), req);
     }
 
     const now = new Date();
@@ -113,19 +114,21 @@ export async function GET(req: NextRequest) {
       dayTotals[dayIndex] += tx.nominal_transaksi;
     });
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
       success: true,
       data: {
         topCategory,
         largestTransaction,
         dayTotals
       },
-    });
+    }), req);
   } catch (error: any) {
     console.error("Error in statistic-widgets:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { success: false, message: error.message || "Internal Server Error" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;

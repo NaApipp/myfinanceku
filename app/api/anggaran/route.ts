@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import clientPromise from "@/app/lib/mongodb";
 import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,7 +8,7 @@ export async function POST(req: NextRequest) {
     try {
         const token = req.cookies.get("token")?.value;
         if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
         }
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -34,17 +35,17 @@ export async function POST(req: NextRequest) {
         const validation = registerSchema.safeParse(body);
 
         if (!validation.success) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { message: validation.error.issues[0].message },
                 { status: 400 },
-            );
+            ), req);
         }
 
         if (!validation) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { message: "Semua field wajib diisi" },
                 { status: 400 },
-            );
+            ), req);
         }
 
         const client = await clientPromise;
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
             ...validation.data,
         });
 
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             {
                 success: true,
                 message: "Anggaran berhasil ditambahkan",
@@ -69,13 +70,13 @@ export async function POST(req: NextRequest) {
                 },
             },
             { status: 201 },
-        );
+        ), req);
     } catch (error) {
         console.error("Error processing anggaran:", error);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { success: false, message: "Terjadi kesalahan saat memproses anggaran" },
             { status: 500 },
-        );
+        ), req);
     }
 }
 
@@ -83,7 +84,7 @@ export async function GET(req: NextRequest) {
     try {
         const token = req.cookies.get("token")?.value;
         if (!token) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+            return withCors(NextResponse.json({ message: "Unauthorized" }, { status: 401 }), req);
         }
 
         const secret = new TextEncoder().encode(process.env.JWT_SECRET || "default_secret");
@@ -94,19 +95,20 @@ export async function GET(req: NextRequest) {
         const db = client.db(process.env.MONGODB_DATABASE);
         const anggaranCollection = db.collection("anggaran");
         const anggaranData = await anggaranCollection.find({ userId }).toArray();
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             {
                 success: true,
                 message: "Data Anggaran berhasil diambil",
                 data: anggaranData,
             },
             { status: 200 },
-        );
+        ), req);
     } catch (error) {
         console.error("Error processing anggaran:", error);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { success: false, message: "Terjadi kesalahan saat memproses anggaran" },
             { status: 500 },
-        );
+        ), req);
     }
 }
+export const OPTIONS = handleOptions;

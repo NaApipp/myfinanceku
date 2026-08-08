@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextResponse } from "next/server";
 
 
@@ -14,5 +15,7 @@ export async function POST() {
     path: "/",
   });
 
-  return response;
+  return withCors(response);
 }
+
+export const OPTIONS = handleOptions;

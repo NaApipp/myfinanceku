@@ -1,3 +1,4 @@
+import { withCors, handleOptions } from "@/app/lib/cors";
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/app/lib/mongodb";
 import bcrypt from "bcryptjs";
@@ -124,13 +125,13 @@ export async function POST(req: NextRequest) {
     const validation = registerSchema.safeParse(body);
 
     if (!validation.success) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         {
           message: validation.error.issues[0].message,
           errors: validation.error.issues,
         },
         { status: 400 },
-      );
+      ), req);
     }
 
     const { last_name, first_name, email, password, username, no_hp, level } =
@@ -146,10 +147,10 @@ export async function POST(req: NextRequest) {
       $or: [{ email }, { username }],
     });
     if (existingUser) {
-      return NextResponse.json(
+      return withCors(NextResponse.json(
         { message: "Email atau Username sudah terdaftar" },
         { status: 400 },
-      );
+      ), req);
     }
 
     // Hash password
@@ -196,15 +197,17 @@ export async function POST(req: NextRequest) {
       createdAt: formattedDate,
     });
 
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Registrasi berhasil", userId: result.insertedId },
       { status: 201 },
-    );
+    ), req);
   } catch (error) {
     console.error("Registration error:", error);
-    return NextResponse.json(
+    return withCors(NextResponse.json(
       { message: "Terjadi kesalahan server" },
       { status: 500 },
-    );
+    ), req);
   }
 }
+
+export const OPTIONS = handleOptions;
