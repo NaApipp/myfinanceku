@@ -219,7 +219,7 @@ export default function UserPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400 font-mono text-xs">@{user.username}</td>
-                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.no_hp}</td>
+                    <td className="px-6 py-4 text-gray-600 dark:text-gray-400">{user.no_hp || "-"}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`${getLevelStyle(user.level)} px-3 py-1 rounded-full text-[11px] font-bold border uppercase tracking-wider`}

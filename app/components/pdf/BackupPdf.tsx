@@ -148,7 +148,7 @@ export const BackupPdf = ({
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.title}>FinanceKu Backup</Text>
+            <Text style={styles.title}>MyFinanceKu Backup</Text>
             <Text style={{ color: "#64748b", fontSize: 9 }}>
               Generated on {new Date().toLocaleString("id-ID")}
             </Text>
@@ -175,9 +175,10 @@ export const BackupPdf = ({
               <Text style={styles.label}>Username</Text>
               <Text style={styles.value}>{user.username}</Text>
             </View>
+            {/* Mp Hp */}
             <View style={styles.gridItem}>
               <Text style={styles.label}>No HP</Text>
-              <Text style={styles.value}>{user.no_hp}</Text>
+              <Text style={styles.value}>{user.no_hp || "Nomor HP belum diisi. Lengkapi di Ganti Profil Pengguna."}</Text>
             </View>
           </View>
         </View>

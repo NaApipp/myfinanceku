@@ -283,7 +283,7 @@ export default function ProfilPengguna() {
                 )}
                 <div className="text-black dark:text-white flex flex-col items-center md:items-start gap-2">
                     <p className="text-2xl font-black">{user?.full_name}</p>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{user?.no_hp}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">No Hp: {user?.no_hp || "-"}</p>
                     <div className={`mt-1 w-min inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-widest ${getLevelStyle(user?.level || "")}`}>
                         {user?.level || "basic"}
                     </div>

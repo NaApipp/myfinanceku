@@ -243,8 +243,8 @@ export default function UserDetailPage({ idUser }: { idUser: string }) {
                   <Phone className="w-3 h-3" /> Phone Number
                 </p>
                 <div className="flex items-center gap-2">
-                  <p className="text-gray-700 dark:text-gray-300 font-medium">{data.no_hp || "-"}</p>
-                  <ButtonCopy text={data.no_hp || ""} />
+                  <p className="text-gray-700 dark:text-gray-300 font-medium">{data.no_hp || "Nomor HP belum diisi"}</p>
+                  <ButtonCopy text={data.no_hp || "- Nomor HP belum diisi"} />
                 </div>
               </div>
               <div className="space-y-1">
