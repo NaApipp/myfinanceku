@@ -28,17 +28,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const registerSchema = z.object({
-      // First Name
-      first_name: z
-        .string()
-        .trim()
-        .min(1, "Nama depan harus diisi")
-        .max(50, "Nama depan maksimal 50 karakter")
-        .regex(/^[^0-9]*$/, {
-          message: "Nama Tidak boleh mengandung angka",
-        }),
-      // Last Name
-      last_name: z
+      
+
+        full_name: z
         .string()
         .trim()
         .min(1, "Nama belakang harus diisi")
@@ -85,29 +77,6 @@ export async function POST(req: NextRequest) {
           message: "Username tidak boleh hanya angka",
         }),
 
-      // Validasi No Hp
-      no_hp: z
-        .string()
-        .trim()
-        .min(10, "Nomor HP minimal 10 digit")
-        .max(15, "Nomor HP maksimal 15 digit")
-        // Validasi Hanya Angka
-        .refine((val) => /^\+?\d+$/.test(val), {
-          message: "Nomor HP hanya boleh angka",
-        })
-        // Validasi Awalan 08, 62, atau +62
-        .refine((val) => /^(08|62|\+62)/.test(val), {
-          message: "Format tidak valid (tidak diawali 08/62)",
-        })
-        // Validasi Leading Zero Berlebih
-        .refine((val) => !/^0{2,}/.test(val), {
-          message: "Format tidak valid (leading zero berlebih)",
-        })
-        // Validasi Spasi Di Awal dan Akhir
-        .refine((val) => val === val.trim(), {
-          message: "Nomor HP tidak boleh diawali atau diakhiri spasi",
-        }),
-
       // Validasi Level
       level: z.string(),
 
@@ -134,7 +103,7 @@ export async function POST(req: NextRequest) {
       ), req);
     }
 
-    const { last_name, first_name, email, password, username, no_hp, level } =
+    const { full_name, email, password, username, level } =
       validation.data;
 
     const client = await clientPromise;
@@ -174,15 +143,13 @@ export async function POST(req: NextRequest) {
 
     // Saving New User
     const result = await usersCollection.insertOne({
-      idUser,
-      first_name,
-      last_name,
-      full_name: `${first_name} ${last_name}`,
+      idUser  ,
+      full_name,
       email,
       password: hashedPassword,
       username,
-      no_hp,
-      level,
+      no_hp: null,
+      level,  
       agreements: {
         term_on_service: validation.data.term_on_service,
         privacy_policy: validation.data.privacy_policy,

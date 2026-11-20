@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import TermOnService from "@/app/components/doc/TermOnService";
 import PrivacyPolicy from "@/app/components/doc/PrivacyPolicy";
+import { form } from "framer-motion/client";
 
 export default function RegistrasiForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +17,10 @@ export default function RegistrasiForm() {
   } | null>(null);
 
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    full_name: "",
     email: "",
     password: "",
     username: "",
-    no_hp: "",
     level: "basic",
     term_on_service: false,
     privacy_policy: false,
@@ -52,12 +51,10 @@ export default function RegistrasiForm() {
         text: "Registrasi berhasil! Silakan login.",
       });
       setFormData({
-        first_name: "",
-        last_name: "",
+        full_name: "",
         email: "",
         password: "",
         username: "",
-        no_hp: "",
         level: "basic",
         term_on_service: false,
         privacy_policy: false,
@@ -72,7 +69,7 @@ export default function RegistrasiForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 md:p-8 relative">
+    <div className="w-full max-w-xl mx-auto p-6 md:p-8 relative">
       <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="mb-8">
@@ -100,9 +97,13 @@ export default function RegistrasiForm() {
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className={`p-1.5 rounded-lg ${
-              message.type === "success" ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"
-            }`}>
+            <div
+              className={`p-1.5 rounded-lg ${
+                message.type === "success"
+                  ? "bg-emerald-100 text-emerald-600"
+                  : "bg-rose-100 text-rose-600"
+              }`}
+            >
               {message.type === "success" ? (
                 <svg
                   className="h-4 w-4"
@@ -139,37 +140,20 @@ export default function RegistrasiForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
-              Nama Depan
-            </label>
-            <input
-              value={formData.first_name}
-              onChange={(e) =>
-                setFormData({ ...formData, first_name: e.target.value })
-              }
-              placeholder="Andi"
-              type="text"
-              required
-              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
-              Nama Belakang
-            </label>
-            <input
-              value={formData.last_name}
-              onChange={(e) =>
-                setFormData({ ...formData, last_name: e.target.value })
-              }
-              placeholder="Widodo"
-              type="text"
-              required
-              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
-            />
-          </div>
+        <div className="space-y-1.5">
+          <label className="text-sm font-semibold text-slate-700">
+            Nama Lengkap
+          </label>
+          <input
+            value={formData.full_name}
+            onChange={(e) =>
+              setFormData({ ...formData, full_name: e.target.value })
+            }
+            placeholder="Andi Kurniawan"
+            type="text"
+            required
+            className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
+          />
         </div>
 
         <div className="space-y-1.5">
@@ -197,37 +181,20 @@ export default function RegistrasiForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
-              Username
-            </label>
-            <input
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
-              placeholder="konohakorupsi"
-              type="text"
-              required
-              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-700">
-              No Hp
-            </label>
-            <input
-              value={formData.no_hp}
-              onChange={(e) =>
-                setFormData({ ...formData, no_hp: e.target.value })
-              }
-              placeholder="08123456789"
-              type="tel"
-              required
-              className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
-            />
-          </div>
+        <div className="space-y-1.5">
+          <label className="text-sm font-semibold text-slate-700">
+            Username
+          </label>
+          <input
+            value={formData.username}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
+            placeholder="konohakorupsi"
+            type="text"
+            required
+            className="text-black w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/30 text-sm transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 placeholder:text-slate-400 hover:border-slate-300 shadow-sm shadow-transparent focus:shadow-blue-500/5"
+          />
         </div>
 
         <div className="space-y-1.5">
@@ -270,30 +237,20 @@ export default function RegistrasiForm() {
         {/* Terms On Serviece */}
         <div className="flex flex-row items-center gap-2">
           <input
-            checked={formData.term_on_service}
+            checked={formData.term_on_service && formData.privacy_policy}
             onChange={(e) =>
-              setFormData({ ...formData, term_on_service: e.target.checked })
+              setFormData({
+                ...formData,
+                term_on_service: e.target.checked,
+                privacy_policy: e.target.checked,
+              })
             }
             type="checkbox"
             className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500/20 transition-all cursor-pointer"
           />
           <label className="text-sm font-semibold text-slate-500 flex">
-            Saya menyetujui <TermOnService />
-          </label>
-        </div>
-
-        {/* Privacy policy */}
-        <div className="flex flex-row items-center gap-2">
-          <input
-            checked={formData.privacy_policy}
-            onChange={(e) =>
-              setFormData({ ...formData, privacy_policy: e.target.checked })
-            }
-            type="checkbox"
-            className="w-5 h-5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500/20 transition-all cursor-pointer"
-          />
-          <label className="text-sm font-semibold text-slate-500 flex items-center">
-            Saya menyetujui <PrivacyPolicy />
+            Saya menyetujui <TermOnService /> <span className="pl-1">dan</span>{" "}
+            <PrivacyPolicy />
           </label>
         </div>
 
