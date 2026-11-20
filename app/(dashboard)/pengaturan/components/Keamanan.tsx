@@ -78,8 +78,7 @@ function ModalProfil() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    full_name: "",
     username: "",
     email: "",
     no_hp: "",
@@ -94,8 +93,7 @@ function ModalProfil() {
           const data = await response.json();
           if (data.success) {
             setFormData({
-              first_name: data.user.first_name || "",
-              last_name: data.user.last_name || "",
+              full_name: data.user.full_name || "",
               username: data.user.username || "",
               email: data.user.email || "",
               no_hp: data.user.no_hp || "",
@@ -214,34 +212,16 @@ function ModalProfil() {
                     htmlFor="first_name"
                     className="text-sm font-semibold text-gray-700 uppercase"
                   >
-                    Nama Depan
+                    Nama Lengkap
                   </label>
 
                   <input
                     type="text"
-                    name="first_name"
-                    id="first_name"
-                    placeholder="Contoh: Budi"
+                    name="full_name"
+                    id="full_name"
+                    placeholder="Contoh: Budi Joe"
                     className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler placeholder:text-gray-400"
-                    value={formData.first_name}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="last_name"
-                    className="text-sm font-semibold text-gray-700 uppercase"
-                  >
-                    Nama Belakang
-                  </label>
-
-                  <input
-                    type="text"
-                    name="last_name"
-                    id="last_name"
-                    placeholder="Contoh: Santoso"
-                    className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-gray-50 text-black font-reguler placeholder:text-gray-400"
-                    value={formData.last_name}
+                    value={formData.full_name}
                     onChange={handleChange}
                   />
                 </div>

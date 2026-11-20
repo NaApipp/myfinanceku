@@ -11,7 +11,7 @@ export default function TermOnService() {
                 onClick={() => setOpen(true)} 
                 className="cursor-pointer text-blue-600 hover:text-blue-700 hover:underline ml-1 font-semibold transition-colors"
             >
-                Syarat dan Ketentuan
+                S&K
             </button>
 
             {open && (
