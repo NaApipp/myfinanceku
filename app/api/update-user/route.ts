@@ -7,17 +7,11 @@ import z from "zod";
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { first_name, last_name, email, no_hp, username } = body;
+    const {full_name, email, no_hp, username } = body;
 
     const registerSchema = z.object({
-          first_name: z
-            .string()
-            .trim()
-            .min(1, "Nama depan harus diisi")
-            .regex(/^[^0-9]*$/, {
-              message: "Nama Tidak boleh mengandung angka",
-            }),
-          last_name: z
+          
+          full_name: z
             .string()
             .trim()
             .min(1, "Nama belakang harus diisi")
@@ -105,17 +99,15 @@ export async function PUT(request: NextRequest) {
 
     // Siapkan data yang akan diupdate
     const updateData: any = {};
-    if (first_name !== undefined) updateData.first_name = first_name;
-    if (last_name !== undefined) updateData.last_name = last_name;
+    if (full_name !== undefined) updateData.full_name = full_name;
     if (email !== undefined) updateData.email = email;
     if (no_hp !== undefined) updateData.no_hp = no_hp;
     if (username !== undefined) updateData.username = username;
 
     // Update full_name jika nama berubah
-    if (first_name || last_name) {
-      const currentFirstName = first_name ?? existingUser.first_name;
-      const currentLastName = last_name ?? existingUser.last_name;
-      updateData.full_name = `${currentFirstName} ${currentLastName}`.trim();
+    if (full_name) {
+      const currentName = full_name ?? existingUser.full_name;
+      updateData.full_name = `${currentName} `.trim();
     }
 
     if (Object.keys(updateData).length === 0) {
